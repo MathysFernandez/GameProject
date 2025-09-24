@@ -23,28 +23,28 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 > [!note]  
 > Information sur les fichiers et l'arborescence du projet    
 
-* [main.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/main.py?ref_type=heads)
+* [main.py]()
 : Le fichier principal du jeu, contient la boucle de jeu avec les scènes menu, jeu, etc...  
 
-* [Concepteur.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Concepteur.py?ref_type=heads)
+* [Concepteur.py]()
 : Programme pour les développeur permettant de modifier la carte du jeu.   
 
-* [Files/config.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/config.py?ref_type=heads)
+* [Files/config.py]()
 : Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
 
-* [Files/generation_procedurale.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/generation_procedurale.py?ref_type=heads)
+* [Files/generation_procedurale.py]()
 : Fichier permettant comme son nom l'indique de généré une carte (**principalement _Automate Cellular_**)   
 
-* [Files/textures_manager.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/textures_manager.py?ref_type=heads)
+* [Files/textures_manager.py]()
 :  Gère le chargement et la mise à l'échelle des textures, ainsi que la préparation de la grille et des données de collision.   
 
-* [Files/Lecteur_map.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/Lecteur_map.py?ref_type=heads)
+* [Files/Lecteur_map.py]()
 : Permet de lire et modifier le fichier JSON.     
 
-* [Assets/](https://gitlab.univ-lr.fr/mferna08/the-lost/-/tree/dev/Assets?ref_type=heads)
+* [Assets/]()
 : Contient toutes les ressources du jeu (images, sons, etc.)   
 
-* [Saves/](https://gitlab.univ-lr.fr/mferna08/the-lost/-/tree/dev/Saves?ref_type=heads)
+* [Saves/]()
 : Contient L'ensemble des cartes du jeu (fichiers JSON).  
 
 
@@ -108,4 +108,4 @@ Ce projet est distribué sous la [licence MIT](LICENSE)
 
 ---
 ## :information: Pour plus d'information
-Aller sur la page [Home]() de notre projet
+Aller sur la page [Home](https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject/-/wikis/home) de notre projet
