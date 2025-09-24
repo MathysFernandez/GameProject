@@ -1,0 +1,4 @@
+# Fichier .gitignore
+
+# Ignorer le fichier de log
+game.log
