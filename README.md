@@ -1,93 +1,103 @@
-# GameProject
+# :rocket: GameProject   
+
+> [!note] Bienvenue
+> Cette page sert de point d'entrée central pour toutes les informations essentielles concernant le projet **_GameProject_**.   
+
+![image présentation](image_pou_gitlab/exemple_generation.jpg)
 
 
 
-## Getting started
+---
+## :mag: Aperçu du Projet 
+> [!note] 
+> Bienvenue sur la page **_README_** de notre projet !   
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+**_GameProject_** est un jeu Pygame où vous explorez un vaste monde depuis une vue aérienne.    
+Notre objectif est de livrer une expérience immersive et engageante où chaque interaction et chaque défi vous rapprochent de la sortie de ce monde.   
+Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur de carte** dédié (`Concepteur.py`).   
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-## Add your files
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+---
+## :chart_with_upwards_trend: Architecture du Projet     
+> [!note]  
+> Information sur les fichiers et l'arborescence du projet    
 
-```
-cd existing_repo
-git remote add origin https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject.git
-git branch -M main
-git push -uf origin main
-```
+* [main.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/main.py?ref_type=heads)
+: Le fichier principal du jeu, contient la boucle de jeu avec les scènes menu, jeu, etc...  
 
-## Integrate with your tools
+* [Concepteur.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Concepteur.py?ref_type=heads)
+: Programme pour les développeur permettant de modifier la carte du jeu.   
 
-- [ ] [Set up project integrations](https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject/-/settings/integrations)
+* [Files/config.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/config.py?ref_type=heads)
+: Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
 
-## Collaborate with your team
+* [Files/generation_procedurale.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/generation_procedurale.py?ref_type=heads)
+: Fichier permettant comme son nom l'indique de généré une carte (**principalement _Automate Cellular_**)   
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+* [Files/textures_manager.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/textures_manager.py?ref_type=heads)
+:  Gère le chargement et la mise à l'échelle des textures, ainsi que la préparation de la grille et des données de collision.   
 
-## Test and Deploy
+* [Files/Lecteur_map.py](https://gitlab.univ-lr.fr/mferna08/the-lost/-/blob/dev/Files/Lecteur_map.py?ref_type=heads)
+: Permet de lire et modifier le fichier JSON.     
 
-Use the built-in continuous integration in GitLab.
+* [Assets/](https://gitlab.univ-lr.fr/mferna08/the-lost/-/tree/dev/Assets?ref_type=heads)
+: Contient toutes les ressources du jeu (images, sons, etc.)   
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+* [Saves/](https://gitlab.univ-lr.fr/mferna08/the-lost/-/tree/dev/Saves?ref_type=heads)
+: Contient L'ensemble des cartes du jeu (fichiers JSON).  
 
-***
 
-# Editing this README
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+---
+## :joystick: Les commandes du jeu:
+* <kbd>Z</kbd>,<kbd>Q</kbd>,<kbd>S</kbd>,<kbd>D</kbd> et les <kbd>flèches directionnelles</kbd> : pour ce déplacer   
+* <kbd>SHIFT</kbd> + <kbd>Z</kbd>/<kbd>Q</kbd>/<kbd>S</kbd>/<kbd>D</kbd>/<kbd>flèches directionnelles</kbd> : pour ce déplacer + vite    
+...
 
-## Suggestions for a good README
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
 
-## Name
-Choose a self-explaining name for your project.
+---
+## :play_button: Démarrage Rapide    
+> [!note]
+> Pour cloner le projet, installer les dépendances et lancer le jeu en local :   
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Cloner ce dépôt en bash:   
+```bash
+git clone https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject.git
+``` 
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+installer les dépendances:   
+* [Python (la version la plus récente)](https://www.python.org/downloads/)
+* Pygame avec la commande ```pip install pygame```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Lancez le jeu avec:    
+```main.py```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Lancez le mode éditeur avec:   
+```Concepteur.py```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+---
+## :scroll: Licence
+Ce projet est distribué sous la [licence MIT](LICENSE)
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+---
+## :bust_in_silhouette: Auteurs
+| <a href="https://gitlab.univ-lr.fr/mferna08"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2469/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+|:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## :person_feeding_baby: Superviseur
+| <a href="https://gitlab.univ-lr.fr/mferna08"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2469/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+|:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+
+
+---
+## :information: Pour plus d'information
+Aller sur la page [Home]() de notre projet
