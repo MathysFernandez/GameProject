@@ -89,13 +89,13 @@ Ce projet est distribué sous la [licence MIT](LICENSE)
 | <a href="https://gitlab.univ-lr.fr/mferna08"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2469/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/rlamou01"> <img src="" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+| <a href="https://gitlab.univ-lr.fr/rlamou01"> <img src="" width="64" height="64"> </a> | **Nom :** _Lamoureux Robin_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/rlamou01) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+| <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="" width="64" height="64"> </a> | **Nom :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href=""> <img src="" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+| <a href=""> <img src="" width="64" height="64"> </a> | **Nom :** _Pinet Theo_ <br> **GitLab :** [mon profil]() |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 ## :person_feeding_baby: Superviseur
