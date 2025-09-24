@@ -99,7 +99,7 @@ Ce projet est distribué sous la [licence MIT](LICENSE)
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 ## :person_feeding_baby: Superviseur
-| <a href="https://gitlab.univ-lr.fr/"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2469/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+| <a href="https://gitlab.univ-lr.fr/"> <img src="" width="64" height="64"> </a> | **Nom :** __ <br> **GitLab :** [mon profil]() |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 
