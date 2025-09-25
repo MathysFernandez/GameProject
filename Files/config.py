@@ -2,7 +2,7 @@ import pygame
 import logging
 
 
-Titre = "The lost"
+Titre = "GameProject"
 taille_cellule = 100
 taille_joueur = 54
 
