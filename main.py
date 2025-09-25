@@ -254,7 +254,7 @@ def run(largeur_fenetre, hauteur_fenetre):
     logger.info("run() effectué")
     
     """
-    # Si on veut une génération avant de jouer
+    # --- Si on veut une génération avant de jouer ---
     # Nombre de texture différente (sans compté l'eau)
     nombre_texture = config.nombre_texture
     
@@ -262,7 +262,9 @@ def run(largeur_fenetre, hauteur_fenetre):
     taille = config.taille_nouvelle_generation
 
     generation.generation(nom_fichier_a_ouvrir, nombre_texture, taille)
+    # --- FIN Si on veut une génération avant de jouer ---
     """
+    
     while True:
         # COLLECTE UNIQUE de TOUS les événements pour cette frame
         events = pygame.event.get() 
@@ -379,6 +381,10 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     deplacement_x = (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) - (keys_pressed[pygame.K_q] or keys_pressed[pygame.K_LEFT])
     deplacement_y = (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]) - (keys_pressed[pygame.K_z] or keys_pressed[pygame.K_UP])
     
+    
+    
+    
+    # --- Déplacer dans un nouveau fichier en tant que fonction --
     if deplacement_x != 0 and deplacement_y != 0:
         vitesse *= config.multiplicateur_vitesse_diagonale
     
@@ -386,32 +392,18 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     deplacement_y *= vitesse
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    # "merci internet"
     #Calcule la cellule actuelle du joueur pour vérifier s'il est dans l'eau.
     #On utilise le centre du joueur pour une vérification plus précise
     player_gx = int(position_player_x // taille_cellule)
     player_gy = int(position_player_y // taille_cellule)
 
+
+
+
     #Vérifie si le joueur est sur un bloc d'eau 
     if (player_gx, player_gy) in collision_map_water:
         deplacement_x *= 0.7
         deplacement_y *= 0.7
-    
-    
     
     
     # Appliquez le mouvement désiré au joueur sur X
@@ -490,7 +482,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                     # On annule le déplacement sur l'axe Y pour cette frame
                     deplacement_y = 0
     
-    
+    # --- FIN Déplacer dans un nouveau fichier en tant que fonction --
     
     
     
