@@ -174,32 +174,64 @@ while running:
     camera_x -= deplacement_x
     camera_y -= deplacement_y
     
+    
+    
+    
+    
+    
+    # --- Rendu graphique de la scène ---
+    
     # Dessiner la grille
+    # Efface l'écran en le remplissant de noir. Cela supprime tous les dessins de la frame précédente.
     fenetre.fill((0, 0, 0))
     
-    for y in range(hauteur_grille):
-            for x in range(largeur_grille):
-                # Calcule la position de la cellule à l'écran
-                screen_x = x * taille_cellule + camera_x
-                screen_y = y * taille_cellule + camera_y
+    # --- Calculer la zone visible de la grille ---
 
-                # Crée un objet pygame.Rect pour la position à l'écran
-                rect = pygame.Rect(screen_x, screen_y, taille_cellule, taille_cellule)
+    # Coordonnées monde du coin supérieur gauche de l'écran
+    world_x_start_screen = -camera_x
+    world_y_start_screen = -camera_y
 
-                # Dessine le contour du rectangle de la cellule
-                pygame.draw.rect(fenetre, couleur_cellule, rect)
-                pygame.draw.rect(fenetre, couleur_grille, rect, 1)
+    # Coordonnées monde du coin inférieur droit de l'écran
+    world_x_end_screen = world_x_start_screen + largeur_fenetre
+    world_y_end_screen = world_y_start_screen + hauteur_fenetre
 
-                # Dessine la texture en fonction de la grille
-                if grille[y][x] is not None:
-                    fenetre.blit(grille[y][x], rect)
+    # Convertir ces coordonnées monde en indices de grille
+    start_grid_x = int(world_x_start_screen // taille_cellule) -1 #+6
+    end_grid_x = int(world_x_end_screen // taille_cellule) +1 #-5 # +1 
+
+    start_grid_y = int(world_y_start_screen // taille_cellule) -1 #+2
+    end_grid_y = int(world_y_end_screen // taille_cellule) +1 #-1 # +1 
+    # S'assurer que les indices restent dans les limites de la grille réelle
+    start_grid_x = max(0, start_grid_x)
+    end_grid_x = min(largeur_grille, end_grid_x) # Ne pas dépasser largeur_grille - 1, mais range va jusqu'à end-1
+    start_grid_y = max(0, start_grid_y)
+    end_grid_y = min(hauteur_grille, end_grid_y) # Ne pas dépasser hauteur_grille - 1
+    # --- Fin Calculer la zone visible de la grille ---
+
+    # --- Dessiner uniquement les cellules visibles ---
+    for y in range(start_grid_y, end_grid_y):
+        for x in range(start_grid_x, end_grid_x):
+            # Calcule la position de la cellule à l'écran
+            screen_x = x * taille_cellule + camera_x
+            screen_y = y * taille_cellule + camera_y
+
+            # Crée un objet pygame.Rect pour la position à l'écran
+            rect = pygame.Rect(screen_x, screen_y, taille_cellule, taille_cellule)
+
+            # Dessine le contour du rectangle de la cellule
+            #(Ces lignes sont souvent supprimées dans le jeu final pour ne dessiner que les textures)
+            pygame.draw.rect(fenetre, couleur_cellule, rect)
+            pygame.draw.rect(fenetre, couleur_grille, rect, 1)
+
+            # Dessine la texture en fonction de la grille
+            if grille[y][x] is not None:
+                fenetre.blit(grille[y][x], rect)
+    # --- FIN Dessiner uniquement les cellules visibles ---
     
     
-    if grille[y][x] is not None:
-        fenetre.blit(grille[y][x], rect)
     
     fenetre.blit(lettre_surface, lettre_rect)
-    
+    # --- Fin Rendu graphique de la scène ---
     pygame.display.flip()
     horloge.tick(FPS)
 pygame.quit()
