@@ -98,12 +98,6 @@ Ce projet est distribué sous la [licence MIT](LICENSE)
 | <a href="https://gitlab.univ-lr.fr/tpinet"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3021/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Pinet Theo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tpinet) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-## :person_feeding_baby: Superviseur
-| <a href="https://gitlab.univ-lr.fr/abourmau"> <img src="?width=800" width="64" height="64"> </a> | **Nom :** _Anthony Bourmaud _ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/abourmau) |
-|:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
-
-
-
 
 
 ---
