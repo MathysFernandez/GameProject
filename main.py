@@ -606,7 +606,11 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     fenetre.blit(joueur, rect_rotate)
     # --- Fin Dessiner le joueur ---
     
-    
+    # --- Affichage des FPS en temps réel si test_fps est activé ---
+    if config.test_fps:
+        fps_text = font.render(f"FPS: {horloge.get_fps():.2f}", True, WHITE)
+        fenetre.blit(fps_text, (10, 10))
+    # --- Fin Affichage des FPS ---
     
     
     
