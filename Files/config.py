@@ -16,7 +16,7 @@ taille_BT_h = 50
 nombre_texture = 3
 nom_fichier_a_ouvrir = 'map_generation_procedural'
 vitesse_rotation = 5
-test_fps = False
+test_fps = True
 
 if test_fps:
     FPS = 1000
