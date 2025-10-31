@@ -53,3 +53,8 @@ def get_dimensions():
     largeur_fen = pygame.display.Info().current_w
     hauteur_fen = pygame.display.Info().current_h - 60
     return largeur_fen, hauteur_fen
+
+joueur_vie_max = 100
+joueur_vie_actuelle = 100 # On peut choisir le pourcentage de vie de départ ici
+joueur_etat = "vivant" # Peut être "vivant" ou "mort"
+test_vie = True
