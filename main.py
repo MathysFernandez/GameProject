@@ -133,6 +133,55 @@ position_player_y = centre_grille_y_monde + 100
 rayon_joueur = taille_joueur / 2
 # -- FIN joueur en cercle nouveauté ---
 
+
+
+# +++ DÉBUT AJOUT BARRE DE VIE ---
+
+# Variables pour l'état et la vie du joueur
+joueur_vie_max = config.joueur_vie_max
+joueur_vie_actuelle = config.joueur_vie_actuelle# On peut choisir le pourcentage de vie de départ ici
+joueur_etat = config.joueur_etat # Peut être "vivant" ou "mort"
+
+
+
+barre_largeur = 70  
+barre_hauteur = 15
+# Définir les couleurs Vie et game over
+COULEUR_FOND_BARRE = (100, 100, 100) # Gris foncé
+COULEUR_VIE = (0, 255, 0)         # Vert
+COULEUR_CONTOUR = (255, 255, 255) # Blanc
+
+
+def retirer_vie(quantite):
+
+    global joueur_vie_actuelle, joueur_etat
+    
+    if joueur_etat == "vivant":
+        joueur_vie_actuelle -= quantite
+        
+        if joueur_vie_actuelle <= 0:
+            joueur_vie_actuelle = 0
+            joueur_etat = "mort"
+            logger.warning("Le joueur est mort.")
+        else:
+            logger.info(f"Le joueur a perdu {quantite} PV. Vie restante : {joueur_vie_actuelle}")
+
+def ajouter_vie(quantite):
+
+    global joueur_vie_actuelle
+    
+    if joueur_etat == "vivant":
+        joueur_vie_actuelle += quantite
+        if joueur_vie_actuelle > joueur_vie_max:
+            joueur_vie_actuelle = joueur_vie_max
+        logger.info(f"Le joueur a gagné {quantite} PV. Vie restante : {joueur_vie_actuelle}")
+
+# +++ FIN AJOUT BARRE DE VIE +++
+
+
+
+
+
 # Création de la fonction de collision cercle-rectangle
 def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
     # Trouver le point le plus proche sur le rectangle par rapport au centre du cercle
@@ -352,7 +401,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     global angle
     global position_player_x
     global position_player_y
-    
+    global joueur_vie_actuelle
+    global joueur_etat
     
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
@@ -370,8 +420,29 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         if event.type == pygame.KEYDOWN:
             # Ajout d'une détection pour ESC pour revenir au menu, comme indiqué dans le texte d'aide
             if event.key == pygame.K_ESCAPE:
-                # Si vous voulez quitter le jeu et revenir au menu avec 'A'
+                # Si vous voulez quitter le jeu et revenir au menu avec
+                # Variables pour l'état et la vie du joueur
+                joueur_vie_actuelle = 100# On peut choisir le pourcentage de vie de départ ici
+                joueur_etat = "vivant" # Peut être "vivant" ou "mort"
                 return "menu" # <-- Changement ici pour revenir au menu
+            
+            
+            if config.test_vie:
+            # +++ TEST PERDRE DE LA VIE (Appuyez sur H) +++
+                if event.key == pygame.K_h:
+                    # Press H pour perdre 10 PV (pour tester)
+                    retirer_vie(10)
+            # +++ FIN TEST +++
+                
+            # +++ TEST AJOUTER VIE (Appuyez sur J) +++
+                if event.key == pygame.K_j:
+                    # Press H pour perdre 10 PV (pour tester)
+                    ajouter_vie(10)
+            # +++ FIN TEST +++    
+    
+    
+    
+    
     
     # --- Gestion du déplacement du joueur par les touches ---
     # Obtient l'état actuel de toutes les touches du clavier (quelles touches sont pressées).
@@ -405,10 +476,10 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         deplacement_x *= 0.7
         deplacement_y *= 0.7
     
-    
-    # Appliquez le mouvement désiré au joueur sur X
-    position_player_x += deplacement_x
-    
+    if joueur_etat == "vivant":
+        # Appliquez le mouvement désiré au joueur sur X
+        position_player_x += deplacement_x
+        
     
     # --- Détection de collision sur l'axe X (Optimisé par grille) ---
     # Optimisation de la détection de collision : Seules les cellules à proximité du joueur sont vérifiées
@@ -448,10 +519,10 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                     deplacement_x = 0
         
     
-    
-    # --- Application du mouvement et détection de collision (axe Y) ---
-    # Applique le déplacement calculé à la position Y du joueur.
-    position_player_y += deplacement_y
+    if joueur_etat == "vivant":
+        # --- Application du mouvement et détection de collision (axe Y) ---
+        # Applique le déplacement calculé à la position Y du joueur.
+        position_player_y += deplacement_y
     
     # Optimisation de la détection de collision : Seules les cellules à proximité du joueur sont vérifiées
     # Calcule la plage des indices de grille (min_gx à max_gx) que le joueur pourrait toucher
@@ -576,16 +647,17 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             angle_voulu = 270
         elif deplacement_y < 0:
             angle_voulu = 90
-    #permet de tourner le joueur dans la direction voulu seulement lors des déplacements du joueurs 
-    if (deplacement_x !=0 or deplacement_y !=0) and angle != angle_voulu:
-        if angle >= 360:
-            angle -= 360
-        if angle <0:
-            angle += 360
-        if (angle_voulu - angle) % 360 <= 180:
-            angle += config.vitesse_rotation
-        else:
-            angle -= config.vitesse_rotation
+    if joueur_etat == "vivant":
+        #permet de tourner le joueur dans la direction voulu seulement lors des déplacements du joueurs 
+        if (deplacement_x !=0 or deplacement_y !=0) and angle != angle_voulu:
+            if angle >= 360:
+                angle -= 360
+            if angle <0:
+                angle += 360
+            if (angle_voulu - angle) % 360 <= 180:
+                angle += config.vitesse_rotation
+            else:
+                angle -= config.vitesse_rotation
     
     
     # ---gère la hitbox pour la rotation du rect---
@@ -611,6 +683,49 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         fps_text = font.render(f"FPS: {horloge.get_fps():.2f}", True, WHITE)
         fenetre.blit(fps_text, (10, 10))
     # --- Fin Affichage des FPS ---
+    
+    # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
+    
+    # Barre de vie en haut à gauche
+    #barre_pos_x = 10
+    #barre_pos_y = 10
+    #barre_largeur = 200
+    #barre_hauteur = 20
+    
+    # Barre de vie au dessus du joueur
+
+    barre_pos_x = largeur_fenetre // 2 - (barre_largeur) +7
+    barre_pos_y = hauteur_fenetre // 2 - barre_hauteur - config.taille_joueur *1.2
+
+    # Calculer le pourcentage de vie pour la barre
+    ratio_vie = joueur_vie_actuelle / joueur_vie_max
+    largeur_vie_actuelle = barre_largeur * ratio_vie
+
+    
+
+    # Dessiner le fond de la barre (la vie perdue)
+    pygame.draw.rect(fenetre, COULEUR_FOND_BARRE, (barre_pos_x, barre_pos_y, barre_largeur, barre_hauteur))
+    
+    # Dessiner la vie actuelle par-dessus
+    if largeur_vie_actuelle > 0:
+        pygame.draw.rect(fenetre, COULEUR_VIE, (barre_pos_x, barre_pos_y, largeur_vie_actuelle, barre_hauteur))
+    
+    # Dessiner un contour pour que ce soit plus joli
+    pygame.draw.rect(fenetre, COULEUR_CONTOUR, (barre_pos_x, barre_pos_y, barre_largeur, barre_hauteur), 2) # 2 = épaisseur
+    
+    # Si le joueur est mort, on peut afficher un message "GAME OVER"
+    if joueur_etat == "mort":
+        # Nous utilisons la police globale déjà chargée (font)
+        mort_surf = font.render("GAME OVER", True, (255, 0, 0)) # Rouge
+        # On utilise les variables globales largeur_fenetre et hauteur_fenetre pour centrer
+        mort_rect = mort_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2))
+        fenetre.blit(mort_surf, mort_rect)
+        
+        
+        
+
+
+
     
     
     
