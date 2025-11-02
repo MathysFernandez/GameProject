@@ -2,6 +2,3 @@
 
 # Ignorer le fichier de log
 game.log
-/.venv
-/__pycache__
-*.pyc
