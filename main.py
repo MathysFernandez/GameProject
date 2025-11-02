@@ -457,7 +457,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     
     # --- Déplacer dans un nouveau fichier en tant que fonction --
     if deplacement_x != 0 and deplacement_y != 0:
-        vitesse *= config.multiplicateur_vitesse_diagonale
+        vitesse /= config.multiplicateur_vitesse_diagonale
     
     deplacement_x *= vitesse
     deplacement_y *= vitesse
