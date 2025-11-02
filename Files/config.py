@@ -1,6 +1,6 @@
 import pygame
 import logging
-
+import math
 
 Titre = "GameProject"
 taille_cellule = 100
@@ -24,7 +24,7 @@ if test_fps:
 taille_nouvelle_generation = 200
 
 #entre 0 et 1
-multiplicateur_vitesse_diagonale = 0.71
+multiplicateur_vitesse_diagonale = math.sqrt(2)
 
 
 if nombre_texture < 2:
