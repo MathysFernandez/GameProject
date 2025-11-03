@@ -147,6 +147,9 @@ joueur_etat = config.joueur_etat # Peut être "vivant" ou "mort"
 joueur_score = 0
 # +++ FIN AJOUT SCORE +++
 
+# +++ AJOUT ETAT DE PAUSE +++
+jeu_est_en_pause = False
+# +++ FIN AJOUT ETAT DE PAUSE +++
 
 barre_largeur = 70  
 barre_hauteur = 15
@@ -269,7 +272,6 @@ def draw_button(text, x, y, w, h, color, hover_color, action_name):
 # La fonction menu_scene doit aussi prendre les événements en paramètre
 def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events'
     fenetre.fill(BLACK)
-    
     #nombre de bouton
     nb_BT = 4
     compteur_BT = 0
@@ -292,7 +294,6 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events
     result = draw_button("Quit", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25*nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "quit")
     
     
-    
     # Gérer les événements spécifiques au menu ici si nécessaire (ex: touches clavier)
     for event in events: # <-- Utilisation des événements passés en paramètre
         if event.type == pygame.KEYDOWN:
@@ -302,7 +303,44 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events
 
     return "menu"
 
+# +++ DÉBUT AJOUT MENU PAUSE +++
+def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
+    """
+    Dessine l'overlay sombre et les boutons du menu pause.
+    Cette fonction est appelée DEPUIS jeu_scene.
+    Elle utilise les variables globales : fenetre, font, WHITE, BLUE, DARK_BLUE, BT_width, BT_height
+    et la fonction draw_button.
+    """
 
+# 1. Effet translucide lors de la pause
+    overlay = pygame.Surface((largeur_fenetre, hauteur_fenetre), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150)) # Noir avec 150/255 d'opacité
+    fenetre.blit(overlay, (0, 0))
+
+# 2. Dessiner le titre "Pause"
+    titre_surf = font.render("Pause", True, WHITE)
+    titre_rect = titre_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2 - 150))
+    fenetre.blit(titre_surf, titre_rect)
+
+# 3. Dessiner les boutons
+    action_reprise = draw_button("Reprendre", 
+                                (largeur_fenetre - BT_width) // 2, 
+                                (hauteur_fenetre - BT_height) // 2 - 50, 
+                                BT_width, BT_height, BLUE, DARK_BLUE, "resume")
+
+    action_menu = draw_button("Retour au Menu", 
+                              (largeur_fenetre - BT_width) // 2, 
+                              (hauteur_fenetre - BT_height) // 2 + 60, 
+                              BT_width, BT_height, BLUE, DARK_BLUE, "menu")
+
+# 4. Retourner l'action du bouton si un est cliqué
+    if action_reprise:
+        return action_reprise
+    if action_menu:
+        return action_menu
+    
+    return None
+# +++ FIN AJOUT MENU PAUSE +++
 
 # Boucle principale avec gestion de scène
 def run(largeur_fenetre, hauteur_fenetre):
@@ -349,9 +387,9 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
         # Appel de la scène actuelle, en lui passant TOUS les événements collectés
         if current_scene == "menu":
-            current_scene = menu_scene(events, largeur_fenetre, hauteur_fenetre) # <-- Passe les événements
-        elif current_scene == "jeu":
-            current_scene = jeu_scene(events, camera_x, camera_y) # <-- Passe les événements
+            current_scene = menu_scene(events, largeur_fenetre, hauteur_fenetre) 
+        if current_scene == "jeu":
+            current_scene = jeu_scene(events, camera_x, camera_y) 
         
         # Gestion des changements de scène (quit est déjà traité au-dessus, mais c'est bien de l'avoir ici aussi)
         if current_scene == "quit":
@@ -416,6 +454,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     global joueur_vie_actuelle
     global joueur_etat
     global joueur_score
+    global jeu_est_en_pause
     
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
@@ -425,22 +464,40 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     ancienne_camera_x = camera_x
     ancienne_camera_y = camera_y
     
+    largeur_fenetre, hauteur_fenetre = fenetre.get_size()
+    
     
     # --- Gestion des événements spécifiques à la scène de jeu ---
     # Parcourt les événements collectés une seule fois par la boucle principale du jeu.
     for event in events: # <-- Utilisation des événements passés en paramètre, PLUS DE pygame.event.get() ici
         # Détecte n'importe quelle touche pressée
         if event.type == pygame.KEYDOWN:
+            
+            # --- Gestion PAUSE (P) et QUITTER (ESC) ---
+            
             # Ajout d'une détection pour ESC pour revenir au menu, comme indiqué dans le texte d'aide
             if event.key == pygame.K_ESCAPE:
-                # Si vous voulez quitter le jeu et revenir au menu avec
-                # Variables pour l'état et la vie du joueur
-                joueur_vie_actuelle = 100# On peut choisir le pourcentage de vie de départ ici
-                joueur_etat = "vivant" # Peut être "vivant" ou "mort"
-                joueur_score = 0 #score commençant à 0
-                return "menu" # <-- Changement ici pour revenir au menu
+                if jeu_est_en_pause:
+                    jeu_est_en_pause = False # Si en pause, ESC quitte la pause
+                else:
+                    # Sinon, ESC quitte le jeu pour le menu (comportement original)
+                    joueur_vie_actuelle = 100# On peut choisir le pourcentage de vie de départ ici
+                    joueur_etat = "vivant" # Peut être "vivant" ou "mort"
+                    joueur_score = 0 #score commençant à 0
+                    jeu_est_en_pause = False # S'assurer de réinitialiser
+                    return "menu" # <-- Changement ici pour revenir au menu
             
+            if event.key == pygame.K_p:
+                jeu_est_en_pause = not jeu_est_en_pause # Inverse l'état de pause
+                logger.info(f"Jeu mis en pause: {jeu_est_en_pause}")
+
+            # --- FIN GESTION PAUSE ---
             
+            # Si le jeu est en pause, on ignore les autres touches de test (H, J, K)
+            if jeu_est_en_pause:
+                continue # Passe à l'événement suivant
+            
+            # --- Touches de test (ne s'activent pas durant une pause)
             if config.test_vie:
             # +++ TEST PERDRE DE LA VIE (Appuyez sur H) +++
                 if event.key == pygame.K_h:
@@ -461,9 +518,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             # +++ FIN TEST +++
     
     
-    
-    
-    
+    # +++ TOUTE LA LOGIQUE DU JEU NE S'EXÉCUTE QUE SI ON N'EST PAS EN PAUSE +++
+
     # --- Gestion du déplacement du joueur par les touches ---
     # Obtient l'état actuel de toutes les touches du clavier (quelles touches sont pressées).
     keys_pressed = pygame.key.get_pressed()
@@ -471,7 +527,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     vitesse += vitesse * (keys_pressed[pygame.K_LSHIFT] *0.5)
     deplacement_x = (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) - (keys_pressed[pygame.K_q] or keys_pressed[pygame.K_LEFT])
     deplacement_y = (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]) - (keys_pressed[pygame.K_z] or keys_pressed[pygame.K_UP])
-    
+
     
     
     
@@ -496,7 +552,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         deplacement_x *= 0.7
         deplacement_y *= 0.7
     
-    if joueur_etat == "vivant":
+    if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # Appliquez le mouvement désiré au joueur sur X
         position_player_x += deplacement_x
         
@@ -539,7 +595,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                     deplacement_x = 0
         
     
-    if joueur_etat == "vivant":
+    if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # --- Application du mouvement et détection de collision (axe Y) ---
         # Applique le déplacement calculé à la position Y du joueur.
         position_player_y += deplacement_y
@@ -667,7 +723,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             angle_voulu = 270
         elif deplacement_y < 0:
             angle_voulu = 90
-    if joueur_etat == "vivant":
+    if joueur_etat == "vivant" and jeu_est_en_pause == False:
         #permet de tourner le joueur dans la direction voulu seulement lors des déplacements du joueurs 
         if (deplacement_x !=0 or deplacement_y !=0) and angle != angle_voulu:
             if angle >= 360:
@@ -692,6 +748,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     # Nous utilisons 'screen_x' et 'screen_y' pour le positionnement.
     rect_rotate = joueur.get_rect(center=(screen_x, screen_y))
     # ---FIN gère la hitbox pour la rotation du rect---
+    
+    
     
     
     # --- Dessiner le joueur ---
@@ -746,17 +804,28 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         # On utilise les variables globales largeur_fenetre et hauteur_fenetre pour centrer
         mort_rect = mort_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2))
         fenetre.blit(mort_surf, mort_rect)
+    
+    # +++ DÉBUT GESTION AFFICHAGE DU MENU PAUSE (LE BON CODE) +++
+    if jeu_est_en_pause:
+        # On récupère les dimensionss 
+        largeur_fenetre, hauteur_fenetre = fenetre.get_size()
         
+        action = dessiner_menu_pause(largeur_fenetre, hauteur_fenetre) 
         
-        
+        if action == "resume":
+            jeu_est_en_pause = False 
+            
+        elif action == "menu":
+            # Réinitialiser l'état du joueur avant de retourner au menu
+            joueur_vie_actuelle = 100
+            joueur_etat = "vivant"
+            joueur_score = 0
+            jeu_est_en_pause = False 
+            return "menu" # <-- C'est ça qui retourne au menu
+    # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++
+    
+    
 
-
-
-    
-    
-    
-    
-    
     
     
     return "jeu"
