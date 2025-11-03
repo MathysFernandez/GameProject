@@ -143,6 +143,10 @@ joueur_vie_actuelle = config.joueur_vie_actuelle# On peut choisir le pourcentage
 joueur_etat = config.joueur_etat # Peut être "vivant" ou "mort"
 
 
+# +++ AJOUT SCORE +++
+joueur_score = 0
+# +++ FIN AJOUT SCORE +++
+
 
 barre_largeur = 70  
 barre_hauteur = 15
@@ -178,8 +182,15 @@ def ajouter_vie(quantite):
 
 # +++ FIN AJOUT BARRE DE VIE +++
 
+# +++ AJOUT SCORE +++
+def ajouter_score(quantite):
+    """Ajoute un montant au score du joueur."""
+    global joueur_score
+    
+    joueur_score += quantite
+    logger.info(f"Le joueur a gagné {quantite} points. Score total : {joueur_score}")
 
-
+# +++ FIN AJOUT SCORE +++
 
 
 # Création de la fonction de collision cercle-rectangle
@@ -279,6 +290,7 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events
     if result:
         return result
     result = draw_button("Quit", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25*nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "quit")
+    
     
     
     # Gérer les événements spécifiques au menu ici si nécessaire (ex: touches clavier)
@@ -403,6 +415,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     global position_player_y
     global joueur_vie_actuelle
     global joueur_etat
+    global joueur_score
     
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
@@ -424,6 +437,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                 # Variables pour l'état et la vie du joueur
                 joueur_vie_actuelle = 100# On peut choisir le pourcentage de vie de départ ici
                 joueur_etat = "vivant" # Peut être "vivant" ou "mort"
+                joueur_score = 0 #score commençant à 0
                 return "menu" # <-- Changement ici pour revenir au menu
             
             
@@ -438,7 +452,13 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                 if event.key == pygame.K_j:
                     # Press H pour perdre 10 PV (pour tester)
                     ajouter_vie(10)
-            # +++ FIN TEST +++    
+            # +++ FIN TEST +++
+            
+            # +++ TEST AJOUTER SCORE (Appuyez sur K) +++
+                if event.key == pygame.K_k:
+                    # Press K pour gagner 10 points (pour tester)
+                    ajouter_score(10)
+            # +++ FIN TEST +++
     
     
     
@@ -683,6 +703,12 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         fps_text = font.render(f"FPS: {horloge.get_fps():.2f}", True, WHITE)
         fenetre.blit(fps_text, (10, 10))
     # --- Fin Affichage des FPS ---
+    
+    # +++ DÉBUT AFFICHAGE SCORE (UI) +++
+    score_surf = font.render(f"Score: {joueur_score}", True, WHITE)
+    score_rect = score_surf.get_rect(topright=(largeur_fenetre - 10, 10))
+    fenetre.blit(score_surf, score_rect)
+    # +++ FIN AFFICHAGE SCORE (UI) +++
     
     # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
     
