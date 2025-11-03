@@ -159,6 +159,8 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
                             
 #automate cellular sur sol et mur
 #seulement 0 et 1
+# mur = 1
+# sol = 0
 def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition : int) -> list:
     for _ in range (nombre_répétition):
         grille_suivante = [row[:] for row in grille]
@@ -184,13 +186,13 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
                                     voisin_mur += 1
                                     
                     #si une cellule est un mur :
-                    #si elle a moins de 3 voisins murs → elle devient sol (0)
-                    if valeur_actu != 0 and voisin_mur < 2:
+                    #si elle a moins de X voisins murs, elle devient sol (0)
+                    if valeur_actu != 0 and voisin_mur < 3: #3 c'est très bien
                         grille_suivante[x][y] = 0
                     
                     #si une cellule est un sol (0) :
-                    # si elle a plus de 5 voisins murs → elle devient mur (X)
-                    elif valeur_actu == 0 and voisin_mur > 4:
+                    # si elle a plus de X voisins murs, elle devient mur (X)
+                    elif valeur_actu == 0 and voisin_mur > 3: #3 c'est très bien
                         grille_suivante[x][y] = 1
 
         grille = grille_suivante                
@@ -239,4 +241,4 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
 
-#generation(nom_fichier_a_ouvrir, nombre_texture, taille)
+generation(nom_fichier_a_ouvrir, nombre_texture, taille)
