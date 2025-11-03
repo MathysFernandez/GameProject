@@ -338,7 +338,7 @@ def run(largeur_fenetre, hauteur_fenetre):
         # Appel de la scène actuelle, en lui passant TOUS les événements collectés
         if current_scene == "menu":
             current_scene = menu_scene(events, largeur_fenetre, hauteur_fenetre) # <-- Passe les événements
-        elif current_scene == "jeu":
+        if current_scene == "jeu":
             current_scene = jeu_scene(events, camera_x, camera_y) # <-- Passe les événements
         
         # Gestion des changements de scène (quit est déjà traité au-dessus, mais c'est bien de l'avoir ici aussi)
