@@ -279,7 +279,8 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events
     if result:
         return result
     result = draw_button("Quit", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25*nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "quit")
-    
+    if result:
+        return result
     
     # Gérer les événements spécifiques au menu ici si nécessaire (ex: touches clavier)
     for event in events: # <-- Utilisation des événements passés en paramètre
