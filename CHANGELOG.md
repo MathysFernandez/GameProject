@@ -22,7 +22,7 @@ Le format est basé sur les recommandations de `Keep a Changelog`
 - 
 
 ### 🐛 fixed
-- 
+- Sur le menu principal du jeu, le bouton quitter fontionne de nouveau
 - 
 
 
