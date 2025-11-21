@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def joueur_texture(taille_joueur : int, angle : int = 0):
     joueur = pygame.image.load("Assets/joueur_1.png").convert_alpha()
     joueur = pygame.transform.scale(joueur, (taille_joueur, taille_joueur))
-    joueur = pygame.transform.rotate(joueur, angle)
+    joueur = pygame.transform.rotate(joueur, angle-90)
     return joueur
 
 
