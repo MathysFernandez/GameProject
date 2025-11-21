@@ -156,7 +156,34 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
     logger.info("generation_type_mur effectué")
     return grille
 
-                            
+def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
+    #supprime les mur solitaire
+    
+    grille_suivante = [row[:] for row in grille]
+    for x in range (largeur_grille):
+        for y in range (hauteur_grille):
+            voisin_mur = 0
+            if x >= 1 and y >= 1 and x < largeur_grille -1  and y < hauteur_grille -1 :
+                valeur_actu = grille[x][y]
+                if valeur_actu != 0:
+                    #Parcourir les voisins
+                    for dx in [-1, 0, 1]:  #Décalages pour l'axe X
+                        for dy in [-1, 0, 1]:  #décalages pour l'axe Y
+                            # Si pas la valeur actuelle
+                            if ((dx == 0 and dy != 0) or (dx != 0 and dy == 0)) :
+                                x_voisin = x + dx
+                                y_voisin = y + dy
+                                voisin = grille[x_voisin][y_voisin]
+                                
+                                if voisin != 0:
+                                    voisin_mur += 1
+                    if voisin_mur == 0:
+                        grille_suivante[x][y] = 0
+    grille = grille_suivante 
+    return grille
+
+
+
 #automate cellular sur sol et mur
 #seulement 0 et 1
 # mur = 1
@@ -235,6 +262,7 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     
     #génération procédurale
     grille = generation_mur(largeur_grille, hauteur_grille, grille, 9)
+    #grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
     if nombre_texture > 2:
         grille = generation_type_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
