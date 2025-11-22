@@ -179,7 +179,9 @@ def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : l
                                     voisin_mur += 1
                     if voisin_mur == 0:
                         grille_suivante[x][y] = 0
-    grille = grille_suivante 
+    grille = grille_suivante
+    print("génération suppression mur solitaire terminé")
+    logger.info("generation suppression mur solitaire effectué")
     return grille
 
 
