@@ -264,7 +264,8 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     
     #génération procédurale
     grille = generation_mur(largeur_grille, hauteur_grille, grille, 9)
-    #grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
+    grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
+    
     if nombre_texture > 2:
         grille = generation_type_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
