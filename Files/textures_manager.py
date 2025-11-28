@@ -10,11 +10,12 @@ logger = logging.getLogger(__name__)
 #1 mur1
 #2 mur2
 #3 mur 3
-def joueur_texture(taille_joueur : int, angle : int = 0):
+def joueur_texture(taille_joueur : int, angle : int = 0): 
     joueur = pygame.image.load("Assets/joueur_1.png").convert_alpha()
     joueur = pygame.transform.scale(joueur, (taille_joueur, taille_joueur))
     joueur = pygame.transform.rotate(joueur, angle-90)
     return joueur
+
 
 
 def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille):
