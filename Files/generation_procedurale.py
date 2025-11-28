@@ -31,22 +31,6 @@ multiplicateur_point_apparition_water = config.multiplicateur_point_apparition_w
 #taille de la nouvelle génération
 taille = config.taille_nouvelle_generation
 
-#retourne 2 listes : la population, et le poid de chacun
-def listes_de_0(nombre_texture : int) -> list:
-    if nombre_texture < 1:
-        print("Le nombre_texture de texture doit etre au moins 1")
-    
-    population = []
-    poids = []
-    for i in range (nombre_texture):
-        population.append(i)
-        poids.append(0)
-    
-    logger.info("listes_de_0() effectué")
-    return population, poids
-
-
-
 
 
 #retourne 2 listes : la population, et le poid de chacun
@@ -73,7 +57,7 @@ def listes(nombre_texture : int) -> list:
 
 
 
-
+#génère de l'eau sur la carte
 def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition_water : int =1,multiplicateur_point_apparition_water : int =1) -> list:
     for nb in range (nombre_répétition_water):
         grille_suivante = [row[:] for row in grille]
@@ -113,6 +97,7 @@ def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, 
     logger.info("generation_water() effectué")
     return grille
 
+#genère de nouveaux type de mur à la place du mur de base
 def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition : int) -> list:
     for nb in range (nombre_répétition):
         grille_suivante = [row[:] for row in grille]
@@ -156,8 +141,8 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
     logger.info("generation_type_mur effectué")
     return grille
 
+#supprime les mur solitaire
 def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
-    #supprime les mur solitaire
     
     grille_suivante = [row[:] for row in grille]
     for x in range (largeur_grille):
@@ -237,6 +222,7 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
 
 
 def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
+    #gestion du nom en fonction de la présence ou non de l'extension
     if nom [-5:] != ".json":
         nom += ".json"
     #nombres défini le nombre_texturede valeur à intégrer dans la génération procédurale
@@ -262,14 +248,20 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
             grille[x][y] = result
     
     
-    #génération procédurale
+    # ---génération procédurale---
+    # génération des murs
     grille = generation_mur(largeur_grille, hauteur_grille, grille, 9)
+    # génération suppression des murs en trop en les remplacants par du sol
     grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
     
     if nombre_texture > 2:
+        #modifie les murs en plusieurs textures de mur différentes
         grille = generation_type_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
+    
+    #génération de l'eau
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
     
+    #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
 
 generation(nom_fichier_a_ouvrir, nombre_texture, taille)
