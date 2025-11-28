@@ -11,7 +11,7 @@ vitesse = 2
 if vitesse >= taille_cellule:
     vitesse = 2
 FPS = 60
-taille_BT_w = 200
+taille_BT_w = 270
 taille_BT_h = 50
 
 nombre_texture = 3
