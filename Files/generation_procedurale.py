@@ -31,22 +31,6 @@ multiplicateur_point_apparition_water = config.multiplicateur_point_apparition_w
 #taille de la nouvelle génération
 taille = config.taille_nouvelle_generation
 
-#retourne 2 listes : la population, et le poid de chacun
-def listes_de_0(nombre_texture : int) -> list:
-    if nombre_texture < 1:
-        print("Le nombre_texture de texture doit etre au moins 1")
-    
-    population = []
-    poids = []
-    for i in range (nombre_texture):
-        population.append(i)
-        poids.append(0)
-    
-    logger.info("listes_de_0() effectué")
-    return population, poids
-
-
-
 
 
 #retourne 2 listes : la population, et le poid de chacun
@@ -73,7 +57,7 @@ def listes(nombre_texture : int) -> list:
 
 
 
-
+#génère de l'eau sur la carte
 def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition_water : int =1,multiplicateur_point_apparition_water : int =1) -> list:
     for nb in range (nombre_répétition_water):
         grille_suivante = [row[:] for row in grille]
@@ -113,6 +97,7 @@ def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, 
     logger.info("generation_water() effectué")
     return grille
 
+#genère de nouveaux type de mur à la place du mur de base
 def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition : int) -> list:
     for nb in range (nombre_répétition):
         grille_suivante = [row[:] for row in grille]
@@ -156,9 +141,40 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
     logger.info("generation_type_mur effectué")
     return grille
 
-                            
+#supprime les mur solitaire
+def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
+    
+    grille_suivante = [row[:] for row in grille]
+    for x in range (largeur_grille):
+        for y in range (hauteur_grille):
+            voisin_mur = 0
+            if x >= 1 and y >= 1 and x < largeur_grille -1  and y < hauteur_grille -1 :
+                valeur_actu = grille[x][y]
+                if valeur_actu != 0:
+                    #Parcourir les voisins
+                    for dx in [-1, 0, 1]:  #Décalages pour l'axe X
+                        for dy in [-1, 0, 1]:  #décalages pour l'axe Y
+                            # Si pas la valeur actuelle
+                            if ((dx == 0 and dy != 0) or (dx != 0 and dy == 0)) :
+                                x_voisin = x + dx
+                                y_voisin = y + dy
+                                voisin = grille[x_voisin][y_voisin]
+                                
+                                if voisin != 0:
+                                    voisin_mur += 1
+                    if voisin_mur == 0:
+                        grille_suivante[x][y] = 0
+    grille = grille_suivante
+    print("génération suppression mur solitaire terminé")
+    logger.info("generation suppression mur solitaire effectué")
+    return grille
+
+
+
 #automate cellular sur sol et mur
 #seulement 0 et 1
+# mur = 1
+# sol = 0
 def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition : int) -> list:
     for _ in range (nombre_répétition):
         grille_suivante = [row[:] for row in grille]
@@ -184,13 +200,13 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
                                     voisin_mur += 1
                                     
                     #si une cellule est un mur :
-                    #si elle a moins de 3 voisins murs → elle devient sol (0)
-                    if valeur_actu != 0 and voisin_mur < 2:
+                    #si elle a moins de X voisins murs, elle devient sol (0)
+                    if valeur_actu != 0 and voisin_mur < 3: #3 c'est très bien
                         grille_suivante[x][y] = 0
                     
                     #si une cellule est un sol (0) :
-                    # si elle a plus de 5 voisins murs → elle devient mur (X)
-                    elif valeur_actu == 0 and voisin_mur > 4:
+                    # si elle a plus de X voisins murs, elle devient mur (X)
+                    elif valeur_actu == 0 and voisin_mur > 3: #3 c'est très bien
                         grille_suivante[x][y] = 1
 
         grille = grille_suivante                
@@ -206,6 +222,7 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
 
 
 def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
+    #gestion du nom en fonction de la présence ou non de l'extension
     if nom [-5:] != ".json":
         nom += ".json"
     #nombres défini le nombre_texturede valeur à intégrer dans la génération procédurale
@@ -231,12 +248,20 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
             grille[x][y] = result
     
     
-    #génération procédurale
-    grille = generation_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
+    # ---génération procédurale---
+    # génération des murs
+    grille = generation_mur(largeur_grille, hauteur_grille, grille, 9)
+    # génération suppression des murs en trop en les remplacants par du sol
+    grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
+    
     if nombre_texture > 2:
+        #modifie les murs en plusieurs textures de mur différentes
         grille = generation_type_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
+    
+    #génération de l'eau
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
     
+    #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
 
-#generation(nom_fichier_a_ouvrir, nombre_texture, taille)
+generation(nom_fichier_a_ouvrir, nombre_texture, taille)

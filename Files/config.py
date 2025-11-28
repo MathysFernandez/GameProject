@@ -13,6 +13,7 @@ if vitesse >= taille_cellule:
 FPS = 60
 taille_BT_w = 270
 taille_BT_h = 50
+
 nombre_texture = 3
 nom_fichier_a_ouvrir = 'map_generation_procedural'
 vitesse_rotation = 5
@@ -26,14 +27,12 @@ taille_nouvelle_generation = 200
 #entre 0 et 1
 multiplicateur_vitesse_diagonale = math.sqrt(2)
 
-
 if nombre_texture < 2:
     nombre_texture = 2
 
-
 # Gère la quantité de sol
-# 7 ou 8 sur 12 c'est mal
-multiplicateur_sol = 8/12 * nombre_texture
+# 7 ou 8 ou 9 sur 12 c'est mal
+multiplicateur_sol = 9/12 * nombre_texture
 
 # Gère la quantité de points d'eau
 #entre 2 et 15
@@ -47,7 +46,7 @@ nombre_répétition = 4
 #propagation de l'eau
 #entre 5 et 20
 #8 c'est bien
-nombre_répétition_water = 8
+nombre_répétition_water = 9
 
 def get_dimensions():
     largeur_fen = pygame.display.Info().current_w
