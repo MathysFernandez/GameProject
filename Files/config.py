@@ -5,7 +5,7 @@ import math
 Titre = "GameProject"
 taille_cellule = 100
 taille_joueur = 54
-
+duree_animation_joueur = 35
 #2 c'est bien
 vitesse = 2
 if vitesse >= taille_cellule:

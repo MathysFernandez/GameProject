@@ -80,7 +80,12 @@ flags = pygame.RESIZABLE
 # Créer la fenêtre
 fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre), flags)
 # Définit le titre de la fenêtre
-pygame.display.set_caption(Titre) 
+pygame.display.set_caption(Titre)
+
+#compteur pour changer de spritesheet
+compteur_animation = 0
+interv = config.duree_animation_joueur
+
 
 # Couleurs
 WHITE = (255, 255, 255)
@@ -741,8 +746,32 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                 angle -= config.vitesse_rotation
     
     
-    # ---gère la hitbox pour la rotation du rect---
-    joueur = textures_manager.joueur_texture(config.taille_joueur, angle)
+    
+    # le joueur_1 et joueur_2 correspondent à l'animation de marche, joueur_0 est l'affichage du joueur quand il est immobile
+    joueur_0 = textures_manager.texture_joueur(config.taille_joueur, angle, 0)
+    joueur_1 = textures_manager.texture_joueur(config.taille_joueur, angle, 1)
+    joueur_2 = textures_manager.texture_joueur(config.taille_joueur, angle, 2)
+    
+    joueur = joueur_0
+    global compteur_animation
+    global interv
+    
+    if deplacement_x == 0 and deplacement_y == 0:
+        joueur = joueur_0
+        compteur_animation = 0
+    
+    elif 0 <= compteur_animation <= interv:
+        joueur = joueur_1
+        compteur_animation += 1
+    elif interv < compteur_animation <= interv*2:
+        joueur = joueur_2
+        compteur_animation += 1
+    elif compteur_animation > interv*2:
+        joueur = joueur_1
+        compteur_animation = 0
+    
+    
+    
     
     # Correction : Calculer la position d'affichage du joueur sur l'écran
     #en utilisant ses coordonnées monde (position_player_x, position_player_y)
