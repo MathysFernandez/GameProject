@@ -29,6 +29,12 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 * [Concepteur.py]()
 : Programme pour les développeur permettant de modifier la carte du jeu.   
 
+* [LICENSE]()
+: Document légal définissant ce que les autres peuvent faire avec le code.    
+
+* [Files/]()
+: Répertoire contenant l'ensemble des fichiers python.
+
 * [Files/config.py]()
 : Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
 
@@ -46,6 +52,10 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 
 * [Saves/]()
 : Contient L'ensemble des cartes du jeu (fichiers JSON).  
+
+* [.gitignore]()
+: Spécifie les fichiers et répertoires que Git doit ignorer et ne pas suivre, afin d'éviter qu'ils ne soient accidentellement ajoutés aux commits. (Ex: les .log)  
+
 
 
 
