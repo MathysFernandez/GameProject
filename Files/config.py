@@ -53,6 +53,16 @@ def get_dimensions():
     hauteur_fen = pygame.display.Info().current_h - 60
     return largeur_fen, hauteur_fen
 
+
+dash_actif = False
+dash_dir = (0, 0)
+dash_fin_temps = 0
+dash_cooldown_fin = 0
+
+dash_duree =  200        # ms
+dash_cooldown = 1000   # ms
+dash_vitesse =  3  # multiplicateur de vitesse durant le dash
+
 joueur_vie_max = 100
 joueur_vie_actuelle = 100 # On peut choisir le pourcentage de vie de départ ici
 joueur_etat = "vivant" # Peut être "vivant" ou "mort"
