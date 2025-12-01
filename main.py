@@ -5,10 +5,11 @@ import math
 import json
 import os
 import sys
-from Files import config 
+from Files import config
 from Files import textures_manager
 from Files import Lecteur_map as lecteur
 from Files import generation_procedurale as generation
+from Files import gameplay
 
 
 # Configuration simple du logger pour écrire dans le fichier game.log
@@ -369,6 +370,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         # Détecte n'importe quelle touche pressée
         if event.type == pygame.KEYDOWN:
             # Ajout d'une détection pour ESC pour revenir au menu, comme indiqué dans le texte d'aide
+           # if event.key == pygame.K_SPACE:
+            #    return
             if event.key == pygame.K_ESCAPE:
                 # Si vous voulez quitter le jeu et revenir au menu avec 'A'
                 return "menu" # <-- Changement ici pour revenir au menu
@@ -381,9 +384,10 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     deplacement_x = (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) - (keys_pressed[pygame.K_q] or keys_pressed[pygame.K_LEFT])
     deplacement_y = (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]) - (keys_pressed[pygame.K_z] or keys_pressed[pygame.K_UP])
     
-    
-    
-    
+    # --- Ajout du dash ---
+    temps_actuel = pygame.time.get_ticks()
+    # On utilise 'events' pour détecter la touche Espace
+    deplacement_x, deplacement_y, vitesse = gameplay.gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse)
     # --- Déplacer dans un nouveau fichier en tant que fonction --
     if deplacement_x != 0 and deplacement_y != 0:
         vitesse *= config.multiplicateur_vitesse_diagonale
