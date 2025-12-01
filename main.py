@@ -83,6 +83,7 @@ pygame.display.set_caption(Titre)
 
 #compteur pour changer de spritesheet
 compteur_animation = 0
+interv = config.duree_animation_joueur
 
 
 # Couleurs
@@ -749,18 +750,19 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     
     joueur = joueur_0
     global compteur_animation
+    global interv
     
     if deplacement_x == 0 and deplacement_y == 0:
         joueur = joueur_0
         compteur_animation = 0
     
-    elif 0 <= compteur_animation <= 50:
+    elif 0 <= compteur_animation <= interv:
         joueur = joueur_1
         compteur_animation += 1
-    elif 50 < compteur_animation <= 100:
+    elif interv < compteur_animation <= interv*2:
         joueur = joueur_2
         compteur_animation += 1
-    elif compteur_animation > 100:
+    elif compteur_animation > interv*2:
         joueur = joueur_1
         compteur_animation = 0
     
