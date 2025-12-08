@@ -129,6 +129,10 @@ joueur_y_fixe = (hauteur_fenetre - taille_joueur) // 2
 # --- Fin Ajout du joueur ---
 
 
+# Texture Joueur 2
+texture_eau2 = textures_manager.texture_num_2(taille_cellule, config.taille_frame)
+
+
 
 
 
@@ -163,7 +167,7 @@ barre_hauteur = 15
 COULEUR_FOND_BARRE = (100, 100, 100) # Gris foncé
 COULEUR_VIE = (0, 255, 0)         # Vert
 COULEUR_CONTOUR = (255, 255, 255) # Blanc
-
+compt_anim_eau = 0
 
 def retirer_vie(quantite):
 
@@ -249,7 +253,7 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
 
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille)
+grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, config.taille_frame)
 
 
 # Police
@@ -462,7 +466,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     global joueur_etat
     global joueur_score
     global jeu_est_en_pause
-    
+    global compt_anim_eau
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
     # Utile pour la détection de collision afin de pouvoir "revenir en arrière" (en focntion des axes)
@@ -691,7 +695,18 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     start_grid_y = max(0, start_grid_y)
     end_grid_y = min(hauteur_grille, end_grid_y) # Ne pas dépasser hauteur_grille - 1
 
-
+    
+    #test anim 1 ou 2 pour l'eau
+    anim = 1
+    if compt_anim_eau <= 50:
+        anim = 1
+    elif 50 < compt_anim_eau < 100:
+        anim = 2
+    else :
+        anim = 1
+        compt_anim_eau = 0
+    compt_anim_eau +=1
+    
     # --- Dessiner uniquement les cellules visibles ---
     for y in range(start_grid_y, end_grid_y):
         for x in range(start_grid_x, end_grid_x):
@@ -710,6 +725,9 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             # Dessine la texture en fonction de la grille
             if grille[y][x] is not None:
                 fenetre.blit(grille[y][x], rect)
+            
+            if anim != 1 and ((x, y) in collision_map_water):
+                fenetre.blit(texture_eau2, rect)
     # --- FIN Dessiner uniquement les cellules visibles ---
     
     #détermine l'angle de direction du joueur
