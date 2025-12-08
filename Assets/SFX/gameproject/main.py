@@ -856,8 +856,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             joueur_score = 0
             jeu_est_en_pause = False 
             return "menu" # <-- C'est ça qui retourne au menu
-    # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++  
-    
+    # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++
+
     return "jeu"
 # -------------------------------------------------------------
 # -------------------------------------------------------------
@@ -930,5 +930,6 @@ def run(largeur_fenetre, hauteur_fenetre):
     
     
     return "jeu"
+
 
 run(largeur_fenetre, hauteur_fenetre)
