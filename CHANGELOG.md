@@ -6,15 +6,20 @@ Le format est basé sur les recommandations de `Keep a Changelog`
 >>>
 
 ---
+## [Milestone] - Y-d-m
+---
 
-## [0.1] - 2025-XX-XX (Version Actuelle)
+## [0.1] - 2025-01-12 
 
 ### 🚀 added
 - Système d’affichage en grille
 - Système de collisions
-- Contrôles et Interaction du Joueur
-- Intégration d'une barre de vie
 - Editeur de carte (`concepteur.py`)
+- Fonctionnalité test fps pour développeur
+- UI, ajout de l'affichage score
+- Fonctionnalité pause du jeu avec la touche P
+- Intégrer la génération procédurale
+
 
 
 ### ♻️ changed
@@ -32,16 +37,22 @@ Le format est basé sur les recommandations de `Keep a Changelog`
 ## [0.2] - 2025-XX-XX 
 
 ### 🚀 added
--  
-- 
+- Intégration d'une barre de vie
+- Intégrer la fonctionnalité dash du gameplay
+- Animation eau
+- Animation déplacement joueur
+- Ajout musique de fonds et effets sonore de base
 
 ### ♻️ changed
-- 
-- 
+- Contrôles et Interaction du Joueur
+- Modification génération procédurale
 
 ### 🐛 fixed
 - 
 - 
+
+
+
 
 ---
 
