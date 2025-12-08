@@ -16,6 +16,24 @@ def joueur_texture(taille_joueur : int, angle : int = 0):
     joueur = pygame.transform.rotate(joueur, angle-90)
     return joueur
 
+def texture_num_2(taille_cellule : int = 25, taille_frame : int = 25):
+    # ---SpriteSheet eau 2 ---
+    
+    # Charger l'image complète
+    water_source = pygame.image.load("Assets/water1.png").convert_alpha()
+    
+    # Rogner l'image
+    rect_rognage2 = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
+    print(rect_rognage2)
+    water_rognee2 = water_source.subsurface(rect_rognage2)
+    
+    # Mettre à l'échelle la texture rognée à la taille de la cellule
+    water_final2 = pygame.transform.scale(water_rognee2, (taille_cellule, taille_cellule))
+    
+    return water_final2
+    # ---SpriteSheet eau 2 ---
+
+
 #divise l'image par 3 pour le sprite sheet du joueur
 
 def texture_joueur(taille_joueur : int, angle : int = 0, num_img : int = 0):
@@ -35,7 +53,7 @@ def texture_joueur(taille_joueur : int, angle : int = 0, num_img : int = 0):
 
 
 
-def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille):
+def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille,  taille_frame : int = 25):
     try:
         floor = pygame.image.load("Assets/sol1.png").convert_alpha()
         floor = pygame.transform.scale(floor, (taille_cellule, taille_cellule))
@@ -43,8 +61,18 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille):
         mur = pygame.transform.scale(mur, (taille_cellule, taille_cellule))
         mur2 = pygame.image.load("Assets/pierre_opt.png").convert_alpha()
         mur2 = pygame.transform.scale(mur2, (taille_cellule, taille_cellule))
-        water = pygame.image.load("Assets/water1.png").convert_alpha()
-        water = pygame.transform.scale(water, (taille_cellule, taille_cellule))
+        
+        # ---SpriteSheet eau---
+        # Charger l'image complète
+        water_source = pygame.image.load("Assets/water1.png").convert_alpha()
+        # Rogner l'image
+        #modifier y pour la deuxième image
+        rect_rognage = pygame.Rect(0, 0, taille_frame, taille_frame)
+        water_rognee = water_source.subsurface(rect_rognage)
+        
+        # Mettre à l'échelle la texture rognée à la taille de la cellule
+        water_final = pygame.transform.scale(water_rognee, (taille_cellule, taille_cellule))
+        # ---SpriteSheet eau---
         
     except pygame.error as e:
         logger.info("Erreur lors du chargement des textures (texture_manager)")
@@ -80,7 +108,7 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille):
             
             elif grille[i][j] == -1:
                 # --- water ---
-                grille[i][j] = water
+                grille[i][j] = water_final
                 
                 # Créer un rectangle représentant la position du mur dans le monde
                 x = j * taille_cellule

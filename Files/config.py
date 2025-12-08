@@ -5,7 +5,8 @@ import math
 Titre = "GameProject"
 taille_cellule = 100
 taille_joueur = 54
-duree_animation_joueur = 35
+taille_frame = 25
+duree_animation_joueur = 20
 #2 c'est bien
 vitesse = 2
 if vitesse >= taille_cellule:
@@ -17,7 +18,7 @@ taille_BT_h = 50
 nombre_texture = 3
 nom_fichier_a_ouvrir = 'map_generation_procedural'
 vitesse_rotation = 5
-test_fps = True
+test_fps = False
 
 if test_fps:
     FPS = 1000
