@@ -261,6 +261,15 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     #génération de l'eau
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
     
+    #génération bordure de carte
+    for x in range (largeur_grille):
+        grille[x][0] = 1
+        grille[x][hauteur_grille-1] = 1
+        
+    for y in range (largeur_grille):
+        grille[0][y] = 1
+        grille[largeur_grille-1][y] = 1
+                
     #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
 
