@@ -1,3 +1,13 @@
+![Made with Pygame](https://img.shields.io/badge/Made%20with-Pygame-green?style=for-the-badge&logo=python)
+
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
+![Coffee](https://img.shields.io/badge/Caffeine-100%25-brown?logo=coffeescript)
+
+![JSON](https://img.shields.io/badge/Data-JSON-lightgrey?style=flat&logo=json&logoColor=black)
+
+
+
 # :rocket: GameProject   
 
 > [!note] Bienvenue
