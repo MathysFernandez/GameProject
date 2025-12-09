@@ -22,7 +22,7 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
         fichier_charge_succes = True
     except FileNotFoundError:
         print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
-        
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     if not fichier_charge_succes:
         try:
             nom_fichier = os.path.join( "..","Saves", nom)
@@ -32,6 +32,7 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
             fichier_charge_succes = True
         except FileNotFoundError:
             print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
 
     if fichier_charge_succes:
         #Variables utile
@@ -60,6 +61,7 @@ def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_vale
         fichier_charge_succes = True
     except FileNotFoundError:
         print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
         try:
@@ -69,7 +71,8 @@ def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_vale
             #print("chargement tentative 2 succes")
         except FileNotFoundError:
             print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
-    
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
     tiles = map_data["tiles"]
     
     # Vérifier les limites des indices et modifier la valeur
@@ -82,9 +85,10 @@ def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_vale
                 json.dump(map_data, f, indent=2) # indent=4 pour une meilleure lisibilité
         else:
             print(f"Erreur : Indice de colonne ({colonne}) hors limites pour la ligne {ligne}.")
+            logger.error(f"Erreur : Indice de colonne ({colonne}) hors limites pour la ligne {ligne}.")
     else:
         print(f"Erreur : Indice de ligne ({ligne}) hors limites.")
-
+        logger.error(f"Erreur : Indice de ligne ({ligne}) hors limites.")
 
 
 
@@ -96,13 +100,14 @@ def ajouter(nom :str, valeur_defaut :int):
     
     fichier_charge_succes = False
     try:
-        nom_fichier = os.path.join("Saves", nom)
+        nom_fichier = os.path.join("Saves", nom) 
         with open(nom_fichier, "r") as f:
             map_data = json.load(f)
         #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
         print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
         try:
@@ -112,6 +117,7 @@ def ajouter(nom :str, valeur_defaut :int):
             #print("chargement tentative 2 succes")
         except FileNotFoundError:
             print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     
     tiles = map_data["tiles"]
     
@@ -132,6 +138,7 @@ def ajouter(nom :str, valeur_defaut :int):
         largeur_carte = 2 # Une colonne à gauche + une colonne à droite si la carte était vide
         # Si 'tiles' est vide, nous pourrions initialiser une grille de taille 1x1
         print("Avertissement: La carte 'tiles' était vide. Création d'une nouvelle ligne par défaut.")
+        logger.warning("Avertissement: La carte 'tiles' était vide. Création d'une nouvelle ligne par défaut.")
         tiles = [[valeur_defaut]] # Initialise avec une seule tuile
         largeur_carte = 1
 
@@ -158,7 +165,7 @@ def ajouter(nom :str, valeur_defaut :int):
             json.dump(map_data, f, indent=4) # indent=4 pour une meilleure "lisibilité"
     except Exception as e:
         print(f"Erreur lors de la sauvegarde de la carte: {e}")
-
+        logger.error(f"Erreur lors de la sauvegarde de la carte: {e}")
 
 
 
@@ -176,6 +183,7 @@ def retirer(nom):
         fichier_charge_succes = True
     except FileNotFoundError:
         print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
         try:
@@ -185,7 +193,8 @@ def retirer(nom):
             #print("chargement tentative 2 succes")
         except FileNotFoundError:
             print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
-    
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
     tiles = map_data["tiles"]
     
     # --- Retirer une ligne en haut et en bas ---
@@ -193,6 +202,7 @@ def retirer(nom):
         tiles = tiles[1:-1] #supprime la première (index 0) et la dernière ligne
     else:
         print("La carte est trop petite pour retirer des lignes (moins de 3 lignes).")
+        logger.warning("La carte est trop petite pour retirer des lignes (moins de 3 lignes).")
         #on suppose qu'on ne retire que si c'est possible.
     
     # --- Retirer une colonne à gauche et à droite de chaque ligne ---
@@ -205,7 +215,7 @@ def retirer(nom):
         tiles = nouvelles_lignes # Met à jour la liste des tuiles avec les colonnes retirées
     elif tiles: #s'il y a des lignes mais moins de 3 colonnes
         print("La carte est trop petite pour retirer des colonnes (moins de 3 colonnes).")
-        
+        logger.warning("La carte est trop petite pour retirer des colonnes (moins de 3 colonnes).")
     # --- Mettre à jour map_data avec les nouvelles tuiles ---
     map_data["tiles"] = tiles
     # La nouvelle hauteur est le nombre de lignes 
@@ -219,7 +229,7 @@ def retirer(nom):
             json.dump(map_data, f, indent=4) # indent=4  pour une meilleure "lisibilité"
     except Exception as e:
         print(f"Erreur lors de la sauvegarde de la carte: {e}")
-
+        logger.error(f"Erreur lors de la sauvegarde de la carte: {e}")
 
 
 
@@ -253,6 +263,7 @@ def creation_fichier_X(name : str, taille : int):
         fichier_charge_succes = True
     except FileNotFoundError:
         print(f"Erreur tentative 01: Le fichier de carte '{name}' n'a pas été trouvé.")
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{name}' n'a pas été trouvé.")
     
     if not fichier_charge_succes:
         try:
@@ -263,8 +274,10 @@ def creation_fichier_X(name : str, taille : int):
             fichier_charge_succes = True
         except FileNotFoundError:
             print(f"Erreur tentative 02: Le fichier de carte '{name}' n'a pas été trouvé.")
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{name}' n'a pas été trouvé.")
     if fichier_charge_succes:
         print(name + " a été creer")
+        logger.info(f" '{name}' a été creer")
 
     
 
@@ -283,6 +296,7 @@ def modifier_grille(nom : str, grille : list):
         fichier_charge_succes = True
     except FileNotFoundError:
         print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
         try:
@@ -292,14 +306,15 @@ def modifier_grille(nom : str, grille : list):
             #print("chargement tentative 2 succes")
         except FileNotFoundError:
             print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     
     # Remplacement des 'tiles' par la nouvelle grille
     map_data['tiles'] = grille
     
     with open(nom_fichier, "w") as f:
         json.dump(map_data, f, indent=4) # indent=4 pour une meilleure lisibilité
-    print("enregistrer")
-    
+    print(f"'{nom_fichier}' enregistrer")
+    logger.info(f"'{nom_fichier}' enregistrer")
 
 
     
