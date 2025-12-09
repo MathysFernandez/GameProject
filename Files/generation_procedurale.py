@@ -138,7 +138,7 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
 
         grille = grille_suivante
     print("génération type mur terminé")
-    logger.info("generation_type_mur effectué")
+    logger.info("generation_type_mur() effectué")
     return grille
 
 #supprime les mur solitaire
@@ -166,7 +166,7 @@ def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : l
                         grille_suivante[x][y] = 0
     grille = grille_suivante
     print("génération suppression mur solitaire terminé")
-    logger.info("generation suppression mur solitaire effectué")
+    logger.info("generation_voisin_mur() effectué")
     return grille
 
 
@@ -212,11 +212,21 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
         grille = grille_suivante                
                     
     print("génération mur terminé")
-    logger.info("generation_mur")
+    logger.info("generation_mur() effectué")
     return grille
 
-
-
+#génération bordure de carte
+def generation_limite(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
+    for x in range (largeur_grille):
+        grille[x][0] = 1
+        grille[x][hauteur_grille-1] = 1
+        
+    for y in range (1, hauteur_grille -1):
+        grille[0][y] = 1
+        grille[largeur_grille-1][y] = 1
+    print("génération limite carte terminé")
+    logger.info("generation_limite() effectué")
+    return grille
 
 
 
@@ -262,13 +272,10 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
     
     #génération bordure de carte
-    for x in range (largeur_grille):
-        grille[x][0] = 1
-        grille[x][hauteur_grille-1] = 1
-        
-    for y in range (hauteur_grille):
-        grille[0][y] = 1
-        grille[largeur_grille-1][y] = 1
+    grille = generation_limite(largeur_grille, hauteur_grille, grille)
+    
+    print("génération limite carte terminé")
+    logger.info("generation_limite() effectué")
     
     #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
