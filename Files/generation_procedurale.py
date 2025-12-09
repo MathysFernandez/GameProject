@@ -266,10 +266,10 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
         grille[x][0] = 1
         grille[x][hauteur_grille-1] = 1
         
-    for y in range (largeur_grille):
+    for y in range (hauteur_grille):
         grille[0][y] = 1
         grille[largeur_grille-1][y] = 1
-                
+    
     #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
 
