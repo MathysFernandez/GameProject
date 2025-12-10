@@ -37,11 +37,11 @@ GameProject/
 ├── Assets/             
 ├── Files/              
 ├── Saves/              
-├── Concepteur.py     
-├── requirement.txt  
-├── CHANGELOG  
-├── LICENSE
-├── main.py   
+├── Concepteur.py       
+├── requirement.txt    
+├── CHANGELOG     
+├── LICENSE    
+├── main.py      
 └── README.md
 >>>
 
