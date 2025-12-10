@@ -34,11 +34,14 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 
 >>> [!tip] Structure
 GameProject/   
-├── Assets/          # Sprites et sons   
-├── Files/           # Code source (moteur, logique)   
-├── Saves/           # Cartes JSON   
-├── Concepteur.py    # Éditeur de niveau    
-├── main.py   
+├── Assets/             
+├── Files/              
+├── Saves/              
+├── Concepteur.py       
+├── requirement.txt    
+├── CHANGELOG     
+├── LICENSE    
+├── main.py      
 └── README.md
 >>>
 
@@ -54,6 +57,12 @@ GameProject/
 
 * [LICENSE]()
 : Document légal définissant ce que les autres peuvent faire avec le code.    
+
+* [CHANGELOG]()
+: Document qui liste chronologiquement les changements majeurs.
+
+* [requirement.txt]()
+: Fichier texte essentiel qui liste toutes les dépendances logicielles externes.
 
 * [Files/]()
 : Répertoire contenant l'ensemble des fichiers python.
@@ -102,7 +111,10 @@ git clone https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject.git
 
 installer les dépendances:   
 * [Python (la version la plus récente)](https://www.python.org/downloads/)
-* Pygame avec la commande ```pip install pygame```
+* Les  autres dépendances : 
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 Lancez le jeu avec:    
 ```main.py```
