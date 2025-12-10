@@ -111,7 +111,10 @@ git clone https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject.git
 
 installer les dépendances:   
 * [Python (la version la plus récente)](https://www.python.org/downloads/)
-* Pygame avec la commande ```pip install pygame```
+* Les  autres dépendances : 
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 Lancez le jeu avec:    
 ```main.py```
