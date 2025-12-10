@@ -34,10 +34,13 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 
 >>> [!tip] Structure
 GameProject/   
-├── Assets/          # Sprites et sons   
-├── Files/           # Code source (moteur, logique)   
-├── Saves/           # Cartes JSON   
-├── Concepteur.py    # Éditeur de niveau    
+├── Assets/             
+├── Files/              
+├── Saves/              
+├── Concepteur.py     
+├── requirement.txt  
+├── CHANGELOG  
+├── LICENSE
 ├── main.py   
 └── README.md
 >>>
@@ -54,6 +57,12 @@ GameProject/
 
 * [LICENSE]()
 : Document légal définissant ce que les autres peuvent faire avec le code.    
+
+* [CHANGELOG]()
+: Document qui liste chronologiquement les changements majeurs.
+
+* [requirement.txt]()
+: Fichier texte essentiel qui liste toutes les dépendances logicielles externes.
 
 * [Files/]()
 : Répertoire contenant l'ensemble des fichiers python.
