@@ -1,3 +1,11 @@
+
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
+![Coffee](https://img.shields.io/badge/Caffeine-100%25-brown?logo=coffeescript)
+
+
+
+
 # :rocket: GameProject   
 
 > [!note] Bienvenue
@@ -5,6 +13,7 @@
 
 ![image présentation](image_pou_gitlab/exemple_generation.jpg)
 
+![video gitlab](image_pou_gitlab/video.mp4)
 
 
 ---
@@ -22,6 +31,20 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 ## :chart_with_upwards_trend: Architecture du Projet     
 > [!note]  
 > Information sur les fichiers et l'arborescence du projet    
+
+>>> [!tip] Structure
+GameProject/   
+├── Assets/          # Sprites et sons   
+├── Files/           # Code source (moteur, logique)   
+├── Saves/           # Cartes JSON   
+├── Concepteur.py    # Éditeur de niveau    
+├── main.py   
+└── README.md
+>>>
+
+>>> [!important] Contenue
+
+
 
 * [main.py]()
 : Le fichier principal du jeu, contient la boucle de jeu avec les scènes menu, jeu, etc...  
@@ -56,7 +79,7 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 * [.gitignore]()
 : Spécifie les fichiers et répertoires que Git doit ignorer et ne pas suivre, afin d'éviter qu'ils ne soient accidentellement ajoutés aux commits. (Ex: les .log)  
 
-
+>>>
 
 
 ---
