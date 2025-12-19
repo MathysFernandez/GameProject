@@ -279,5 +279,6 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     
     #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
-
-generation(nom_fichier_a_ouvrir, nombre_texture, taille)
+    
+if __name__ == "__main__":
+    generation(nom_fichier_a_ouvrir, nombre_texture, taille)

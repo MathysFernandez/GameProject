@@ -31,13 +31,10 @@ largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ou
 taille_cellule = config.taille_cellule
 
 
-#récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(1, largeur_grille, hauteur_grille, grille, True, config.taille_frame)
-
 
 floor, mur, mur2, water_final = textures_manager.charger_texture(1, config.taille_frame)
 
-LISTE_TEXTURES = {
+TEXTURES_BASE = {
     -1: water_final,
     0: floor, 
     1: mur,
@@ -64,6 +61,8 @@ BLANC = (255, 255, 255)
 
 chosen_letter = 0
 
+# Variable pour suivre l'état du bouton gauche
+mouse_left_button_held = False
 
 # Fonction pour rendre et positionner le texte
 def creer_surface_texte(texte):
@@ -74,11 +73,21 @@ def creer_surface_texte(texte):
     rect.topleft = (10, 0) 
     return surface, rect
 
+# 3. Fonction pour mettre à jour les textures quand on zoome
+def mettre_a_jour_textures_zoom(nouvelle_taille):
+    # On vide l'ancien cache
+    TEXTURES_ACTUELLES.clear()
+    # On recrée les images à la bonne taille
+    for id_texture, image_originale in TEXTURES_BASE.items():
+        # L'optimisation est ici : on scale une fois pour toutes les 4 images
+        TEXTURES_ACTUELLES[id_texture] = pygame.transform.scale(image_originale, (nouvelle_taille, nouvelle_taille))
+
+
 # Création initiale de la surface et du rectangle du texte
 lettre_surface, lettre_rect = creer_surface_texte(str(chosen_letter))
 
-# Variable pour suivre l'état du bouton gauche
-mouse_left_button_held = False
+TEXTURES_ACTUELLES = {}
+mettre_a_jour_textures_zoom(taille_cellule)
 
 running = True
 while running:
@@ -87,9 +96,8 @@ while running:
     
     
     
-    
     #deplacement vitesse
-    vitesse = config.vitesse
+    vitesse = config.vitesse *5
     # FIN ---variables à réinitialiser---
     
     #touche pressé
@@ -113,8 +121,10 @@ while running:
                 mouse_left_button_held = False
             if event.button == 4:
                 taille_cellule += 1
+                mettre_a_jour_textures_zoom(taille_cellule)
             if event.button == 5 and taille_cellule >1:
                 taille_cellule -= 1
+                mettre_a_jour_textures_zoom(taille_cellule)
                 
         
         if event.type == pygame.KEYDOWN:
@@ -163,7 +173,7 @@ while running:
         # positionner les nouvelles tuiles (en focntion des textures choisis)
         lecteur.modifier_tile_dans_json(nom_fichier_a_ouvrir, cellular_y, cellular_x, chosen_letter)
         
-        grille[cellular_y][cellular_x] = LISTE_TEXTURES[chosen_letter]
+        grille[cellular_y][cellular_x] = chosen_letter
         
     
     # Gestion évènement déplacement
@@ -217,32 +227,46 @@ while running:
     end_grid_y = min(hauteur_grille, end_grid_y) # Ne pas dépasser hauteur_grille - 1
     # --- Fin Calculer la zone visible de la grille ---
 
+
+
     # --- Dessiner uniquement les cellules visibles ---
+    # OPTIMISATION : Si les cases sont minuscules, on en saute pour ne pas faire ramer le GPU	
+    step = 1
+    if taille_cellule < 5:
+        step = 2  
+    if taille_cellule < 3:
+        step = 4 
+    
     for y in range(start_grid_y, end_grid_y):
         for x in range(start_grid_x, end_grid_x):
-            # Calcule la position de la cellule à l'écran
-            screen_x = x * taille_cellule + camera_x
-            screen_y = y * taille_cellule + camera_y
+            texture_id = grille[y][x]
+            
+            # SECURITÉ : On vérifie que l'ID existe bien dans nos textures chargées
+            # et qu'il n'est pas None
+            if texture_id is not None and texture_id in TEXTURES_ACTUELLES:
+                    
+                # Calcule la position de la cellule à l'écran
+                screen_x = x * taille_cellule + camera_x
+                screen_y = y * taille_cellule + camera_y
 
-            # Crée un objet pygame.Rect pour la position à l'écran
-            rect = pygame.Rect(screen_x, screen_y, taille_cellule, taille_cellule)
+                # Crée un objet pygame.Rect pour la position à l'écran
+                rect = pygame.Rect(screen_x, screen_y, taille_cellule, taille_cellule)
 
-            # Dessine le contour du rectangle de la cellule
-            #(Ces lignes sont souvent supprimées dans le jeu final pour ne dessiner que les textures)
-            pygame.draw.rect(fenetre, couleur_cellule, rect)
-            pygame.draw.rect(fenetre, couleur_grille, rect, 1)
-            
-            
-            
-            # Mode normal -> On prend la belle image
-            texture_a_afficher = grille[y][x]
-            # Redimensionner ici est lent, idéalement grille[y][x] est déjà à la bonne taille
-            # Si grille[y][x] est l'image 32x32 fixe :
-            texture_a_afficher = pygame.transform.scale(texture_a_afficher, (taille_cellule, taille_cellule))
-            
-            # Dessine la texture en fonction de la grille
-            if grille[y][x] is not None:
-                fenetre.blit(texture_a_afficher, rect)
+                # Dessine le contour du rectangle de la cellule
+                #(Ces lignes sont souvent supprimées dans le jeu final pour ne dessiner que les textures)
+                pygame.draw.rect(fenetre, couleur_cellule, rect)
+                pygame.draw.rect(fenetre, couleur_grille, rect, 1)
+                
+                # Dessine la texture en fonction de la grille
+                img = TEXTURES_ACTUELLES[texture_id]
+                
+                if step > 1:
+                    taille_visuelle = taille_cellule * step
+                    img = pygame.transform.scale(img, (taille_visuelle, taille_visuelle))
+                
+                
+                if grille[y][x] is not None:
+                    fenetre.blit(img, rect)
     # --- FIN Dessiner uniquement les cellules visibles ---
     
     
