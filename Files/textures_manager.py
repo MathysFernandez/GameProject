@@ -51,9 +51,7 @@ def texture_joueur(taille_joueur : int, angle : int = 0, num_img : int = 0):
         joueur_final = pygame.transform.rotate(joueur_final, angle-90)
         return joueur_final
 
-
-
-def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBasseResolution : bool = False,  taille_frame : int = 25):
+def charger_texture(taille_cellule, taille_frame: int = 25):
     try:
         floor = pygame.image.load("Assets/sol1.png").convert_alpha()
         floor = pygame.transform.scale(floor, (taille_cellule, taille_cellule))
@@ -62,10 +60,6 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBas
         mur2 = pygame.image.load("Assets/pierre_opt.png").convert_alpha()
         mur2 = pygame.transform.scale(mur2, (taille_cellule, taille_cellule))
         
-        # Format basse résolution
-        floor_basse_réso_4 = pygame.transform.scale(floor, (4, 4)) # Version 4x4 pour le dézoom
-        mur_basse_réso_4 = pygame.transform.scale(mur, (4, 4)) # Version 4x4 pour le dézoom
-        mur2_basse_réso_4 = pygame.transform.scale(mur2, (4, 4)) # Version 4x4 pour le dézoom
         
         # ---SpriteSheet eau---
         # Charger l'image complète
@@ -80,11 +74,22 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBas
         water_final = pygame.transform.scale(water_rognee, (taille_cellule, taille_cellule))
         # ---SpriteSheet eau---
         
+        
+        
     except pygame.error as e:
         logger.error("Erreur lors du chargement des textures (texture_manager)")
         print("Erreur lors du chargement des textures (texture_manager)")
         pygame.quit()
         exit()
+    return floor, mur, mur2, water_final
+
+
+
+
+
+def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBasseResolution : bool = False,  taille_frame : int = 25):
+    
+    floor, mur, mur2, water_final = charger_texture(taille_cellule, taille_frame)
     
     # map de collision à tester la collisions (sans filtre)
     collision_map_solid = {}
@@ -126,5 +131,5 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBas
                 collision_map_water[(j, i)] = rect_water # Clé (grid_x, grid_y)
                 # --- FIN water ---
             
-    logger.info("placer_texture() effectué")        
+    logger.info("placer_texture() effectué")
     return grille, collision_map_solid, collision_map_water

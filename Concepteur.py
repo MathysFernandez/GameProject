@@ -28,12 +28,28 @@ fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
 # récupérer grille
 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
 
+taille_cellule = config.taille_cellule
+
+
+#récupère la grille avec les emplacements de texture
+grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(1, largeur_grille, hauteur_grille, grille, True, config.taille_frame)
+
+
+floor, mur, mur2, water_final = textures_manager.charger_texture(1, config.taille_frame)
+
+LISTE_TEXTURES = {
+    -1: water_final,
+    0: floor, 
+    1: mur,
+    2: mur2
+}
 
 # taille cellule
 if largeur_grille > largeur_fenetre:
     taille_cellule = largeur_fenetre // largeur_grille
 else:
     taille_cellule = hauteur_fenetre // hauteur_grille
+
 
 # Position initiale de la caméra
 camera_x = 0
@@ -42,11 +58,6 @@ camera_y = 0
 # Couleurs
 couleur_grille = (100, 100, 100)
 couleur_cellule = (200, 200, 200)
-
-#récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, True, config.taille_frame)
-
-
 
 # ---Police---
 BLANC = (255, 255, 255)
@@ -73,6 +84,10 @@ running = True
 while running:
     # ---variables à réinitialiser---
     
+    
+    
+    
+    
     #deplacement vitesse
     vitesse = config.vitesse
     # FIN ---variables à réinitialiser---
@@ -90,12 +105,8 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_LEFT:
                 mouse_left_button_held = True
-            # récupérer grille
-            largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-            
-            #récupère la grille avec les emplacements de texture
-            grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, True)
-            
+                
+                
         # Si un bouton de la souris est relâché
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == pygame.BUTTON_LEFT:
@@ -141,7 +152,7 @@ while running:
                     taille_cellule = hauteur_fenetre //  (hauteur_grille - 2)
     
     #si le bouton gauche de la souris est maintenu enfoncé
-    if mouse_left_button_held:      
+    if mouse_left_button_held:
         # l'événement MOUSEBUTTONDOWN contient la position du clic:
         x, y = event.pos
         
@@ -151,6 +162,8 @@ while running:
         
         # positionner les nouvelles tuiles (en focntion des textures choisis)
         lecteur.modifier_tile_dans_json(nom_fichier_a_ouvrir, cellular_y, cellular_x, chosen_letter)
+        
+        grille[cellular_y][cellular_x] = LISTE_TEXTURES[chosen_letter]
         
     
     # Gestion évènement déplacement
@@ -218,10 +231,18 @@ while running:
             #(Ces lignes sont souvent supprimées dans le jeu final pour ne dessiner que les textures)
             pygame.draw.rect(fenetre, couleur_cellule, rect)
             pygame.draw.rect(fenetre, couleur_grille, rect, 1)
-
+            
+            
+            
+            # Mode normal -> On prend la belle image
+            texture_a_afficher = grille[y][x]
+            # Redimensionner ici est lent, idéalement grille[y][x] est déjà à la bonne taille
+            # Si grille[y][x] est l'image 32x32 fixe :
+            texture_a_afficher = pygame.transform.scale(texture_a_afficher, (taille_cellule, taille_cellule))
+            
             # Dessine la texture en fonction de la grille
             if grille[y][x] is not None:
-                fenetre.blit(grille[y][x], rect)
+                fenetre.blit(texture_a_afficher, rect)
     # --- FIN Dessiner uniquement les cellules visibles ---
     
     
