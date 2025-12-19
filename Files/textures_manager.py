@@ -53,7 +53,7 @@ def texture_joueur(taille_joueur : int, angle : int = 0, num_img : int = 0):
 
 
 
-def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille,  taille_frame : int = 25):
+def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBasseResolution : bool = False,  taille_frame : int = 25):
     try:
         floor = pygame.image.load("Assets/sol1.png").convert_alpha()
         floor = pygame.transform.scale(floor, (taille_cellule, taille_cellule))
@@ -62,10 +62,16 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille,  taille
         mur2 = pygame.image.load("Assets/pierre_opt.png").convert_alpha()
         mur2 = pygame.transform.scale(mur2, (taille_cellule, taille_cellule))
         
+        # Format basse résolution
+        floor_basse_réso_4 = pygame.transform.scale(floor, (4, 4)) # Version 4x4 pour le dézoom
+        mur_basse_réso_4 = pygame.transform.scale(mur, (4, 4)) # Version 4x4 pour le dézoom
+        mur2_basse_réso_4 = pygame.transform.scale(mur2, (4, 4)) # Version 4x4 pour le dézoom
+        
         # ---SpriteSheet eau---
         # Charger l'image complète
         water_source = pygame.image.load("Assets/water1.png").convert_alpha()
         # Rogner l'image
+        
         #modifier y pour la deuxième image
         rect_rognage = pygame.Rect(0, 0, taille_frame, taille_frame)
         water_rognee = water_source.subsurface(rect_rognage)
@@ -75,7 +81,7 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille,  taille
         # ---SpriteSheet eau---
         
     except pygame.error as e:
-        logger.info("Erreur lors du chargement des textures (texture_manager)")
+        logger.error("Erreur lors du chargement des textures (texture_manager)")
         print("Erreur lors du chargement des textures (texture_manager)")
         pygame.quit()
         exit()

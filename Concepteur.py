@@ -44,7 +44,7 @@ couleur_grille = (100, 100, 100)
 couleur_cellule = (200, 200, 200)
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille)
+grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, True, config.taille_frame)
 
 
 
@@ -72,17 +72,10 @@ mouse_left_button_held = False
 running = True
 while running:
     # ---variables à réinitialiser---
-    # récupérer grille
-    largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
     
-    #récupère la grille avec les emplacements de texture
-    grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille)
-
     #deplacement vitesse
     vitesse = config.vitesse
     # FIN ---variables à réinitialiser---
-    
-    
     
     #touche pressé
     keys_pressed = pygame.key.get_pressed()
@@ -97,14 +90,19 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_LEFT:
                 mouse_left_button_held = True
-
+            # récupérer grille
+            largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+            
+            #récupère la grille avec les emplacements de texture
+            grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, True)
+            
         # Si un bouton de la souris est relâché
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == pygame.BUTTON_LEFT:
                 mouse_left_button_held = False
             if event.button == 4:
                 taille_cellule += 1
-            if event.button == 5:
+            if event.button == 5 and taille_cellule >1:
                 taille_cellule -= 1
                 
         
@@ -125,8 +123,6 @@ while running:
             elif event.key == pygame.K_m:
                 chosen_letter = 1
                 lettre_surface, lettre_rect = creer_surface_texte(str(chosen_letter))
-            #...
-            
             
             
             # changer de taille map
