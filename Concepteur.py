@@ -9,6 +9,7 @@ from Files import config
 from Files import textures_manager
 from Files import Lecteur_map as lecteur
 
+logger = logging.getLogger(__name__)
 
 nom_fichier_a_ouvrir = config.nom_fichier_a_ouvrir
 nombre_texture = config.nombre_texture
@@ -36,7 +37,7 @@ floor, mur, mur2, water_final = textures_manager.charger_texture(1, config.taill
 
 TEXTURES_BASE = {
     -1: water_final,
-    0: floor, 
+    0: floor,
     1: mur,
     2: mur2
 }
@@ -144,7 +145,10 @@ while running:
     # gestion évènements
     for event in pygame.event.get():
         # Si l'utilisateur clique sur la croix de fermeture
-        if event.type == pygame.QUIT: 
+        if event.type == pygame.QUIT:
+            lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+            print("a")
+            logger.info("Sauvegarde de la Carte depuis le Concepteur")
             running = False
         
         # Si un bouton de la souris est pressé
@@ -168,6 +172,10 @@ while running:
                 
         
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_i:
+                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                print("b")
+                logger.info("Sauvegarde de la Carte depuis le Concepteur")
             # changer de choix de texture à positionner via le control left
             if event.key == pygame.K_LCTRL:
                 if chosen_letter >= nombre_texture-1:
@@ -221,13 +229,14 @@ while running:
         # position en nombre de cellules 
         cellular_x = int((x - camera_x )/ taille_cellule)
         cellular_y = int((y - camera_y )/ taille_cellule)
-        
+        if 0 <= cellular_y < hauteur_grille and 0 <= cellular_x < largeur_grille:
         # positionner les nouvelles tuiles (en focntion des textures choisis)
-        lecteur.modifier_tile_dans_json(nom_fichier_a_ouvrir, cellular_y, cellular_x, chosen_letter)
+            grille[cellular_y][cellular_x] = chosen_letter
+            mettre_a_jour_pixel_minimap(cellular_x, cellular_y, chosen_letter)
         
-        grille[cellular_y][cellular_x] = chosen_letter
         
-        mettre_a_jour_pixel_minimap(cellular_x, cellular_y, chosen_letter)
+        
+        
         
         if taille_cellule < 5: 
             taille_cellule_change = True
@@ -260,8 +269,8 @@ while running:
     # Efface l'écran en le remplissant de noir. Cela supprime tous les dessins de la frame précédente.
     fenetre.fill((0, 0, 0))
     
-    # --- Calculer la zone visible de la grille ---
 
+    
     # Coordonnées monde du coin supérieur gauche de l'écran
     world_x_start_screen = -camera_x
     world_y_start_screen = -camera_y
@@ -283,21 +292,20 @@ while running:
             hauteur_map_ecran = hauteur_grille * taille_cellule
             minimap_scale = pygame.transform.scale(minimap_surface, (largeur_map_ecran, hauteur_map_ecran))
         
-        # 3. L'afficher à la position de la caméra
+        #L'afficher à la position de la caméra
         fenetre.blit(minimap_scale, (camera_x, camera_y))
     else:
         # Convertir ces coordonnées monde en indices de grille
         start_grid_x = int(world_x_start_screen // taille_cellule) -1 #+6
         end_grid_x = int(world_x_end_screen // taille_cellule) +1 #-5 # +1 
 
-        start_grid_y = int(world_y_start_screen // taille_cellule) -1 #+2
+        start_grid_y = int(world_y_start_screen // taille_cellule) -1 # +2
         end_grid_y = int(world_y_end_screen // taille_cellule) +1 #-1 # +1 
         # S'assurer que les indices restent dans les limites de la grille réelle
         start_grid_x = max(0, start_grid_x)
-        end_grid_x = min(largeur_grille, end_grid_x) # Ne pas dépasser largeur_grille - 1, mais range va jusqu'à end-1
+        end_grid_x = min(largeur_grille, end_grid_x) 
         start_grid_y = max(0, start_grid_y)
-        end_grid_y = min(hauteur_grille, end_grid_y) # Ne pas dépasser hauteur_grille - 1
-        # --- Fin Calculer la zone visible de la grille ---
+        end_grid_y = min(hauteur_grille, end_grid_y) 
 
 
 
