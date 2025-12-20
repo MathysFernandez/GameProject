@@ -23,7 +23,7 @@ test_fps = False
 if test_fps:
     FPS = 1000
 #taille de la nouvelle génération
-taille_nouvelle_generation = 200
+taille_nouvelle_generation = 2000
 
 #entre 0 et 1
 multiplicateur_vitesse_diagonale = math.sqrt(2)
