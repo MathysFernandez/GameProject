@@ -50,6 +50,8 @@ if largeur_grille > largeur_fenetre:
     taille_cellule = largeur_fenetre // largeur_grille
 else:
     taille_cellule = hauteur_fenetre // hauteur_grille
+if taille_cellule < 1:
+    taille_cellule = 1
 
 
 # Position initiale de la caméra
@@ -127,6 +129,12 @@ hauteur_map_ecran = hauteur_grille * taille_cellule
 minimap_scale = pygame.transform.scale(minimap_surface, (largeur_map_ecran, hauteur_map_ecran))
 
 taille_changement_de_mode_affichage = 20
+grille_modifier = False
+
+# On détecte si on veut voir TOUTE la carte 
+mode_vue_globale = True
+
+
 
 running = True
 while running:
@@ -134,7 +142,7 @@ while running:
     taille_cellule_change = False
     
     
-    
+        
     #deplacement vitesse
     vitesse = config.vitesse *5
     # FIN ---variables à réinitialiser---
@@ -146,9 +154,9 @@ while running:
     for event in pygame.event.get():
         # Si l'utilisateur clique sur la croix de fermeture
         if event.type == pygame.QUIT:
-            lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
-            print("a")
-            logger.info("Sauvegarde de la Carte depuis le Concepteur")
+            if grille_modifier:
+                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                logger.info("Sauvegarde de la Carte depuis le Concepteur")
             running = False
         
         # Si un bouton de la souris est pressé
@@ -162,20 +170,25 @@ while running:
             if event.button == pygame.BUTTON_LEFT:
                 mouse_left_button_held = False
             if event.button == 4:
+                mode_vue_globale = False
                 taille_cellule += 1
                 taille_cellule_change = True
                 mettre_a_jour_textures_zoom(taille_cellule)
-            if event.button == 5 and taille_cellule >1:
-                taille_cellule -= 1
-                taille_cellule_change = True
-                mettre_a_jour_textures_zoom(taille_cellule)
+            if event.button == 5:
+                if taille_cellule > 1:
+                    taille_cellule -= 1
+                    taille_cellule_change = True
+                    mettre_a_jour_textures_zoom(taille_cellule)
+                else:
+                    # Si on est déjà à 1 et qu'on dézoome encore -> On active la vue globale
+                    mode_vue_globale = True
                 
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_i:
-                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
-                print("b")
-                logger.info("Sauvegarde de la Carte depuis le Concepteur")
+                if grille_modifier:
+                    lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                    logger.info("Sauvegarde de la Carte depuis le Concepteur")
             # changer de choix de texture à positionner via le control left
             if event.key == pygame.K_LCTRL:
                 if chosen_letter >= nombre_texture-1:
@@ -233,6 +246,7 @@ while running:
         # positionner les nouvelles tuiles (en focntion des textures choisis)
             grille[cellular_y][cellular_x] = chosen_letter
             mettre_a_jour_pixel_minimap(cellular_x, cellular_y, chosen_letter)
+            grille_modifier = True
         
         
         
@@ -250,10 +264,11 @@ while running:
     if deplacement_x != 0 and deplacement_y != 0:
         vitesse *= config.multiplicateur_vitesse_diagonale
     
-    #application du deplacement 
-    deplacement_x *= vitesse
-    deplacement_y *= vitesse
-    
+    #application du deplacement
+    if not mode_vue_globale:
+        deplacement_x *= vitesse
+        deplacement_y *= vitesse
+        
     # Appliquez le mouvement 
     camera_x -= deplacement_x
     camera_y -= deplacement_y
@@ -279,9 +294,26 @@ while running:
     world_x_end_screen = world_x_start_screen + largeur_fenetre
     world_y_end_screen = world_y_start_screen + hauteur_fenetre
     
+    if mode_vue_globale:
+        
+        #On calcule le ratio
+        ratio_w = largeur_fenetre / largeur_grille
+        ratio_h = hauteur_fenetre / hauteur_grille
+        ratio = min(ratio_w, ratio_h) # On prend le plus petit pour que tout rentre
+        
+        new_w = int(largeur_grille * ratio)
+        new_h = int(hauteur_grille * ratio)
+        
+        # redimensionnement
+        map_ecrasée = pygame.transform.scale(minimap_surface, (new_w, new_h))
+        
+        #On centre l'image à l'écran (optionnel, pour faire joli)
+        pos_x = (largeur_fenetre - new_w) // 2
+        pos_y = (hauteur_fenetre - new_h) // 2
+        
+        fenetre.blit(map_ecrasée, (pos_x, pos_y))
     
-    
-    if taille_cellule < taille_changement_de_mode_affichage:
+    elif taille_cellule < taille_changement_de_mode_affichage:
         
         
         # Étirer la minimap (C'est rapide pour le GPU)
