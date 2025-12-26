@@ -3,14 +3,14 @@ import logging
 import math
 
 Titre = "GameProject"
-taille_cellule = 50
-taille_joueur = 10
+taille_cellule = 70
+taille_joueur = 56
 taille_frame = 25
 duree_animation_joueur = 20
 #2 c'est bien
-vitesse = 5
+vitesse = 4
 if vitesse >= taille_cellule:
-    vitesse = 3
+    vitesse = 2
 FPS = 60
 taille_BT_w = 500
 taille_BT_h = 50

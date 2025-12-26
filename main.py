@@ -353,7 +353,6 @@ def menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre):
         result = draw_button(nomsDesSauvegardes[i], (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, nomsDesSauvegardes[i])
         compteur_BT += 1
         if result:
-            print(result)
             action_a_faire = result
             
     validation_finale = False
@@ -377,24 +376,15 @@ def menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre):
 
 # +++ DÉBUT AJOUT MENU PAUSE +++
 def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
-    """
-    Dessine l'overlay sombre et les boutons du menu pause.
-    Cette fonction est appelée DEPUIS jeu_scene.
-    Elle utilise les variables globales : fenetre, font, WHITE, BLUE, DARK_BLUE, BT_width, BT_height
-    et la fonction draw_button.
-    """
-
-# 1. Effet translucide lors de la pause
+    
     overlay = pygame.Surface((largeur_fenetre, hauteur_fenetre), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 150)) # Noir avec 150/255 d'opacité
     fenetre.blit(overlay, (0, 0))
 
-# 2. Dessiner le titre "Pause"
     titre_surf = font.render("Pause", True, WHITE)
     titre_rect = titre_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2 - 150))
     fenetre.blit(titre_surf, titre_rect)
 
-# 3. Dessiner les boutons
     action_reprise = draw_button("Reprendre", 
                                 (largeur_fenetre - BT_width) // 2, 
                                 (hauteur_fenetre - BT_height) // 2 - 50, 
@@ -404,19 +394,10 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
                               (largeur_fenetre - BT_width) // 2, 
                               (hauteur_fenetre - BT_height) // 2 + 60, 
                               BT_width, BT_height, BLUE, DARK_BLUE, "menu")
-    
-    action_sauvegarde = draw_button("Sauvegarder", 
-                                (largeur_fenetre - BT_width) // 2, 
-                                (hauteur_fenetre - BT_height) // 2 + 5, 
-                                BT_width, BT_height, BLUE, DARK_BLUE, "sauvegarde")
-
-# 4. Retourner l'action du bouton si un est cliqué
     if action_reprise:
         return action_reprise
     if action_menu:
         return action_menu
-    if action_sauvegarde:
-        return action_sauvegarde
     
     return None
 # +++ FIN AJOUT MENU PAUSE +++

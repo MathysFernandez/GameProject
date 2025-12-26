@@ -24,7 +24,6 @@ def texture_num_2(taille_cellule : int = 25, taille_frame : int = 25):
     
     # Rogner l'image
     rect_rognage2 = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
-    print(rect_rognage2)
     water_rognee2 = water_source.subsurface(rect_rognage2)
     
     # Mettre à l'échelle la texture rognée à la taille de la cellule
@@ -78,7 +77,6 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         
     except pygame.error as e:
         logger.error("Erreur lors du chargement des textures (texture_manager)")
-        print("Erreur lors du chargement des textures (texture_manager)")
         pygame.quit()
         exit()
     return floor, mur, mur2, water_final
