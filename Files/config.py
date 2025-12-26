@@ -3,16 +3,16 @@ import logging
 import math
 
 Titre = "GameProject"
-taille_cellule = 100
-taille_joueur = 54
+taille_cellule = 50
+taille_joueur = 10
 taille_frame = 25
 duree_animation_joueur = 20
 #2 c'est bien
-vitesse = 2
+vitesse = 5
 if vitesse >= taille_cellule:
-    vitesse = 2
+    vitesse = 3
 FPS = 60
-taille_BT_w = 270
+taille_BT_w = 500
 taille_BT_h = 50
 
 nombre_texture = 3

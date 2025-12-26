@@ -64,8 +64,13 @@ angle_voulu = 0
 angle = 0
 
 # ---instancier variable par défaut---
-nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 Titre = config.Titre
+
+
+nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
+# récupérer grille avec les valeur en int
+largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+
 
 
 #horloge Interne
@@ -102,8 +107,7 @@ BT_height = config.taille_BT_h
 # Dimensions de la grille
 taille_cellule = config.taille_cellule
 
-# récupérer grille avec les valeur en int
-largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+
 
 # Calculer les coordonnées mondiales du centre de la grille
 # C'est la position "idéale" du joueur dans le monde
@@ -297,7 +301,7 @@ def draw_button(text, x, y, w, h, color, hover_color, action_name):
 
 # Menu principal
 # La fonction menu_scene doit aussi prendre les événements en paramètre
-def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events'
+def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str: # <-- Ajout de 'events'
     fenetre.fill(BLACK)
     #nombre de bouton
     nb_BT = 4
@@ -308,12 +312,12 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events
     compteur_BT += 1
     if result:
         return result
-    result = draw_button("Charger", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "quit")
+    result = draw_button("Charger", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "charger")
     
     compteur_BT += 1
     if result:
         return result
-    result = draw_button("Save", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "quit")
+    result = draw_button("New game", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "newGame")
     
     compteur_BT += 1
     if result:
@@ -330,6 +334,46 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre): # <-- Ajout de 'events
                 return "quit"
 
     return "menu"
+
+
+
+def menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre):
+    fenetre.fill(BLACK)
+    
+    nomsDesSauvegardes = lecteur.recupNomSauvegarde()
+    nb_BT = len(nomsDesSauvegardes)
+    compteur_BT = 0
+    
+    mouse_click = pygame.mouse.get_pressed()
+    action_a_faire = None
+    
+    
+    
+    for i in range (nb_BT):
+        result = draw_button(nomsDesSauvegardes[i], (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, nomsDesSauvegardes[i])
+        compteur_BT += 1
+        if result:
+            print(result)
+            action_a_faire = result
+            
+    validation_finale = False
+    
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1: 
+                validation_finale = True
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return "menu"
+
+    if action_a_faire and validation_finale:
+        return action_a_faire
+
+    return "charger"
+
+
+
 
 # +++ DÉBUT AJOUT MENU PAUSE +++
 def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
@@ -419,6 +463,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     global joueur_score
     global jeu_est_en_pause
     global compt_anim_eau
+    
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
     # Utile pour la détection de collision afin de pouvoir "revenir en arrière" (en focntion des axes)
@@ -831,11 +876,11 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     
     return "jeu"
 
-# --- INITIALISATION DU SOUND MANAGER ---
 sound_manager = SoundManager()
 
-# --- MODIFICATION DU MAIN RUN POUR GÉRER MUSIQUE ET SONS ---
 def run(largeur_fenetre, hauteur_fenetre):
+    global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, position_player_x, position_player_y
+                
     current_scene = "menu"
     fps = []
 
@@ -852,7 +897,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
                 x, y = lecteur.dernierePosition()
                 lecteur.SetDernierePositionDansCarte(x,y)
-                print("Sauvegarde de la dernière position dans le LastSave.json")
+                print("Sauvegarde de la dernière position dans la carte")
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.VIDEORESIZE:
@@ -883,14 +928,31 @@ def run(largeur_fenetre, hauteur_fenetre):
             # Gestion de l'ambiance (Oiseaux / Vent)
             if not jeu_est_en_pause and joueur_etat == "vivant":
                 sound_manager.update_ambiance()
-
+        
+        elif current_scene == "charger":
+            current_scene = menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre)
+            if current_scene != "charger" and current_scene != "jeu":
+                
+                lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
+                lecteur.SetDerniereSauvegarde(current_scene +".json")
+                x, y = lecteur.dernierePositionDe(current_scene)
+                lecteur.SetDernierePosition(x,y)
+                current_scene = "jeu"
+                
+                nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
+                largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+                grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+                position_player_x, position_player_y = lecteur.dernierePosition()
+                
+                
+            
         if current_scene == "quit":
             lecteur.SetDernierePosition(position_player_x, position_player_y)
             print("Sauvegarde de la dernière position dans le LastSave.json")
             
             x, y = lecteur.dernierePosition()
             lecteur.SetDernierePositionDansCarte(x,y)
-            print("Sauvegarde de la dernière position dans le LastSave.json")
+            print("Sauvegarde de la dernière position dans la carte")
             
             logger.info("Fermeture du jeu")
             pygame.quit()

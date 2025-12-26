@@ -405,7 +405,7 @@ def dernierePositionDe(nom : str) -> (int,int) or None:
         
         if position_x != None and position_y != None:
             return position_x, position_y
-    return None
+    return 0,0
 
 
 def SetDerniereSauvegarde(nouvelle_sauvegarde):
@@ -513,6 +513,51 @@ def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y
             
         except IOError as e:
             logger.error(f"Erreur critique écriture config : {e}")
+
+
+
+
+
+def recupNomSauvegarde()-> list[str]:
+    fichier_charge_succes = False
+    liste_sauvegardes = []
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        dossier_saves = os.path.join(base_dir, "Saves")
+        if os.path.exists(dossier_saves):
+            fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: impossible de charger l'arboresence")
+
+    
+    
+    if not fichier_charge_succes:
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            dossier_saves = os.path.join(base_dir, "..", "Saves")
+            if os.path.exists(dossier_saves):
+                fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: impossible de charger l'arboresence")
+            return []
+        
+    if fichier_charge_succes:
+        try:
+            # 3. On liste tous les fichiers du dossier
+            fichiers = os.listdir(dossier_saves)
+            # 4. On filtre pour ne garder que les .json
+            for f in fichiers:
+                # On vérifie l'extension
+                if f.endswith(".json") and f != "lastSave.json":
+                    nom_propre = f[:-5] 
+                    liste_sauvegardes.append(nom_propre)
+                    
+            return liste_sauvegardes
+
+        except Exception as e:
+            print(f"Erreur lors de la lecture des sauvegardes : {e}")
+            return []
+    
 #creer ou réinitialise un fichier json avec tel nom avec un tiles de X par X de 0
 
 #creation_fichier_X("test", 100)
@@ -526,3 +571,4 @@ def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y
 
 #x, y = dernierePosition()
 #SetDernierePositionDansCarte (x, y)
+print(recupNomSauvegarde())
