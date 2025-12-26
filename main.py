@@ -10,6 +10,8 @@ from Files import textures_manager
 from Files import Lecteur_map as lecteur
 from Files import generation_procedurale as generation
 from Files import gameplay
+from Files.sound_manager import SoundManager
+
 
 
 # Configuration simple du logger pour écrire dans le fichier game.log
@@ -62,7 +64,7 @@ angle_voulu = 0
 angle = 0
 
 # ---instancier variable par défaut---
-nom_fichier_a_ouvrir = config.nom_fichier_a_ouvrir
+nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 Titre = config.Titre
 
 
@@ -136,9 +138,16 @@ texture_eau2 = textures_manager.texture_num_2(taille_cellule, config.taille_fram
 
 
 
-# -- joueur en cercle nouveauté ---
-position_player_x = centre_grille_x_monde + 100
-position_player_y = centre_grille_y_monde + 100
+# -- joueur en cercle ---
+pos_save = lecteur.dernierePosition()
+if pos_save:
+    position_player_x, position_player_y = pos_save
+    print("a")
+else:
+    position_player_x = centre_grille_x_monde + 100
+    position_player_y = centre_grille_y_monde + 100
+    lecteur.SetDernierePosition(position_player_x, position_player_y)
+    print("b")
 
 rayon_joueur = taille_joueur / 2
 # -- FIN joueur en cercle nouveauté ---
@@ -343,12 +352,19 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
                               (largeur_fenetre - BT_width) // 2, 
                               (hauteur_fenetre - BT_height) // 2 + 60, 
                               BT_width, BT_height, BLUE, DARK_BLUE, "menu")
+    
+    action_sauvegarde = draw_button("Sauvegarder", 
+                                (largeur_fenetre - BT_width) // 2, 
+                                (hauteur_fenetre - BT_height) // 2 + 5, 
+                                BT_width, BT_height, BLUE, DARK_BLUE, "sauvegarde")
 
 # 4. Retourner l'action du bouton si un est cliqué
     if action_reprise:
         return action_reprise
     if action_menu:
         return action_menu
+    if action_sauvegarde:
+        return action_sauvegarde
     
     return None
 # +++ FIN AJOUT MENU PAUSE +++
@@ -862,7 +878,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         # On récupère les dimensionss 
         largeur_fenetre, hauteur_fenetre = fenetre.get_size()
         
-        action = dessiner_menu_pause(largeur_fenetre, hauteur_fenetre) 
+        action = dessiner_menu_pause(largeur_fenetre, hauteur_fenetre)
         
         if action == "resume":
             jeu_est_en_pause = False 
@@ -874,14 +890,11 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             joueur_score = 0
             jeu_est_en_pause = False 
             return "menu" # <-- C'est ça qui retourne au menu
-    # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++  
+    # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++
+        elif action == "sauvegarde":
+            print("i")
     
     return "jeu"
-# -------------------------------------------------------------
-# -------------------------------------------------------------
-
-# --- IMPORTATION DU SOUND MANAGER ---
-from Files.sound_manager import SoundManager
 
 # --- INITIALISATION DU SOUND MANAGER ---
 sound_manager = SoundManager()
@@ -894,12 +907,12 @@ def run(largeur_fenetre, hauteur_fenetre):
     logger.info("Lancement du jeu")
 
     while True:
-        # 1. Gestion des événements globaux
         events = pygame.event.get()
         keys_pressed = pygame.key.get_pressed()
 
         for event in events:
             if event.type == pygame.QUIT:
+                lecteur.SetDernierePosition(position_player_x, position_player_y)
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.VIDEORESIZE:
@@ -911,10 +924,8 @@ def run(largeur_fenetre, hauteur_fenetre):
                 if event.button == 1: # Clic gauche
                     sound_manager.play_click()
 
-        # 2. Gestion de la Musique
         sound_manager.update_music(current_scene)
 
-        # 3. Exécution des Scènes
         if current_scene == "menu":
             current_scene = menu_scene(events, largeur_fenetre, hauteur_fenetre)
 
@@ -934,6 +945,8 @@ def run(largeur_fenetre, hauteur_fenetre):
                 sound_manager.update_ambiance()
 
         if current_scene == "quit":
+            lecteur.SetDernierePosition(position_player_x, position_player_y)
+            print("save")
             logger.info("Fermeture du jeu")
             pygame.quit()
             sys.exit()
