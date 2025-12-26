@@ -2,6 +2,8 @@
     "name": "map par d\u00c3\u00a9faut",
     "width": 58,
     "height": 58,
+    "position_x": null,
+    "position_y": null,
     "tiles": [
         [
             0,

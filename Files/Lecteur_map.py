@@ -249,9 +249,9 @@ def creation_fichier_X(name : str, taille : int):
         "name" : name,
         "width" : taille,
         "height" : taille,
-        "position_x": null,
-        "position_y": null,
-        "tiles" : grille
+        "position_x": None,
+        "position_y": None,
+        "tiles" : grilleu
     }
     
     try:
@@ -377,6 +377,35 @@ def dernierePosition() -> (int,int) or None:
             return position_x, position_y
     return None
 
+def dernierePositionDe(nom : str) -> (int,int) or None:
+    if nom [-5:] != ".json":
+        nom += ".json"
+        
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        position_x = map_data.get("position_x")
+        position_y = map_data.get("position_y")
+        
+        if position_x != None and position_y != None:
+            return position_x, position_y
+    return None
 
 
 def SetDerniereSauvegarde(nouvelle_sauvegarde):
@@ -443,9 +472,12 @@ def SetDernierePosition(nouvelle_position_x : int, nouvelle_position_y : int):
 
             with open(nom_fichier, "w") as f:
                 json.dump(map_data, f, indent=4)
+            logger.info("Sauvegarde de la dernière position dans le LastSave.json")
             
         except IOError as e:
             logger.error(f"Erreur critique écriture config : {e}")
+            
+    
 
 def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y : int):
     nom = derniereSauvegarde()
@@ -477,16 +509,20 @@ def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y
             with open(nom_fichier, "w") as f:
                 json.dump(map_data, f, indent=4)
             
+            logger.info("Sauvegarde de la dernière position dans la carte")
+            
         except IOError as e:
             logger.error(f"Erreur critique écriture config : {e}")
 #creer ou réinitialise un fichier json avec tel nom avec un tiles de X par X de 0
-#creation_fichier_X("map_generation_procedural", 100)
+
+#creation_fichier_X("test", 100)
 
 #print(derniereSauvegarde())
-#SetDerniereSauvegarde("map_generation_procedural.json")
+#SetDerniereSauvegarde("test.json")
 #print(derniereSauvegarde())
-#print(dernierePosition())
+#print(dernierePositionDe("test"))
 #SetDernierePosition(None, None)
 #print(dernierePosition())
 
-#SetDernierePositionDansCarte (15, 18)
+#x, y = dernierePosition()
+#SetDernierePositionDansCarte (x, y)

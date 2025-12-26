@@ -54,7 +54,7 @@ logger.info("Félicitations ! Le joueur a gagné !")
 # Quand il y a un problème (par exemple, un fichier manquant)
 logger.error("Erreur ! Le fichier 'textures/sword.png' est introuvable.")
 """
-
+logger.info("Lancement")
 
 
 
@@ -136,21 +136,29 @@ texture_eau2 = textures_manager.texture_num_2(taille_cellule, config.taille_fram
 
 
 
+#dimension monde
+monde_largeur_px = largeur_grille * taille_cellule
+monde_hauteur_px = hauteur_grille * taille_cellule
+position_valide = False
 
-
-# -- joueur en cercle ---
 pos_save = lecteur.dernierePosition()
+
 if pos_save:
-    position_player_x, position_player_y = pos_save
-    print("a")
-else:
+    x, y = pos_save
+    if 0 <= x <= monde_largeur_px and 0 <= y <= monde_hauteur_px:
+        position_player_x = x
+        position_player_y = y
+        position_valide = True
+        logger.info(f"Position chargée (Valide) : {int(position_player_x)}, {int(position_player_y)}")
+    else:
+        logger.error(f"ATTENTION : Position sauvegardée hors limites ({x}, {y}). Réinitialisation.")
+
+if not position_valide:
     position_player_x = centre_grille_x_monde + 100
     position_player_y = centre_grille_y_monde + 100
     lecteur.SetDernierePosition(position_player_x, position_player_y)
-    print("b")
 
 rayon_joueur = taille_joueur / 2
-# -- FIN joueur en cercle nouveauté ---
 
 
 
@@ -650,7 +658,6 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         anim = 1
         compt_anim_eau = 0
     compt_anim_eau +=1
-    
     # --- Dessiner uniquement les cellules visibles ---
     for y in range(start_grid_y, end_grid_y):
         for x in range(start_grid_x, end_grid_x):
@@ -841,6 +848,11 @@ def run(largeur_fenetre, hauteur_fenetre):
         for event in events:
             if event.type == pygame.QUIT:
                 lecteur.SetDernierePosition(position_player_x, position_player_y)
+                print("Sauvegarde de la dernière position dans le LastSave.json")
+                
+                x, y = lecteur.dernierePosition()
+                lecteur.SetDernierePositionDansCarte(x,y)
+                print("Sauvegarde de la dernière position dans le LastSave.json")
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.VIDEORESIZE:
@@ -874,7 +886,12 @@ def run(largeur_fenetre, hauteur_fenetre):
 
         if current_scene == "quit":
             lecteur.SetDernierePosition(position_player_x, position_player_y)
-            print("save")
+            print("Sauvegarde de la dernière position dans le LastSave.json")
+            
+            x, y = lecteur.dernierePosition()
+            lecteur.SetDernierePositionDansCarte(x,y)
+            print("Sauvegarde de la dernière position dans le LastSave.json")
+            
             logger.info("Fermeture du jeu")
             pygame.quit()
             sys.exit()

@@ -1,9 +1,9 @@
 {
-    "name": "pizza",
+    "name": "test",
     "width": 100,
     "height": 100,
-    "position_x": null,
-    "position_y": null,
+    "position_x": 6338.16060505584,
+    "position_y": 3951.4352826495506,
     "tiles": [
         [
             0,
