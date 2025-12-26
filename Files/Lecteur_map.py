@@ -21,7 +21,6 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
         #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     if not fichier_charge_succes:
         try:
@@ -31,7 +30,6 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
             #print("chargement tentative 2 succes")
             fichier_charge_succes = True
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
 
     if fichier_charge_succes:
@@ -251,6 +249,8 @@ def creation_fichier_X(name : str, taille : int):
         "name" : name,
         "width" : taille,
         "height" : taille,
+        "position_x": null,
+        "position_y": null,
         "tiles" : grille
     }
     
@@ -314,6 +314,10 @@ def modifier_grille(nom : str, grille : list):
         json.dump(map_data, f, indent=4) # indent=4 pour une meilleure lisibilité
     print(f"'{nom_fichier}' enregistrer")
     logger.info(f"'{nom_fichier}' enregistrer")
+
+
+
+
 
 def derniereSauvegarde() -> str or None:
     nom = "lastSave.json"
@@ -442,9 +446,47 @@ def SetDernierePosition(nouvelle_position_x : int, nouvelle_position_y : int):
             
         except IOError as e:
             logger.error(f"Erreur critique écriture config : {e}")
+
+def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y : int):
+    nom = derniereSauvegarde()
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        map_data["position_x"] = nouvelle_position_x
+        map_data["position_y"] = nouvelle_position_y
+
+        try:
+            os.makedirs(os.path.dirname(nom_fichier), exist_ok=True)
+
+            with open(nom_fichier, "w") as f:
+                json.dump(map_data, f, indent=4)
+            
+        except IOError as e:
+            logger.error(f"Erreur critique écriture config : {e}")
 #creer ou réinitialise un fichier json avec tel nom avec un tiles de X par X de 0
 #creation_fichier_X("map_generation_procedural", 100)
 
 #print(derniereSauvegarde())
 #SetDerniereSauvegarde("map_generation_procedural.json")
 #print(derniereSauvegarde())
+#print(dernierePosition())
+#SetDernierePosition(None, None)
+#print(dernierePosition())
+
+#SetDernierePositionDansCarte (15, 18)

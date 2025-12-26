@@ -369,78 +369,6 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
     return None
 # +++ FIN AJOUT MENU PAUSE +++
 
-# Boucle principale avec gestion de scène
-def run(largeur_fenetre, hauteur_fenetre):
-    
-    current_scene = "menu"
-    fps = []
-    
-    #Journal - Info démarage  jeu
-    logger.info("lancement jeu")
-    logger.info("run() effectué")
-    
-    """
-    # --- Si on veut une génération avant de jouer ---
-    # Nombre de texture différente (sans compté l'eau)
-    nombre_texture = config.nombre_texture
-    
-    #taille de la nouvelle génération
-    taille = config.taille_nouvelle_generation
-
-    generation.generation(nom_fichier_a_ouvrir, nombre_texture, taille)
-    # --- FIN Si on veut une génération avant de jouer ---
-    """
-    
-    while True:
-        # COLLECTE UNIQUE de TOUS les événements pour cette frame
-        events = pygame.event.get() 
-        keys_pressed = pygame.key.get_pressed()
-        # Traitement des événements globaux (comme quitter le jeu depuis n'importe quelle scène)
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            # 2. Détecter l'événement de redimensionnement de la fenêtre
-            elif event.type == pygame.VIDEORESIZE:
-                # Récupérer les nouvelles dimensions
-                largeur_fenetre = event.w
-                hauteur_fenetre = event.h
-                
-                
-                
-                # Mettre à jour la taille de la surface d'affichage de Pygame
-                # C'est important pour que Pygame puisse redimensionner le "canvas" interne.
-                fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre), pygame.RESIZABLE)
-                
-        # Appel de la scène actuelle, en lui passant TOUS les événements collectés
-        if current_scene == "menu":
-            current_scene = menu_scene(events, largeur_fenetre, hauteur_fenetre) 
-        if current_scene == "jeu":
-            current_scene = jeu_scene(events, camera_x, camera_y) 
-        
-        # Gestion des changements de scène (quit est déjà traité au-dessus, mais c'est bien de l'avoir ici aussi)
-        if current_scene == "quit":
-            if config.test_fps:
-                result = 0
-                for i in range(len(fps)):
-                    result += fps[i]
-                print("moy : ",result / len(fps))
-                print("min : ", min(fps))
-                print("max : ", max(fps))
-                logger.info(f"moy : {result / len(fps)}, min : {min(fps)}, max : {max(fps)}")
-            logger.info("fermeture jeu")
-            pygame.quit()
-            sys.exit()
-        
-        #si on veut tester plus tard le nombre de fps moyen, min, max
-        if config.test_fps:
-            fps_one = horloge.get_fps()
-            if fps_one > 0:
-                fps.append(fps_one)
-        
-        pygame.display.flip()
-        horloge.tick(FPS)
-
 
 
 
@@ -958,7 +886,6 @@ def run(largeur_fenetre, hauteur_fenetre):
 
         pygame.display.flip()
         horloge.tick(FPS)
-    
     
     return "jeu"
 
