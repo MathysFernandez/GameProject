@@ -50,6 +50,20 @@ def texture_joueur(taille_joueur : int, angle : int = 0, num_img : int = 0):
         joueur_final = pygame.transform.scale(joueur_rognee, (taille_joueur, taille_joueur))
         joueur_final = pygame.transform.rotate(joueur_final, angle-90)
         return joueur_final
+    
+def texture_feu(taille_cellule : int, num_img : int = 0):
+# ---Animation feu---
+        # Charger l'image complète
+        feu_source = pygame.image.load("Assets/solfeu.png").convert_alpha()
+        
+        # Rogner l'image
+        #modifier num_img (y) pour la n ième image
+        rect_rognage = pygame.Rect(0, num_img*25, 25, 25)
+        feu_rognee = feu_source.subsurface(rect_rognage)
+        
+        # 3. Mettre à l'échelle la texture rognée (25x25) à la taille de la cellule
+        feu_final = pygame.transform.scale(feu_rognee, (taille_cellule, taille_cellule))
+        return feu_final
 
 def charger_texture(taille_cellule, taille_frame: int = 25):
     try:
