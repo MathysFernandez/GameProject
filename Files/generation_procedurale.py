@@ -21,7 +21,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-nom_fichier_a_ouvrir = config.nom_fichier_a_ouvrir
+nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
+
+
 nombre_texture = config.nombre_texture
 multiplicateur_sol = config.multiplicateur_sol
 nombre_répétition = config.nombre_répétition
@@ -37,7 +39,7 @@ taille = config.taille_nouvelle_generation
 #cela permet ensuite de faire random.choices
 def listes(nombre_texture : int) -> list:
     if nombre_texture < 1:
-        print("Le nombre_texture de texture doit etre au moins 1")
+        logger.error("Le nombre_texture de texture doit etre au moins 1")
     
     poid_sol = (nombre_texture -1) * multiplicateur_sol
     population = []
@@ -274,11 +276,12 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     #génération bordure de carte
     grille = generation_limite(largeur_grille, hauteur_grille, grille)
     
-    print("génération limite carte terminé")
     logger.info("generation_limite() effectué")
-    
+    print(nom_fichier_a_ouvrir)
     #sauvegarde la grille sur le fichier
-    lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+    lecteur.modifier_grille(nom, grille)
+    
+    logger.info("generation effectué")
     
 if __name__ == "__main__":
-    generation(nom_fichier_a_ouvrir, nombre_texture, taille)
+    generation("testX", nombre_texture, 200)

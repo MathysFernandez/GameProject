@@ -2,46 +2,37 @@ import logging
 import json
 import os
 
-# Récupérer le logger existant qui a été configuré dans le main.py
+
 logger = logging.getLogger(__name__)
 
-#charge le fichier <nom> et retourne <width>, <height> et <grille>
-#-> tuple[int, int, int]
-#indique les types d'éléments retournés
 def chargerfichier(nom : str) -> tuple[int, int, list]:
     fichier_charge_succes = False
     if nom [-5:] != ".json":
         nom += ".json"
-    #chemin d'accé différents en fonction de qui appel
-    #Je devrais le changer pour le permmettre de l'appelé depuis n'importe ou
+
     try:
         nom_fichier = os.path.join("Saves", nom)
         with open(nom_fichier, "r") as f:
             map_data = json.load(f)
-        #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     if not fichier_charge_succes:
         try:
             nom_fichier = os.path.join( "..","Saves", nom)
             with open(nom_fichier, "r") as f:
                 map_data = json.load(f)
-            #print("chargement tentative 2 succes")
             fichier_charge_succes = True
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
 
     if fichier_charge_succes:
         #Variables utile
-        # Récupérer les dimensions de la carte du JSON
         width = map_data['width']
         height = map_data['height']
         grille = map_data['tiles']
         logger.info("chargerfichier() effectué")
-    return width, height, grille
+        return width, height, grille
 
 
 
@@ -57,10 +48,8 @@ def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_vale
         nom_fichier = os.path.join("Saves", nom)
         with open(nom_fichier, "r") as f:
             map_data = json.load(f)
-        #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
@@ -68,26 +57,22 @@ def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_vale
             nom_fichier = os.path.join( "..","Saves", nom)
             with open(nom_fichier, "r") as f:
                 map_data = json.load(f)
-            #print("chargement tentative 2 succes")
+            fichier_charge_succes = True
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             
     tiles = map_data["tiles"]
     
-    # Vérifier les limites des indices et modifier la valeur
+    #Vérifier les limites des indices et modifier la valeur
     if 0 <= ligne < len(tiles):
         if 0 <= colonne < len(tiles[ligne]):
             tiles[ligne][colonne] = nouvelle_valeur_tile
-            # 3. Sauvegarder le contenu mis à jour dans le fichier JSON
             
             with open(nom_fichier, "w") as f:
-                json.dump(map_data, f, indent=2) # indent=4 pour une meilleure lisibilité
+                json.dump(map_data, f, indent=2)
         else:
-            print(f"Erreur : Indice de colonne ({colonne}) hors limites pour la ligne {ligne}.")
             logger.error(f"Erreur : Indice de colonne ({colonne}) hors limites pour la ligne {ligne}.")
     else:
-        print(f"Erreur : Indice de ligne ({ligne}) hors limites.")
         logger.error(f"Erreur : Indice de ligne ({ligne}) hors limites.")
 
 
@@ -103,10 +88,8 @@ def ajouter(nom :str, valeur_defaut :int):
         nom_fichier = os.path.join("Saves", nom) 
         with open(nom_fichier, "r") as f:
             map_data = json.load(f)
-        #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
@@ -114,9 +97,7 @@ def ajouter(nom :str, valeur_defaut :int):
             nom_fichier = os.path.join( "..","Saves", nom)
             with open(nom_fichier, "r") as f:
                 map_data = json.load(f)
-            #print("chargement tentative 2 succes")
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     
     tiles = map_data["tiles"]
@@ -124,47 +105,32 @@ def ajouter(nom :str, valeur_defaut :int):
     if tiles:
         nouvelles_lignes = []
         for ligne in tiles:
-            # Ajoute une tuile par défaut au début et à la fin de chaque ligne existante
             nouvelle_ligne = [valeur_defaut] + ligne + [valeur_defaut]
             nouvelles_lignes.append(nouvelle_ligne)
-        tiles = nouvelles_lignes # Met à jour la liste des tuiles avec les colonnes ajoutées
+        tiles = nouvelles_lignes
 
-    # --- Étape 2 : Ajouter une ligne en haut et en bas ---
-    # Récupérez la largeur actuelle de la carte après l'ajout des colonnes
     if tiles:
         largeur_carte = len(tiles[0])
     else:
-        # Si tiles était vide au départ, définissez une largeur par défaut
-        largeur_carte = 2 # Une colonne à gauche + une colonne à droite si la carte était vide
-        # Si 'tiles' est vide, nous pourrions initialiser une grille de taille 1x1
-        print("Avertissement: La carte 'tiles' était vide. Création d'une nouvelle ligne par défaut.")
+        largeur_carte = 2
         logger.warning("Avertissement: La carte 'tiles' était vide. Création d'une nouvelle ligne par défaut.")
         tiles = [[valeur_defaut]] # Initialise avec une seule tuile
         largeur_carte = 1
 
 
-
-    # Créez une nouvelle ligne remplie de la valeur par défaut pour les bordures
     nouvelle_ligne_bordure = [valeur_defaut] * largeur_carte
 
-    # Ajoutez la nouvelle ligne en haut
     tiles.insert(0, nouvelle_ligne_bordure)
-    # Ajoutez la nouvelle ligne en bas
     tiles.append(nouvelle_ligne_bordure)
 
-    # --- Mettre à jour map_data avec les nouvelles tuiles ---
     map_data["tiles"] = tiles
-    #la nouvelle hauteur est le nombre de lignes
     map_data["height"] = len(tiles)
-    #la nouvelle largeur est le nombre de colonnes dans la première ligne '
     map_data["width"] = len(tiles[0])
 
-    # --- Sauvegarder la carte modifiée ---
     try:
-        with open(nom_fichier, "w") as f: # Utilisez "w" pour l'écriture
-            json.dump(map_data, f, indent=4) # indent=4 pour une meilleure "lisibilité"
+        with open(nom_fichier, "w") as f:
+            json.dump(map_data, f, indent=4)
     except Exception as e:
-        print(f"Erreur lors de la sauvegarde de la carte: {e}")
         logger.error(f"Erreur lors de la sauvegarde de la carte: {e}")
 
 
@@ -179,10 +145,8 @@ def retirer(nom):
         nom_fichier = os.path.join("Saves", nom)
         with open(nom_fichier, "r") as f:
             map_data = json.load(f)
-        #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
@@ -190,52 +154,42 @@ def retirer(nom):
             nom_fichier = os.path.join( "..","Saves", nom)
             with open(nom_fichier, "r") as f:
                 map_data = json.load(f)
-            #print("chargement tentative 2 succes")
+            fichier_charge_succes = True
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             
     tiles = map_data["tiles"]
     
-    # --- Retirer une ligne en haut et en bas ---
-    if len(tiles) >= 3: #au moins 3 lignes pour pouvoir en supprimer 2 et qu'il en reste 1
-        tiles = tiles[1:-1] #supprime la première (index 0) et la dernière ligne
-    else:
-        print("La carte est trop petite pour retirer des lignes (moins de 3 lignes).")
-        logger.warning("La carte est trop petite pour retirer des lignes (moins de 3 lignes).")
-        #on suppose qu'on ne retire que si c'est possible.
     
-    # --- Retirer une colonne à gauche et à droite de chaque ligne ---
-    if tiles and len(tiles[0]) >= 3: # S'il y a des lignes et au moins 3 colonnes
+    if len(tiles) >= 3: 
+        tiles = tiles[1:-1] 
+    else:
+        logger.warning("La carte est trop petite pour retirer des lignes (moins de 3 lignes).")
+    
+    if tiles and len(tiles[0]) >= 3: 
         nouvelles_lignes = []
         for ligne in tiles:
-            # Supprime le premier (index 0) et le dernier élément de chaque ligne
             nouvelle_ligne = ligne[1:-1]
             nouvelles_lignes.append(nouvelle_ligne)
-        tiles = nouvelles_lignes # Met à jour la liste des tuiles avec les colonnes retirées
-    elif tiles: #s'il y a des lignes mais moins de 3 colonnes
-        print("La carte est trop petite pour retirer des colonnes (moins de 3 colonnes).")
+        tiles = nouvelles_lignes 
+    elif tiles: 
         logger.warning("La carte est trop petite pour retirer des colonnes (moins de 3 colonnes).")
-    # --- Mettre à jour map_data avec les nouvelles tuiles ---
+    
     map_data["tiles"] = tiles
-    # La nouvelle hauteur est le nombre de lignes 
+    
     map_data["height"] = len(tiles)
-    # La nouvelle largeur est le nombre de colonnes dans la première ligne  
-    map_data["width"] = len(tiles[0]) if tiles else 0 # Gère le cas où la carte est devenue vide
 
-    # ---Sauvegarder la carte modifiée ---
+    map_data["width"] = len(tiles[0]) if tiles else 0
+
     try:
-        with open(nom_fichier, "w") as f: #utilise "w" pour l'écriture (écrase le contenu)
-            json.dump(map_data, f, indent=4) # indent=4  pour une meilleure "lisibilité"
+        with open(nom_fichier, "w") as f: 
+            json.dump(map_data, f, indent=4) 
     except Exception as e:
-        print(f"Erreur lors de la sauvegarde de la carte: {e}")
         logger.error(f"Erreur lors de la sauvegarde de la carte: {e}")
 
 
 
 
-#creer ou remplace le fichier (produit un tiles de taille <taille> par <taille> de 0)
-#produit une grille de 0 dans le fichier <name>
 def creation_fichier_X(name : str, taille : int):
     fichier_charge_succes = False
     if name[-5:] != ".json":
@@ -252,6 +206,8 @@ def creation_fichier_X(name : str, taille : int):
         "name" : name,
         "width" : taille,
         "height" : taille,
+        "position_x": None,
+        "position_y": None,
         "tiles" : grille
     }
     
@@ -262,7 +218,6 @@ def creation_fichier_X(name : str, taille : int):
             json.dump(contenu,f, indent=4)
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{name}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{name}' n'a pas été trouvé.")
     
     if not fichier_charge_succes:
@@ -273,10 +228,8 @@ def creation_fichier_X(name : str, taille : int):
                 json.dump(contenu,f, indent=4)
             fichier_charge_succes = True
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{name}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{name}' n'a pas été trouvé.")
     if fichier_charge_succes:
-        print(name + " a été creer")
         logger.info(f" '{name}' a été creer")
 
     
@@ -292,10 +245,8 @@ def modifier_grille(nom : str, grille : list):
         nom_fichier = os.path.join("Saves", nom)
         with open(nom_fichier, "r") as f:
             map_data = json.load(f)
-        #print("chargement tentative 1 succes")
         fichier_charge_succes = True
     except FileNotFoundError:
-        print(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
         
     if not fichier_charge_succes:
@@ -303,20 +254,263 @@ def modifier_grille(nom : str, grille : list):
             nom_fichier = os.path.join( "..","Saves", nom)
             with open(nom_fichier, "r") as f:
                 map_data = json.load(f)
-            #print("chargement tentative 2 succes")
+            fichier_charge_succes = True
         except FileNotFoundError:
-            print(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
     
     # Remplacement des 'tiles' par la nouvelle grille
     map_data['tiles'] = grille
     
     with open(nom_fichier, "w") as f:
-        json.dump(map_data, f, indent=4) # indent=4 pour une meilleure lisibilité
-    print(f"'{nom_fichier}' enregistrer")
+        json.dump(map_data, f, indent=4)
     logger.info(f"'{nom_fichier}' enregistrer")
 
 
+
+
+
+def derniereSauvegarde() -> str or None:
+    nom = "lastSave.json"
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        nom_sauvegarde = map_data.get("last_save_file")
+        if nom_sauvegarde:
+            return nom_sauvegarde
+    return None
+
+
+
+def dernierePosition() -> (int,int) or None:
+    nom = "lastSave.json"
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        position_x = map_data.get("position_x")
+        position_y = map_data.get("position_y")
+        
+        if position_x != None and position_y != None:
+            return position_x, position_y
+    return None
+
+def dernierePositionDe(nom : str) -> (int,int) or None:
+    if nom [-5:] != ".json":
+        nom += ".json"
+        
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        position_x = map_data.get("position_x")
+        position_y = map_data.get("position_y")
+        
+        if position_x != None and position_y != None:
+            return position_x, position_y
+    return 0,0
+
+
+def SetDerniereSauvegarde(nouvelle_sauvegarde):
+    nom = "lastSave.json"
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        map_data["last_save_file"] = nouvelle_sauvegarde
+
+        try:
+            os.makedirs(os.path.dirname(nom_fichier), exist_ok=True)
+
+            with open(nom_fichier, "w") as f:
+                json.dump(map_data, f, indent=4)
+            
+        except IOError as e:
+            logger.error(f"Erreur critique écriture config : {e}")
+
+def SetDernierePosition(nouvelle_position_x : int, nouvelle_position_y : int):
+    nom = "lastSave.json"
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        map_data["position_x"] = nouvelle_position_x
+        map_data["position_y"] = nouvelle_position_y
+
+        try:
+            os.makedirs(os.path.dirname(nom_fichier), exist_ok=True)
+
+            with open(nom_fichier, "w") as f:
+                json.dump(map_data, f, indent=4)
+            logger.info("Sauvegarde de la dernière position dans le LastSave.json")
+            
+        except IOError as e:
+            logger.error(f"Erreur critique écriture config : {e}")
+            
     
-#creer ou réinitialise un fichier json avec tel nom avec un tiles de X par X de 0
-#creation_fichier_X("map_generation_procedural", 100)
+
+def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y : int):
+    nom = derniereSauvegarde()
+    fichier_charge_succes = False
+    try:
+        nom_fichier = os.path.join("Saves", nom)
+        with open(nom_fichier, "r") as f:
+            map_data = json.load(f)
+        fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+        
+    if not fichier_charge_succes:
+        try:
+            nom_fichier = os.path.join( "..","Saves", nom)
+            with open(nom_fichier, "r") as f:
+                map_data = json.load(f)
+            fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
+            
+    if fichier_charge_succes:
+        map_data["position_x"] = nouvelle_position_x
+        map_data["position_y"] = nouvelle_position_y
+
+        try:
+            os.makedirs(os.path.dirname(nom_fichier), exist_ok=True)
+
+            with open(nom_fichier, "w") as f:
+                json.dump(map_data, f, indent=4)
+            
+            logger.info("Sauvegarde de la dernière position dans la carte")
+            
+        except IOError as e:
+            logger.error(f"Erreur critique écriture config : {e}")
+
+
+
+
+
+def recupNomSauvegarde()-> list[str]:
+    fichier_charge_succes = False
+    liste_sauvegardes = []
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        dossier_saves = os.path.join(base_dir, "Saves")
+        if os.path.exists(dossier_saves):
+            fichier_charge_succes = True
+    except FileNotFoundError:
+        logger.error(f"Erreur tentative 01: impossible de charger l'arboresence")
+
+    
+    
+    if not fichier_charge_succes:
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            dossier_saves = os.path.join(base_dir, "..", "Saves")
+            if os.path.exists(dossier_saves):
+                fichier_charge_succes = True
+        except FileNotFoundError:
+            logger.error(f"Erreur tentative 02: impossible de charger l'arboresence")
+            return []
+        
+    if fichier_charge_succes:
+        try:
+            fichiers = os.listdir(dossier_saves)
+            for f in fichiers:
+                if f.endswith(".json") and f != "lastSave.json":
+                    nom_propre = f[:-5] 
+                    liste_sauvegardes.append(nom_propre)
+                    
+            return liste_sauvegardes
+
+        except Exception as e:
+            logger.error(f"Erreur lors de la lecture des sauvegardes : {e}")
+            return []
+    
+
+
+#creation_fichier_X("test", 100)
+
+#print(derniereSauvegarde())
+#SetDerniereSauvegarde("test.json")
+#print(derniereSauvegarde())
+#print(dernierePositionDe("test"))
+#SetDernierePosition(None, None)
+#print(dernierePosition())
+
+#x, y = dernierePosition()
+#SetDernierePositionDansCarte (x, y)
+#print(recupNomSauvegarde())

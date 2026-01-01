@@ -11,7 +11,7 @@ from Files import Lecteur_map as lecteur
 
 logger = logging.getLogger(__name__)
 
-nom_fichier_a_ouvrir = config.nom_fichier_a_ouvrir
+nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 nombre_texture = config.nombre_texture
 
 pygame.init()
