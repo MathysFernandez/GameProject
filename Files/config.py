@@ -7,10 +7,14 @@ taille_cellule = 70
 taille_joueur = 56
 taille_frame = 25
 duree_animation_joueur = 20
+
+
+#taille de la nouvelle génération
+taille_nouvelle_generation = 2000
+
 #2 c'est bien
 vitesse = 4
-if vitesse >= taille_cellule:
-    vitesse = 2
+
 FPS = 60
 taille_BT_w = 500
 taille_BT_h = 50
@@ -20,16 +24,10 @@ nom_fichier_a_ouvrir = 'map_generation_procedural'
 vitesse_rotation = 5
 test_fps = False
 
-if test_fps:
-    FPS = 1000
-#taille de la nouvelle génération
-taille_nouvelle_generation = 2000
 
 #entre 0 et 1
 multiplicateur_vitesse_diagonale = math.sqrt(2)
 
-if nombre_texture < 2:
-    nombre_texture = 2
 
 # Gère la quantité de sol
 # 7 ou 8 ou 9 sur 12 c'est mal
@@ -48,6 +46,17 @@ nombre_répétition = 4
 #entre 5 et 20
 #8 c'est bien
 nombre_répétition_water = 9
+
+
+
+if vitesse >= taille_cellule:
+    vitesse = 2
+
+if nombre_texture < 2:
+    nombre_texture = 2
+
+if test_fps:
+    FPS = 1000
 
 def get_dimensions():
     largeur_fen = pygame.display.Info().current_w

@@ -276,11 +276,12 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     #génération bordure de carte
     grille = generation_limite(largeur_grille, hauteur_grille, grille)
     
-    print("génération limite carte terminé")
     logger.info("generation_limite() effectué")
-    
+    print(nom_fichier_a_ouvrir)
     #sauvegarde la grille sur le fichier
-    lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+    lecteur.modifier_grille(nom, grille)
+    
+    logger.info("generation effectué")
     
 if __name__ == "__main__":
-    generation(nom_fichier_a_ouvrir, nombre_texture, taille)
+    generation("testX", nombre_texture, 200)

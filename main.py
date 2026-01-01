@@ -69,9 +69,11 @@ Titre = config.Titre
 
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 # récupérer grille avec les valeur en int
-largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-
-
+try:
+    largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+except:
+    nom_fichier_a_ouvrir = "Par_Defaut.json"
+    largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
 
 #horloge Interne
 horloge = pygame.time.Clock()
@@ -189,6 +191,8 @@ COULEUR_FOND_BARRE = (100, 100, 100) # Gris foncé
 COULEUR_VIE = (0, 255, 0)         # Vert
 COULEUR_CONTOUR = (255, 255, 255) # Blanc
 compt_anim_eau = 0
+
+
 
 def retirer_vie(quantite):
 
@@ -317,7 +321,7 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str: # <-- Ajout de 
     compteur_BT += 1
     if result:
         return result
-    result = draw_button("New game", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "newGame")
+    result = draw_button("New game", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "nouvelle partie")
     
     compteur_BT += 1
     if result:
@@ -371,6 +375,90 @@ def menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre):
 
     return "charger"
 
+
+def formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif):
+    largeur, hauteur = fenetre.get_size()
+    font = pygame.font.SysFont(None, 32)
+    #font.render(text, True, WHITE)
+    
+    rect_nom = pygame.Rect(largeur // 2 - 100, hauteur // 2 - 80, 200, 40)
+    rect_taille = pygame.Rect(largeur // 2 - 100, hauteur // 2 + 20, 200, 40)
+    rect_btn_valider = pygame.Rect(largeur // 2 - 100, hauteur // 2 + 100, 200, 50)
+    rect_btn_retour = pygame.Rect(largeur // 2 - 100, hauteur // 2 + 160, 200, 50)
+
+    action_a_retourner = None
+
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if rect_nom.collidepoint(event.pos):
+                champ_actif = "nom"
+            elif rect_taille.collidepoint(event.pos):
+                champ_actif = "taille"
+            elif rect_btn_valider.collidepoint(event.pos):
+                action_a_retourner = "valider"
+            elif rect_btn_retour.collidepoint(event.pos):
+                action_a_retourner = "retour"
+            else:
+                champ_actif = None
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                action_a_retourner = "retour"
+            
+            if champ_actif == "nom":
+                if event.key == pygame.K_BACKSPACE:
+                    nom_actuel = nom_actuel[:-1]
+                else:
+                    nom_actuel += event.unicode
+                    
+            elif champ_actif == "taille":
+                if event.key == pygame.K_BACKSPACE:
+                    taille_actuelle = taille_actuelle[:-1]
+                elif event.unicode.isnumeric(): 
+                    taille_actuelle += event.unicode
+
+    fenetre.fill((30, 30, 30))
+
+    couleur = (0, 100, 255) if champ_actif == "nom" else (100, 100, 100)
+    pygame.draw.rect(fenetre, couleur, rect_nom, 2)
+    fenetre.blit(font.render(nom_actuel, True, (255, 255, 255)), (rect_nom.x + 5, rect_nom.y + 10))
+    fenetre.blit(font.render("Nom :", True, (255, 255, 255)), (rect_nom.x - 70, rect_nom.y + 10))
+
+    couleur = (0, 100, 255) if champ_actif == "taille" else (100, 100, 100)
+    pygame.draw.rect(fenetre, couleur, rect_taille, 2)
+    fenetre.blit(font.render(taille_actuelle, True, (255, 255, 255)), (rect_taille.x + 5, rect_taille.y + 10))
+    fenetre.blit(font.render("Taille :", True, (255, 255, 255)), (rect_taille.x - 80, rect_taille.y + 10))
+
+    pygame.draw.rect(fenetre, (0, 200, 0), rect_btn_valider)
+    fenetre.blit(font.render("CRÉER", True, (255, 255, 255)), (rect_btn_valider.x + 60, rect_btn_valider.y + 15))
+
+    pygame.draw.rect(fenetre, (200, 0, 0), rect_btn_retour)
+    fenetre.blit(font.render("RETOUR", True, (255, 255, 255)), (rect_btn_retour.x + 55, rect_btn_retour.y + 15))
+
+    return nom_actuel, taille_actuelle, champ_actif, action_a_retourner
+
+
+
+def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actuel, champ_actif, taille_actuelle, position_player_x, position_player_y):
+    fenetre.fill(BLACK)
+    
+    nom_actuel, taille_actuelle, champ_actif, action_a_retourner = formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif)
+    if action_a_retourner == "valider":
+        generation.generation(nom_actuel, config.nombre_texture, int(taille_actuelle))
+        lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
+        lecteur.SetDerniereSauvegarde(nom_actuel+".json")
+        x, y = lecteur.dernierePositionDe(nom_actuel)
+        lecteur.SetDernierePosition(x,y)
+        nom_fichier_a_ouvrir = nom_actuel
+        largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+        grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+        position_player_x, position_player_y = lecteur.dernierePosition()
+        return nom_actuel, champ_actif, taille_actuelle, "jeu"
+    
+    if action_a_retourner == "retour":
+        return nom_actuel, champ_actif, taille_actuelle, "menu"
+        
+    return nom_actuel, champ_actif, taille_actuelle, "nouvelle partie"
 
 
 
@@ -444,7 +532,12 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     global joueur_score
     global jeu_est_en_pause
     global compt_anim_eau
-    
+    global champ_actif
+    global nom_actuel
+    global taille_actuelle
+    global compteur_animation
+    global interv
+    global grille
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
     # Utile pour la détection de collision afin de pouvoir "revenir en arrière" (en focntion des axes)
@@ -748,8 +841,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     joueur_2 = textures_manager.texture_joueur(config.taille_joueur, angle, 2)
     
     joueur = joueur_0
-    global compteur_animation
-    global interv
+    
     
     if deplacement_x == 0 and deplacement_y == 0:
         joueur = joueur_0
@@ -852,8 +944,6 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             jeu_est_en_pause = False 
             return "menu" # <-- C'est ça qui retourne au menu
     # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++
-        elif action == "sauvegarde":
-            print("i")
     
     return "jeu"
 
@@ -864,9 +954,14 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
     current_scene = "menu"
     fps = []
-
+    
+    champ_actif = None
+    
     logger.info("Lancement du jeu")
-
+    champ_actif = None
+    nom_actuel = "Par_Defaut"
+    taille_actuelle = "50"
+    
     while True:
         events = pygame.event.get()
         keys_pressed = pygame.key.get_pressed()
@@ -885,7 +980,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 largeur_fenetre = event.w
                 hauteur_fenetre = event.h
                 fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre), pygame.RESIZABLE)
-            # Son de clic global
+            
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1: # Clic gauche
                     sound_manager.play_click()
@@ -924,8 +1019,9 @@ def run(largeur_fenetre, hauteur_fenetre):
                 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
                 grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
                 position_player_x, position_player_y = lecteur.dernierePosition()
-                
-                
+        
+        elif current_scene == "nouvelle partie":
+            nom_actuel, champ_actif, taille_actuelle, current_scene = menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actuel, champ_actif, taille_actuelle, position_player_x, position_player_y)
             
         if current_scene == "quit":
             lecteur.SetDernierePosition(position_player_x, position_player_y)

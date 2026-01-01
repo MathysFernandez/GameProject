@@ -32,7 +32,7 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
         height = map_data['height']
         grille = map_data['tiles']
         logger.info("chargerfichier() effectué")
-    return width, height, grille
+        return width, height, grille
 
 
 
@@ -208,7 +208,7 @@ def creation_fichier_X(name : str, taille : int):
         "height" : taille,
         "position_x": None,
         "position_y": None,
-        "tiles" : grilleu
+        "tiles" : grille
     }
     
     try:
