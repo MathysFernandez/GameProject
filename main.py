@@ -772,6 +772,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         anim = 1
         compt_anim_eau = 0
     compt_anim_eau +=1
+    
+    
     # --- Dessiner uniquement les cellules visibles ---
     for y in range(start_grid_y, end_grid_y):
         for x in range(start_grid_x, end_grid_x):
@@ -782,7 +784,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                 screen_x = x * taille_cellule + camera_x
                 screen_y = y * taille_cellule + camera_y
                 
-                if texture_id == -1:
+                if texture_id == -1 and anim ==2:
                     img = water_final2
                 else:
                     # Dessine la texture en fonction de la grille
