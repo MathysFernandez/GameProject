@@ -116,9 +116,6 @@ taille_cellule = config.taille_cellule
 centre_grille_x_monde = (largeur_grille // 2) * taille_cellule
 centre_grille_y_monde = (hauteur_grille // 2) * taille_cellule
 
-# Couleurs
-couleur_grille = (100, 100, 100)
-couleur_cellule = (200, 200, 200)
 
 
 # Position initiale de la caméra
@@ -194,6 +191,18 @@ compt_anim_eau = 0
 
 
 
+floor, mur, mur2, water_final, water_final2 = textures_manager.charger_texture(taille_cellule, config.taille_frame)
+
+TEXTURES_BASE = {
+    -1: water_final,
+    0: floor,
+    1: mur,
+    2: mur2
+}
+
+
+
+
 def retirer_vie(quantite):
 
     global joueur_vie_actuelle, joueur_etat
@@ -231,21 +240,21 @@ def ajouter_score(quantite):
 # +++ FIN AJOUT SCORE +++
 
 
-# Création de la fonction de collision cercle-rectangle
+# Création de la fonction de collision entre cercle et rectangle
 def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
-    # Trouver le point le plus proche sur le rectangle par rapport au centre du cercle
+    # Trouvé le point le plus proche sur le rectangle par rapport au centre du cercle
     closest_x = max(rect.left, min(centre_cercle[0], rect.right))
     closest_y = max(rect.top, min(centre_cercle[1], rect.bottom))
 
-    #Calculer la distance entre le centre du cercle et ce point
+    #Calculer la distance entre le centre du cercle et ce .
     distance_x = centre_cercle[0] - closest_x
     distance_y = centre_cercle[1] - closest_y
 
     distance_squared = (distance_x ** 2) + (distance_y ** 2)
     
-    # Si la distance au carré est inférieure au rayon au carré, il y a collision
+    #Si la distance au carré est inférieure au rayon au carré, il y a collision
     if distance_squared < (rayon_cercle ** 2):
-        # On calcule la distance réelle (sans le carré)
+        # on calcule la distance reelle (sans le carré)
         distance = math.sqrt(distance_squared)
         # On détermine la quantité d'intersection
         overlap = rayon_cercle - distance
@@ -444,6 +453,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
     
     nom_actuel, taille_actuelle, champ_actif, action_a_retourner = formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif)
     if action_a_retourner == "valider":
+        global grille, collision_map_solid, collision_map_water, nom_fichier_a_ouvrir
         generation.generation(nom_actuel, config.nombre_texture, int(taille_actuelle))
         lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
         lecteur.SetDerniereSauvegarde(nom_actuel+".json")
@@ -452,7 +462,6 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
         nom_fichier_a_ouvrir = nom_actuel
         largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
         grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
-        position_player_x, position_player_y = lecteur.dernierePosition()
         return nom_actuel, champ_actif, taille_actuelle, "jeu"
     
     if action_a_retourner == "retour":
@@ -523,21 +532,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     #deplacement vitesse
     vitesse = config.vitesse
     
-    global angle_voulu
-    global angle
-    global position_player_x
-    global position_player_y
-    global joueur_vie_actuelle
-    global joueur_etat
-    global joueur_score
-    global jeu_est_en_pause
-    global compt_anim_eau
-    global champ_actif
-    global nom_actuel
-    global taille_actuelle
-    global compteur_animation
-    global interv
-    global grille
+    global angle_voulu, angle, position_player_x, position_player_y, joueur_vie_actuelle, joueur_etat, joueur_score, jeu_est_en_pause, compt_anim_eau, champ_actif, nom_actuel, taille_actuelle, compteur_animation, interv, grille
     
     # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
     # Utile pour la détection de collision afin de pouvoir "revenir en arrière" (en focntion des axes)
@@ -777,27 +772,30 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         anim = 1
         compt_anim_eau = 0
     compt_anim_eau +=1
+    
+    
     # --- Dessiner uniquement les cellules visibles ---
     for y in range(start_grid_y, end_grid_y):
         for x in range(start_grid_x, end_grid_x):
-            # Calcule la position de la cellule à l'écran
-            screen_x = x * taille_cellule + camera_x
-            screen_y = y * taille_cellule + camera_y
-
-            # Crée un objet pygame.Rect pour la position à l'écran
-            rect = pygame.Rect(screen_x, screen_y, taille_cellule, taille_cellule)
-
-            # Dessine le contour du rectangle de la cellule
-            #(Ces lignes sont souvent supprimées dans le jeu final pour ne dessiner que les textures)
-            pygame.draw.rect(fenetre, couleur_cellule, rect)
-            pygame.draw.rect(fenetre, couleur_grille, rect, 1)
-
-            # Dessine la texture en fonction de la grille
-            if grille[y][x] is not None:
-                fenetre.blit(grille[y][x], rect)
+            texture_id = grille[y][x]
             
+            if texture_id is not None and texture_id in TEXTURES_BASE: 
+                # Calcule la position de la cellule à l'écran
+                screen_x = x * taille_cellule + camera_x
+                screen_y = y * taille_cellule + camera_y
+                
+                if texture_id == -1 and anim ==2:
+                    img = water_final2
+                else:
+                    # Dessine la texture en fonction de la grille
+                    img = TEXTURES_BASE[texture_id]
+                
+                fenetre.blit(img, (screen_x, screen_y))
+
+            """
             if anim != 1 and ((x, y) in collision_map_water):
                 fenetre.blit(texture_eau2, rect)
+            """
     # --- FIN Dessiner uniquement les cellules visibles ---
     
     #détermine l'angle de direction du joueur
@@ -883,19 +881,21 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         fenetre.blit(fps_text, (10, 10))
     # --- Fin Affichage des FPS ---
     
+    
+    
     # +++ DÉBUT AFFICHAGE SCORE (UI) +++
-    score_surf = font.render(f"Score: {joueur_score}", True, WHITE)
-    score_rect = score_surf.get_rect(topright=(largeur_fenetre - 10, 10))
+    score_prec = -1
+    score_surf = None
+
+    if joueur_score != score_prec:
+        score_surf = font.render(f"Score: {joueur_score}", True, WHITE)
+        score_rect = score_surf.get_rect(topright=(largeur_fenetre - 10, 10))
     fenetre.blit(score_surf, score_rect)
     # +++ FIN AFFICHAGE SCORE (UI) +++
     
-    # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
     
-    # Barre de vie en haut à gauche
-    #barre_pos_x = 10
-    #barre_pos_y = 10
-    #barre_largeur = 200
-    #barre_hauteur = 20
+    
+    # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
     
     # Barre de vie au dessus du joueur
 
@@ -1007,7 +1007,7 @@ def run(largeur_fenetre, hauteur_fenetre):
         
         elif current_scene == "charger":
             current_scene = menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre)
-            if current_scene != "charger" and current_scene != "jeu":
+            if current_scene != "charger" and current_scene != "jeu" and current_scene != "menu":
                 
                 lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
                 lecteur.SetDerniereSauvegarde(current_scene +".json")
@@ -1022,6 +1022,7 @@ def run(largeur_fenetre, hauteur_fenetre):
         
         elif current_scene == "nouvelle partie":
             nom_actuel, champ_actif, taille_actuelle, current_scene = menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actuel, champ_actif, taille_actuelle, position_player_x, position_player_y)
+            position_player_x, position_player_y = lecteur.dernierePosition()
             
         if current_scene == "quit":
             lecteur.SetDernierePosition(position_player_x, position_player_y)

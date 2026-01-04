@@ -33,7 +33,7 @@ taille_cellule = config.taille_cellule
 
 
 
-floor, mur, mur2, water_final = textures_manager.charger_texture(1, config.taille_frame)
+floor, mur, mur2, water_final, water_final2 = textures_manager.charger_texture(1, config.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
@@ -83,7 +83,7 @@ def mettre_a_jour_textures_zoom(nouvelle_taille):
     TEXTURES_ACTUELLES.clear()
     for id_texture, image_originale in TEXTURES_BASE.items():
         TEXTURES_ACTUELLES[id_texture] = pygame.transform.scale(image_originale, (nouvelle_taille, nouvelle_taille))
-
+        
 def mettre_a_jour_pixel_minimap(gx, gy, texture_id):
     if 0 <= gx < largeur_grille and 0 <= gy < hauteur_grille:
         if texture_id in TEXTURES_MINIMAP:
