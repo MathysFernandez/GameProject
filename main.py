@@ -135,7 +135,7 @@ joueur_y_fixe = (hauteur_fenetre - taille_joueur) // 2
 
 
 # Texture Joueur 2
-texture_eau2 = textures_manager.texture_num_2(taille_cellule, config.taille_frame)
+texture_eau2 = textures_manager.texture_num_2_water(taille_cellule, config.taille_frame)
 
 
 
@@ -191,13 +191,14 @@ compt_anim_eau = 0
 
 
 
-floor, mur, mur2, water_final, water_final2 = textures_manager.charger_texture(taille_cellule, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2= textures_manager.charger_texture(taille_cellule, config.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
     0: floor,
     1: mur,
-    2: mur2
+    2: mur2,
+    3: dechet1
 }
 
 
@@ -287,7 +288,7 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
 
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+grille, collision_map_solid, collision_map_water, collision_map_dechet = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
 
 
 # Police
@@ -453,7 +454,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
     
     nom_actuel, taille_actuelle, champ_actif, action_a_retourner = formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif)
     if action_a_retourner == "valider":
-        global grille, collision_map_solid, collision_map_water, nom_fichier_a_ouvrir
+        global grille, collision_map_solid, collision_map_water, collision_map_dechet, nom_fichier_a_ouvrir, largeur_grille, hauteur_grille
         generation.generation(nom_actuel, config.nombre_texture, int(taille_actuelle))
         lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
         lecteur.SetDerniereSauvegarde(nom_actuel+".json")
@@ -461,7 +462,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
         lecteur.SetDernierePosition(x,y)
         nom_fichier_a_ouvrir = nom_actuel
         largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-        grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+        grille, collision_map_solid, collision_map_water, collision_map_dechet = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
         return nom_actuel, champ_actif, taille_actuelle, "jeu"
     
     if action_a_retourner == "retour":
@@ -632,6 +633,12 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         deplacement_x *= 0.7
         deplacement_y *= 0.7
     
+    #Vérifie si le joueur est sur un bloc de dechet
+    if (player_gx, player_gy) in collision_map_dechet:
+        grille[player_gy][player_gx] = 0
+        del collision_map_dechet[(player_gx, player_gy)]
+        ajouter_score(10)
+    
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # Appliquez le mouvement désiré au joueur sur X
         position_player_x += deplacement_x
@@ -771,8 +778,13 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     else :
         anim = 1
         compt_anim_eau = 0
-    compt_anim_eau +=1
+    compt_anim_eau += 1
     
+    """
+    print("nom: "+nom_fichier_a_ouvrir)
+    print("largeur: "+ str(largeur_grille))
+    print("hauteur: "+ str(hauteur_grille))
+    """
     
     # --- Dessiner uniquement les cellules visibles ---
     for y in range(start_grid_y, end_grid_y):
@@ -784,18 +796,16 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                 screen_x = x * taille_cellule + camera_x
                 screen_y = y * taille_cellule + camera_y
                 
-                if texture_id == -1 and anim ==2:
+                if texture_id == -1 and anim == 2:
                     img = water_final2
+                elif texture_id == 3 and anim == 2:
+                    img = dechet2
                 else:
                     # Dessine la texture en fonction de la grille
                     img = TEXTURES_BASE[texture_id]
-                
+                    
                 fenetre.blit(img, (screen_x, screen_y))
 
-            """
-            if anim != 1 and ((x, y) in collision_map_water):
-                fenetre.blit(texture_eau2, rect)
-            """
     # --- FIN Dessiner uniquement les cellules visibles ---
     
     #détermine l'angle de direction du joueur
@@ -950,7 +960,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
 sound_manager = SoundManager()
 
 def run(largeur_fenetre, hauteur_fenetre):
-    global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, position_player_x, position_player_y
+    global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, collision_map_dechet, position_player_x, position_player_y
                 
     current_scene = "menu"
     fps = []
@@ -1017,7 +1027,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
                 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
                 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-                grille, collision_map_solid, collision_map_water = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+                grille, collision_map_solid, collision_map_water, collision_map_dechet = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
                 position_player_x, position_player_y = lecteur.dernierePosition()
         
         elif current_scene == "nouvelle partie":

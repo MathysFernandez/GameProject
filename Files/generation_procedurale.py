@@ -230,8 +230,23 @@ def generation_limite(largeur_grille : int, hauteur_grille : int, grille : list)
     logger.info("generation_limite() effectué")
     return grille
 
-
-
+def generation_dechet(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
+    for _ in range (config.nombre_de_dechets):
+        dechet_placer = False
+        while not dechet_placer:
+            x = random.randint(1, largeur_grille -1)
+            y = random.randint(1, hauteur_grille -1)
+            if grille[x][y] == 0:
+                grille[x][y] = 3
+                dechet_placer = True
+    logger.info("génération des déchets éffectués")
+    return grille
+            
+            
+            
+            
+            
+            
 
 def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     #gestion du nom en fonction de la présence ou non de l'extension
@@ -247,7 +262,7 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     lecteur.creation_fichier_X(nom, taille)
     
     #récupérer grille
-    largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
+    largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom)
     
     #récupère les 2 premiers paramètres de random.choice
     population, poids = listes(2)
@@ -277,11 +292,12 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     grille = generation_limite(largeur_grille, hauteur_grille, grille)
     
     logger.info("generation_limite() effectué")
-    print(nom_fichier_a_ouvrir)
+    
+    grille = generation_dechet(largeur_grille, hauteur_grille, grille)
     #sauvegarde la grille sur le fichier
     lecteur.modifier_grille(nom, grille)
     
     logger.info("generation effectué")
     
 if __name__ == "__main__":
-    generation("testX", nombre_texture, 200)
+    generation("testX", nombre_texture, 100)

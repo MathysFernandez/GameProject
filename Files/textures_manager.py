@@ -54,7 +54,7 @@ def texture_feu(taille_cellule : int, num_img : int = 0):
 
 
 
-def texture_num_2(taille_cellule : int = 25, taille_frame : int = 25):
+def texture_num_2_water(taille_cellule : int = 25, taille_frame : int = 25):
     # ---SpriteSheet eau 2 ---
     
     # Charger l'image complète
@@ -71,7 +71,19 @@ def texture_num_2(taille_cellule : int = 25, taille_frame : int = 25):
     # ---SpriteSheet eau 2 ---
 
 
-
+def texture_num_2_dechet(taille_cellule : int = 25, taille_frame : int = 25):
+    
+    # Charger l'image complète
+    dechet = pygame.image.load("Assets/dechet.png").convert_alpha()
+    
+    # Rogner l'image
+    rect_rognage = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
+    dechet_rognee = dechet.subsurface(rect_rognage)
+    
+    # Mettre à l'échelle la texture rognée à la taille de la cellule
+    dechetfinal = pygame.transform.scale(dechet_rognee, (taille_cellule, taille_cellule))
+    
+    return dechetfinal
 
 
 def charger_texture(taille_cellule, taille_frame: int = 25):
@@ -82,6 +94,34 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         mur = pygame.transform.scale(mur, (taille_cellule, taille_cellule))
         mur2 = pygame.image.load("Assets/pierre_opt.png").convert_alpha()
         mur2 = pygame.transform.scale(mur2, (taille_cellule, taille_cellule))
+        
+        
+        
+        # ---SpriteSheet dechet---
+        # img 1
+        dechet = pygame.image.load("Assets/dechet.png").convert_alpha()
+    
+        # Rogner l'image
+        rect_rognage = pygame.Rect(0, 0, taille_frame, taille_frame)
+        dechet_rognee = dechet.subsurface(rect_rognage)
+        
+        # Mettre à l'échelle la texture rognée à la taille de la cellule
+        dechet1 = pygame.transform.scale(dechet_rognee, (taille_cellule, taille_cellule))
+        
+        # ----------------------------------------------------------
+        
+        # img 2
+        dechet = pygame.image.load("Assets/dechet.png").convert_alpha()
+    
+        # Rogner l'image
+        rect_rognage = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
+        dechet_rognee = dechet.subsurface(rect_rognage)
+        
+        # Mettre à l'échelle la texture rognée à la taille de la cellule
+        dechet2 = pygame.transform.scale(dechet_rognee, (taille_cellule, taille_cellule))
+        # ---FIn SpriteSheet dechet---
+        
+        
         
         
         # ---SpriteSheet eau---
@@ -95,7 +135,7 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         
         # Mettre à l'échelle la texture rognée à la taille de la cellule
         water_final = pygame.transform.scale(water_rognee, (taille_cellule, taille_cellule))
-        # ---SpriteSheet eau---
+        # ---FIN SpriteSheet eau---
         
         
         # Rogner l'image
@@ -112,7 +152,7 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         logger.error("Erreur lors du chargement des textures (texture_manager)")
         pygame.quit()
         exit()
-    return floor, mur, mur2, water_final, water_final2
+    return floor, mur, mur2, water_final, water_final2, dechet1, dechet2
 
 
 
@@ -120,11 +160,12 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
 
 def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBasseResolution : bool = False,  taille_frame : int = 25):
     
-    floor, mur, mur2, water_final, water_final2 = charger_texture(taille_cellule, taille_frame)
+    floor, mur, mur2, water_final, water_final2, dechet1, dechet2 = charger_texture(taille_cellule, taille_frame)
     
     # map de collision à tester la collisions (sans filtre)
     collision_map_solid = {}
     collision_map_water = {}
+    collision_map_dechet = {}
     
     for j in range(largeur_grille):
         for i in range(hauteur_grille):
@@ -141,7 +182,10 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBas
             elif valeur_case == -1: # Eau
                 rect_water = pygame.Rect(x, y, taille_cellule, taille_cellule)
                 collision_map_water[(j, i)] = rect_water
-            
+                
+            elif valeur_case == 3:
+                rect_dechet = pygame.Rect(x, y, taille_cellule, taille_cellule)
+                collision_map_dechet[(j, i)] = rect_dechet
             
     logger.info("placer_texture() effectué")
-    return grille, collision_map_solid, collision_map_water
+    return grille, collision_map_solid, collision_map_water, collision_map_dechet
