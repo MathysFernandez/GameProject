@@ -116,9 +116,6 @@ taille_cellule = config.taille_cellule
 centre_grille_x_monde = (largeur_grille // 2) * taille_cellule
 centre_grille_y_monde = (hauteur_grille // 2) * taille_cellule
 
-# Couleurs
-couleur_grille = (100, 100, 100)
-couleur_cellule = (200, 200, 200)
 
 
 # Position initiale de la caméra
@@ -231,21 +228,21 @@ def ajouter_score(quantite):
 # +++ FIN AJOUT SCORE +++
 
 
-# Création de la fonction de collision cercle-rectangle
+# Création de la fonction de collision entre cercle et rectangle
 def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
-    # Trouver le point le plus proche sur le rectangle par rapport au centre du cercle
+    # Trouvé le point le plus proche sur le rectangle par rapport au centre du cercle
     closest_x = max(rect.left, min(centre_cercle[0], rect.right))
     closest_y = max(rect.top, min(centre_cercle[1], rect.bottom))
 
-    #Calculer la distance entre le centre du cercle et ce point
+    #Calculer la distance entre le centre du cercle et ce .
     distance_x = centre_cercle[0] - closest_x
     distance_y = centre_cercle[1] - closest_y
 
     distance_squared = (distance_x ** 2) + (distance_y ** 2)
     
-    # Si la distance au carré est inférieure au rayon au carré, il y a collision
+    #Si la distance au carré est inférieure au rayon au carré, il y a collision
     if distance_squared < (rayon_cercle ** 2):
-        # On calcule la distance réelle (sans le carré)
+        # on calcule la distance reelle (sans le carré)
         distance = math.sqrt(distance_squared)
         # On détermine la quantité d'intersection
         overlap = rayon_cercle - distance
@@ -787,10 +784,6 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
             # Crée un objet pygame.Rect pour la position à l'écran
             rect = pygame.Rect(screen_x, screen_y, taille_cellule, taille_cellule)
 
-            # Dessine le contour du rectangle de la cellule
-            #(Ces lignes sont souvent supprimées dans le jeu final pour ne dessiner que les textures)
-            pygame.draw.rect(fenetre, couleur_cellule, rect)
-            pygame.draw.rect(fenetre, couleur_grille, rect, 1)
 
             # Dessine la texture en fonction de la grille
             if grille[y][x] is not None:
@@ -883,19 +876,21 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         fenetre.blit(fps_text, (10, 10))
     # --- Fin Affichage des FPS ---
     
+    
+    
     # +++ DÉBUT AFFICHAGE SCORE (UI) +++
-    score_surf = font.render(f"Score: {joueur_score}", True, WHITE)
-    score_rect = score_surf.get_rect(topright=(largeur_fenetre - 10, 10))
+    score_prec = -1
+    score_surf = None
+
+    if joueur_score != score_prec:
+        score_surf = font.render(f"Score: {joueur_score}", True, WHITE)
+        score_rect = score_surf.get_rect(topright=(largeur_fenetre - 10, 10))
     fenetre.blit(score_surf, score_rect)
     # +++ FIN AFFICHAGE SCORE (UI) +++
     
-    # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
     
-    # Barre de vie en haut à gauche
-    #barre_pos_x = 10
-    #barre_pos_y = 10
-    #barre_largeur = 200
-    #barre_hauteur = 20
+    
+    # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
     
     # Barre de vie au dessus du joueur
 
@@ -1007,7 +1002,7 @@ def run(largeur_fenetre, hauteur_fenetre):
         
         elif current_scene == "charger":
             current_scene = menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre)
-            if current_scene != "charger" and current_scene != "jeu":
+            if current_scene != "charger" and current_scene != "jeu" and current_scene != "menu":
                 
                 lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
                 lecteur.SetDerniereSauvegarde(current_scene +".json")

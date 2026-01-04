@@ -1,6 +1,5 @@
 import pygame
 import logging
-import pygame_gui
 
 # On crée un logger pour ce fichier.
 # Le module logging sait que la configuration globale a déjà été faite.
