@@ -16,21 +16,6 @@ def joueur_texture(taille_joueur : int, angle : int = 0):
     joueur = pygame.transform.rotate(joueur, angle-90)
     return joueur
 
-def texture_num_2(taille_cellule : int = 25, taille_frame : int = 25):
-    # ---SpriteSheet eau 2 ---
-    
-    # Charger l'image complète
-    water_source = pygame.image.load("Assets/water1.png").convert_alpha()
-    
-    # Rogner l'image
-    rect_rognage2 = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
-    water_rognee2 = water_source.subsurface(rect_rognage2)
-    
-    # Mettre à l'échelle la texture rognée à la taille de la cellule
-    water_final2 = pygame.transform.scale(water_rognee2, (taille_cellule, taille_cellule))
-    
-    return water_final2
-    # ---SpriteSheet eau 2 ---
 
 
 #divise l'image par 3 pour le sprite sheet du joueur
@@ -64,6 +49,31 @@ def texture_feu(taille_cellule : int, num_img : int = 0):
         feu_final = pygame.transform.scale(feu_rognee, (taille_cellule, taille_cellule))
         return feu_final
 
+
+
+
+
+
+def texture_num_2(taille_cellule : int = 25, taille_frame : int = 25):
+    # ---SpriteSheet eau 2 ---
+    
+    # Charger l'image complète
+    water_source = pygame.image.load("Assets/water1.png").convert_alpha()
+    
+    # Rogner l'image
+    rect_rognage2 = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
+    water_rognee2 = water_source.subsurface(rect_rognage2)
+    
+    # Mettre à l'échelle la texture rognée à la taille de la cellule
+    water_final2 = pygame.transform.scale(water_rognee2, (taille_cellule, taille_cellule))
+    
+    return water_final2
+    # ---SpriteSheet eau 2 ---
+
+
+
+
+
 def charger_texture(taille_cellule, taille_frame: int = 25):
     try:
         floor = pygame.image.load("Assets/sol1.png").convert_alpha()
@@ -88,12 +98,21 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         # ---SpriteSheet eau---
         
         
+        # Rogner l'image
+        rect_rognage2 = pygame.Rect(0, taille_frame, taille_frame, taille_frame)
+        water_rognee2 = water_source.subsurface(rect_rognage2)
+        
+        # Mettre à l'échelle la texture rognée à la taille de la cellule
+        water_final2 = pygame.transform.scale(water_rognee2, (taille_cellule, taille_cellule))
+    
+        
+        
         
     except pygame.error as e:
         logger.error("Erreur lors du chargement des textures (texture_manager)")
         pygame.quit()
         exit()
-    return floor, mur, mur2, water_final
+    return floor, mur, mur2, water_final, water_final2
 
 
 
@@ -101,7 +120,7 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
 
 def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBasseResolution : bool = False,  taille_frame : int = 25):
     
-    floor, mur, mur2, water_final = charger_texture(taille_cellule, taille_frame)
+    floor, mur, mur2, water_final, water_final2 = charger_texture(taille_cellule, taille_frame)
     
     # map de collision à tester la collisions (sans filtre)
     collision_map_solid = {}
@@ -109,39 +128,20 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBas
     
     for j in range(largeur_grille):
         for i in range(hauteur_grille):
-            if grille[i][j] == 0 :
-                grille[i][j] = floor
-            elif grille[i][j] == 1 or grille[i][j] == 2:
-                # --- murs ---
-                if grille[i][j] == 1:
-                    grille[i][j] = mur
-                elif grille[i][j] == 2:
-                    grille[i][j] = mur2
-                    
-                # Créer un rectangle représentant la position du mur dans le monde
-                x = j * taille_cellule
-                y = i * taille_cellule
+            valeur_case = grille[i][j]
+            
+            x = j * taille_cellule
+            y = i * taille_cellule
+            
+            # Génération des collisions basée sur la valeur (le nombre)
+            if valeur_case == 1 or valeur_case == 2: # Murs
                 rect_mur = pygame.Rect(x, y, taille_cellule, taille_cellule)
-
-                # Stocker le rectangle de collision dans notre map de collision par grille
-                # On stocke le rect directement, c'est suffisant pour la collision
-                collision_map_solid[(j, i)] = rect_mur # Clé (grid_x, grid_y)
-                # --- FIN murs ---
+                collision_map_solid[(j, i)] = rect_mur
             
-            
-            elif grille[i][j] == -1:
-                # --- water ---
-                grille[i][j] = water_final
-                
-                # Créer un rectangle représentant la position du mur dans le monde
-                x = j * taille_cellule
-                y = i * taille_cellule
+            elif valeur_case == -1: # Eau
                 rect_water = pygame.Rect(x, y, taille_cellule, taille_cellule)
-
-                # Stocker le rectangle de collision dans notre map de collision par grille
-                # On stocke le rect directement, c'est suffisant pour la collision
-                collision_map_water[(j, i)] = rect_water # Clé (grid_x, grid_y)
-                # --- FIN water ---
+                collision_map_water[(j, i)] = rect_water
+            
             
     logger.info("placer_texture() effectué")
     return grille, collision_map_solid, collision_map_water
