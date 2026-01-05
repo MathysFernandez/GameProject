@@ -191,14 +191,15 @@ compt_anim_eau = 0
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2= textures_manager.charger_texture(taille_cellule, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = textures_manager.charger_texture(taille_cellule, config.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
     0: floor,
     1: mur,
     2: mur2,
-    3: dechet1
+    3: dechet1,
+    4: feu_final
 }
 
 
@@ -288,7 +289,7 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
 
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water, collision_map_dechet = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
 
 
 # Police
@@ -454,7 +455,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
     
     nom_actuel, taille_actuelle, champ_actif, action_a_retourner = formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif)
     if action_a_retourner == "valider":
-        global grille, collision_map_solid, collision_map_water, collision_map_dechet, nom_fichier_a_ouvrir, largeur_grille, hauteur_grille
+        global grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, nom_fichier_a_ouvrir, largeur_grille, hauteur_grille
         generation.generation(nom_actuel, config.nombre_texture, int(taille_actuelle))
         lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
         lecteur.SetDerniereSauvegarde(nom_actuel+".json")
@@ -462,7 +463,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
         lecteur.SetDernierePosition(x,y)
         nom_fichier_a_ouvrir = nom_actuel
         largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-        grille, collision_map_solid, collision_map_water, collision_map_dechet = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
         return nom_actuel, champ_actif, taille_actuelle, "jeu"
     
     if action_a_retourner == "retour":
@@ -596,6 +597,42 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                     # Press K pour gagner 10 points (pour tester)
                     ajouter_score(10)
             # +++ FIN TEST +++
+            
+            # +++ ETEINDRE LE FEU (Touche F) +++
+            if event.key == pygame.K_f:
+                # 1. On récupère la position du joueur sur la grille
+                gx_joueur = int(position_player_x // taille_cellule)
+                gy_joueur = int(position_player_y // taille_cellule)
+                
+                feu_eteint = False # Pour savoir si on doit jouer un son ou logger
+                    
+                    # 2. On vérifie les cases autour du joueur (3x3 cases)
+                # Cela permet d'éteindre le feu sur lequel on est, ou celui juste à côté
+                for dy in [-1, 0, 1]:
+                    for dx in [-1, 0, 1]:
+                        cible_x = gx_joueur + dx
+                        cible_y = gy_joueur + dy
+                        
+                        # Vérifier qu'on ne sort pas de la carte
+                        if 0 <= cible_x < largeur_grille and 0 <= cible_y < hauteur_grille:
+                            
+                            # Si la case est du feu (valeur 4)
+                            if grille[cible_y][cible_x] == 4:
+                                
+                                # A. Remplacer le feu par le sol (Texture)
+                                grille[cible_y][cible_x] = 0
+                                
+                                # B. Supprimer la collision de feu (Dégâts)
+                                if (cible_x, cible_y) in collision_map_fire:
+                                    del collision_map_fire[(cible_x, cible_y)]
+                                
+                                # C. Augmenter le score
+                                ajouter_score(20) 
+                                feu_eteint = True
+                
+                if feu_eteint:
+                    logger.info("Le joueur a éteint un feu.")
+            # +++ FIN ETEINDRE LE FEU +++
     
     
     # +++ TOUTE LA LOGIQUE DU JEU NE S'EXÉCUTE QUE SI ON N'EST PAS EN PAUSE +++
@@ -638,6 +675,10 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         grille[player_gy][player_gx] = 0
         del collision_map_dechet[(player_gx, player_gy)]
         ajouter_score(10)
+        
+    #dégâts suite au contact avec le feu
+    if (player_gx, player_gy) in collision_map_fire:
+        retirer_vie(0.3)
     
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # Appliquez le mouvement désiré au joueur sur X
@@ -800,6 +841,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                     img = water_final2
                 elif texture_id == 3 and anim == 2:
                     img = dechet2
+                elif texture_id == 4 and anim == 2:
+                    img = feu_final2
                 else:
                     # Dessine la texture en fonction de la grille
                     img = TEXTURES_BASE[texture_id]
@@ -960,7 +1003,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
 sound_manager = SoundManager()
 
 def run(largeur_fenetre, hauteur_fenetre):
-    global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, collision_map_dechet, position_player_x, position_player_y
+    global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, position_player_x, position_player_y
                 
     current_scene = "menu"
     fps = []
@@ -1027,7 +1070,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
                 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
                 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-                grille, collision_map_solid, collision_map_water, collision_map_dechet = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
                 position_player_x, position_player_y = lecteur.dernierePosition()
         
         elif current_scene == "nouvelle partie":

@@ -241,6 +241,16 @@ def generation_dechet(largeur_grille : int, hauteur_grille : int, grille : list)
                 dechet_placer = True
     logger.info("génération des déchets éffectués")
     return grille
+
+def generation_feu(largeur_grille, hauteur_grille, grille, chance_apparition=0.02):
+    for x in range(1, largeur_grille - 1):
+        for y in range(1, hauteur_grille - 1):
+            # On place du feu uniquement sur le sol (0)
+            if grille[x][y] == 0:
+                if random.random() < chance_apparition:
+                    grille[x][y] = 4  # 4 sera l'ID du feu
+    logger.info("generation_feu() effectué")
+    return grille
             
             
             
@@ -281,12 +291,16 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     # génération suppression des murs en trop en les remplacants par du sol
     grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
     
+    
     if nombre_texture > 2:
         #modifie les murs en plusieurs textures de mur différentes
         grille = generation_type_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
     
     #génération de l'eau
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
+    
+    # génération du feu de manière peu fréquente
+    grille = generation_feu(largeur_grille, hauteur_grille, grille)
     
     #génération bordure de carte
     grille = generation_limite(largeur_grille, hauteur_grille, grille)
