@@ -12,6 +12,9 @@ duree_animation_joueur = 20
 #taille de la nouvelle génération
 taille_nouvelle_generation = 2000
 
+# nombre de dechet par carte
+nombre_de_dechets = 50
+
 #2 c'est bien
 vitesse = 4
 
@@ -20,7 +23,6 @@ taille_BT_w = 500
 taille_BT_h = 50
 
 nombre_texture = 3
-nom_fichier_a_ouvrir = 'map_generation_procedural'
 vitesse_rotation = 5
 test_fps = False
 
@@ -31,7 +33,7 @@ multiplicateur_vitesse_diagonale = math.sqrt(2)
 
 # Gère la quantité de sol
 # 7 ou 8 ou 9 sur 12 c'est mal
-multiplicateur_sol = 9/12 * nombre_texture
+multiplicateur_sol = 10/12 * nombre_texture
 
 # Gère la quantité de points d'eau
 #entre 2 et 15
