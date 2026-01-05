@@ -95,6 +95,11 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         mur2 = pygame.image.load("Assets/pierre_opt.png").convert_alpha()
         mur2 = pygame.transform.scale(mur2, (taille_cellule, taille_cellule))
         
+        feu_source = pygame.image.load("Assets/solfeu.png").convert_alpha()
+        # Chaque frame fait 25x25. On se déplace de 25px verticalement par image.
+        rect_rognage = pygame.Rect(0, 0, 25, 25)
+        feu_rognee = feu_source.subsurface(rect_rognage)
+        feu_final = pygame.transform.scale(feu_rognee, (taille_cellule, taille_cellule))
         
         
         # ---SpriteSheet dechet---
@@ -152,7 +157,7 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
         logger.error("Erreur lors du chargement des textures (texture_manager)")
         pygame.quit()
         exit()
-    return floor, mur, mur2, water_final, water_final2, dechet1, dechet2
+    return floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final
 
 
 
@@ -160,7 +165,7 @@ def charger_texture(taille_cellule, taille_frame: int = 25):
 
 def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBasseResolution : bool = False,  taille_frame : int = 25):
     
-    floor, mur, mur2, water_final, water_final2, dechet1, dechet2 = charger_texture(taille_cellule, taille_frame)
+    floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final = charger_texture(taille_cellule, taille_frame)
     
     # map de collision à tester la collisions (sans filtre)
     collision_map_solid = {}

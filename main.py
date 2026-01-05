@@ -191,14 +191,15 @@ compt_anim_eau = 0
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2= textures_manager.charger_texture(taille_cellule, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final = textures_manager.charger_texture(taille_cellule, config.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
     0: floor,
     1: mur,
     2: mur2,
-    3: dechet1
+    3: dechet1,
+    4: feu_final
 }
 
 
