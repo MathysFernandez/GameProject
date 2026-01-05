@@ -231,14 +231,22 @@ def ajouter_vie(quantite):
 
 # +++ FIN AJOUT BARRE DE VIE +++
 
+# +++ AJOUT SCORE ET VICTOIRE +++
+SCORE_OBJECTIF = 200  # Le score à atteindre pour gagner
+
 # +++ AJOUT SCORE +++
 def ajouter_score(quantite):
     """Ajoute un montant au score du joueur."""
-    global joueur_score
+    global joueur_score, joueur_etat
     
-    joueur_score += quantite
-    logger.info(f"Le joueur a gagné {quantite} points. Score total : {joueur_score}")
-
+    if joueur_etat == "vivant":
+        joueur_score += quantite
+        logger.info(f"Le joueur a gagné {quantite} points. Score total : {joueur_score}")
+    
+    # Vérification de la condition de victoire
+        if joueur_score >= SCORE_OBJECTIF:
+            joueur_etat = "gagne"
+            logger.info("VICTOIRE ! Le joueur a atteint l'objectif de score.")
 # +++ FIN AJOUT SCORE +++
 
 
@@ -992,6 +1000,23 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
         # On utilise les variables globales largeur_fenetre et hauteur_fenetre pour centrer
         mort_rect = mort_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2))
         fenetre.blit(mort_surf, mort_rect)
+        
+    # +++ AJOUT AFFICHAGE VICTOIRE +++
+    if joueur_etat == "gagne":
+        # On crée un texte "VICTOIRE !" en couleur Or (Gold)
+        victoire_surf = font.render("VICTOIRE !", True, (255, 215, 0)) 
+        
+        # On ajoute le score final en dessous
+        score_final_surf = font.render(f"Score Final: {joueur_score}", True, WHITE)
+        
+        # Centrage des textes
+        victoire_rect = victoire_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2 - 20))
+        score_final_rect = score_final_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2 + 30))
+        
+        # Affichage
+        fenetre.blit(victoire_surf, victoire_rect)
+        fenetre.blit(score_final_surf, score_final_rect)
+    # +++ FIN AFFICHAGE VICTOIRE +++
     
     # +++ DÉBUT GESTION AFFICHAGE DU MENU PAUSE (LE BON CODE) +++
     if jeu_est_en_pause:
