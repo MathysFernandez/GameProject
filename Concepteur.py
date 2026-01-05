@@ -159,6 +159,7 @@ while running:
                 lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
                 logger.info("Sauvegarde de la Carte depuis le Concepteur")
             running = False
+            
         
         # Si un bouton de la souris est pressé
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -186,6 +187,11 @@ while running:
                 
         
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE: # Exemple : quitter le menu avec ESC
+                print("ESC pressée dans le menu")
+                pygame.quit()
+                sys.exit()
+                
             if event.key == pygame.K_i:
                 if grille_modifier:
                     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
