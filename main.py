@@ -232,7 +232,7 @@ def ajouter_vie(quantite):
 # +++ FIN AJOUT BARRE DE VIE +++
 
 # +++ AJOUT SCORE ET VICTOIRE +++
-SCORE_OBJECTIF = 200  # Le score à atteindre pour gagner
+SCORE_OBJECTIF = config.SCORE_OBJECTIF  # Le score à atteindre pour gagner
 
 # +++ AJOUT SCORE +++
 def ajouter_score(quantite):
@@ -601,9 +601,9 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
             # +++ FIN TEST +++
             
             # +++ TEST AJOUTER SCORE (Appuyez sur K) +++
-                if event.key == pygame.K_k:
-                    # Press K pour gagner 10 points (pour tester)
-                    ajouter_score(10)
+            if event.key == pygame.K_k and config.mod_test_score:
+                # Press K pour gagner 10 points (pour tester)
+                ajouter_score(10)
             # +++ FIN TEST +++
             
             # +++ ETEINDRE LE FEU (Touche F) +++
@@ -635,7 +635,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
                                     del collision_map_fire[(cible_x, cible_y)]
                                 
                                 # C. Augmenter le score
-                                ajouter_score(20) 
+                                ajouter_score(30) 
                                 feu_eteint = True
                 
                 if feu_eteint:
@@ -690,7 +690,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     if (player_gx, player_gy) in collision_map_dechet:
         grille[player_gy][player_gx] = 0
         del collision_map_dechet[(player_gx, player_gy)]
-        ajouter_score(10)
+        ajouter_score(20)
         
     #dégâts suite au contact avec le feu
     if (player_gx, player_gy) in collision_map_fire and not jeu_est_en_pause:
