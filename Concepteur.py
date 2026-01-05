@@ -33,14 +33,15 @@ taille_cellule = config.taille_cellule
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2 = textures_manager.charger_texture(1, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2  = textures_manager.charger_texture(1, config.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
     0: floor,
     1: mur,
     2: mur2,
-    3: dechet1
+    3: dechet1,
+    4: feu_final
 }
 
 minimap_surface = pygame.Surface((largeur_grille, hauteur_grille))

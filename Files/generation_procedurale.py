@@ -290,8 +290,7 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     grille = generation_mur(largeur_grille, hauteur_grille, grille, 9)
     # génération suppression des murs en trop en les remplacants par du sol
     grille = generation_voisin_mur(largeur_grille, hauteur_grille, grille)
-    # génération du feu de manière peu fréquente
-    grille = generation_feu(largeur_grille, hauteur_grille, grille)
+    
     
     if nombre_texture > 2:
         #modifie les murs en plusieurs textures de mur différentes
@@ -299,6 +298,9 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     
     #génération de l'eau
     grille = generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
+    
+    # génération du feu de manière peu fréquente
+    grille = generation_feu(largeur_grille, hauteur_grille, grille)
     
     #génération bordure de carte
     grille = generation_limite(largeur_grille, hauteur_grille, grille)
