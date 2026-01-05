@@ -11,7 +11,7 @@ from Files import Lecteur_map as lecteur
 from Files import generation_procedurale as generation
 from Files import gameplay
 from Files.sound_manager import SoundManager
-
+from Files.plantes_manager import PlantesManager # <--- AJOUT IMPORT
 
 
 # Configuration simple du logger pour écrire dans le fichier game.log
@@ -518,7 +518,7 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
 
 
 # Jeu
-def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gestion des évènements)
+def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_manager
     #Gère la logique et le rendu de la scène de jeu principale
 
     #Args:
@@ -633,6 +633,14 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
                 if feu_eteint:
                     logger.info("Le joueur a éteint un feu.")
             # +++ FIN ETEINDRE LE FEU +++
+
+            # +++ PLANTER / RÉCOLTER (Touche R) +++
+            if event.key == pygame.K_r:
+                 # On passe collision_map_water pour vérifier l'eau
+                 points = plantes_manager.interagir(position_player_x, position_player_y, collision_map_water)
+                 if points > 0:
+                     ajouter_score(points)
+            # +++ FIN PLANTER +++
     
     
     # +++ TOUTE LA LOGIQUE DU JEU NE S'EXÉCUTE QUE SI ON N'EST PAS EN PAUSE +++
@@ -683,6 +691,9 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # Appliquez le mouvement désiré au joueur sur X
         position_player_x += deplacement_x
+
+        # +++ MISE A JOUR PLANTES +++
+        plantes_manager.update()
         
     
     # --- Détection de collision sur l'axe X (Optimisé par grille) ---
@@ -851,6 +862,9 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
 
     # --- FIN Dessiner uniquement les cellules visibles ---
     
+    # +++ DESSINER LES PLANTES +++
+    plantes_manager.draw(fenetre, camera_x, camera_y, largeur_fenetre, hauteur_fenetre)
+    
     #détermine l'angle de direction du joueur
     ##0 degrés = droite, 90 degrés = haut
     
@@ -1001,6 +1015,7 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
     return "jeu"
 
 sound_manager = SoundManager()
+plantes_manager = PlantesManager(config.taille_cellule) # <--- INIT DU MANAGER
 
 def run(largeur_fenetre, hauteur_fenetre):
     global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, position_player_x, position_player_y
@@ -1048,7 +1063,7 @@ def run(largeur_fenetre, hauteur_fenetre):
             prev_x, prev_y = position_player_x, position_player_y
             
             # On lance la frame de jeu
-            current_scene = jeu_scene(events, camera_x, camera_y)
+            current_scene = jeu_scene(events, camera_x, camera_y, plantes_manager) # <--- PASSAGE DE L'ARGUMENT
             
             # On compare avec la position APRÈS pour le son de pas
             if (position_player_x != prev_x or position_player_y != prev_y) and joueur_etat == "vivant" and not jeu_est_en_pause:
