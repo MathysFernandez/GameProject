@@ -677,8 +677,8 @@ def jeu_scene(events, camera_x, camera_y): # <-- Ajout de 'events' (pour la gest
         ajouter_score(10)
         
     #dégâts suite au contact avec le feu
-    if (player_gx, player_gy) in collision_map_fire:
-        retirer_vie(0.3)
+    if (player_gx, player_gy) in collision_map_fire and not jeu_est_en_pause:
+        retirer_vie(0.3) 
     
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # Appliquez le mouvement désiré au joueur sur X
