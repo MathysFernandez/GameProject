@@ -48,6 +48,7 @@ nombre_répétition = 4
 #entre 5 et 20
 #8 c'est bien
 nombre_répétition_water = 9
+SCORE_OBJECTIF = 2000
 
 
 
@@ -78,4 +79,5 @@ dash_vitesse =  3  # multiplicateur de vitesse durant le dash
 joueur_vie_max = 100
 joueur_vie_actuelle = 100 # On peut choisir le pourcentage de vie de départ ici
 joueur_etat = "vivant" # Peut être "vivant" ou "mort"
-test_vie = True
+test_vie = False
+mod_test_score = False

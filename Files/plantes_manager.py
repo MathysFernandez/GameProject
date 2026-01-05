@@ -13,7 +13,7 @@ class PlantesManager:
         # --- Configuration ---
         self.TEMPS_POUSSE = 2000
         self.STADE_MAX = 2
-        self.POINTS_RECOLTE = 50
+        self.POINTS_RECOLTE = 5
         
         # --- Chargement des Textures ---
         self.textures = {}
