@@ -1,5 +1,4 @@
 import logging
-
 import pygame
 import math
 import json
@@ -8,7 +7,7 @@ import sys
 from Files import settings 
 from Files import textures_manager
 from Files import Lecteur_map as lecteur
-from Files import generation_procedurale as generation
+from Files import procedural_generation as generation
 from Files import gameplay
 from Files.sound_manager import SoundManager
 from Files.plantes_manager import PlantesManager # <--- AJOUT IMPORT
