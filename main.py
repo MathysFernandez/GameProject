@@ -8,7 +8,7 @@ from Files import settings
 from Files import texture_manager
 from Files import map_loader as lecteur
 from Files import procedural_generation as generation
-from Files import gameplay
+from Files import game_mechanics
 from Files.sound_manager import SoundManager
 from Files.plant_manager import PlantesManager
 
@@ -665,7 +665,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     # --- Ajout du dash ---
     temps_actuel = pygame.time.get_ticks()
     # On utilise 'events' pour détecter la touche Espace
-    deplacement_x, deplacement_y, vitesse = gameplay.gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse)
+    deplacement_x, deplacement_y, vitesse = game_mechanics.gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse)
     # --- Déplacer dans un nouveau fichier en tant que fonction --
     if deplacement_x != 0 and deplacement_y != 0:
         vitesse /= settings.multiplicateur_vitesse_diagonale
