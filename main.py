@@ -353,6 +353,10 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str: # <-- Ajout de 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE: # Exemple : quitter le menu avec ESC
                 print("ESC pressée dans le menu")
+                logger.info("ESC pressée dans le menu")
+                
+                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                logger.info("Sauvegarde de la Carte depuis le main")
                 return "quit"
 
     return "menu"
@@ -1065,10 +1069,16 @@ def run(largeur_fenetre, hauteur_fenetre):
             if event.type == pygame.QUIT:
                 lecteur.SetDernierePosition(position_player_x, position_player_y)
                 print("Sauvegarde de la dernière position dans le LastSave.json")
+                logger.info("Sauvegarde de la dernière position dans le LastSave.json")
                 
                 x, y = lecteur.dernierePosition()
                 lecteur.SetDernierePositionDansCarte(x,y)
                 print("Sauvegarde de la dernière position dans la carte")
+                logger.info("Sauvegarde de la dernière position dans la carte")
+                
+                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                logger.info("Sauvegarde de la Carte depuis le main")
+                
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.VIDEORESIZE:
@@ -1120,12 +1130,18 @@ def run(largeur_fenetre, hauteur_fenetre):
             position_player_x, position_player_y = lecteur.dernierePosition()
             
         if current_scene == "quit":
+            lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+            logger.info("Sauvegarde de la Carte depuis le main")
+            
             lecteur.SetDernierePosition(position_player_x, position_player_y)
             print("Sauvegarde de la dernière position dans le LastSave.json")
+            logger.info("Sauvegarde de la dernière position dans le LastSave.json")
             
             x, y = lecteur.dernierePosition()
             lecteur.SetDernierePositionDansCarte(x,y)
             print("Sauvegarde de la dernière position dans la carte")
+            logger.info("Sauvegarde de la dernière position dans la carte")
+            
             
             logger.info("Fermeture du jeu")
             pygame.quit()

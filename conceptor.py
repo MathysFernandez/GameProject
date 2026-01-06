@@ -194,7 +194,7 @@ while running:
             if event.key == pygame.K_i:
                 if grille_modifier:
                     lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
-                    logger.info("Sauvegarde de la Carte depuis le Concepteur")
+                    logger.info("Sauvegarde de la Carte depuis le conceptor")
             # changer de choix de texture à positionner via le control left
             if event.key == pygame.K_LCTRL:
                 if chosen_letter >= nombre_texture-1:
