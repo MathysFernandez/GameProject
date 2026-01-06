@@ -640,12 +640,14 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
                 
                 if feu_eteint:
                     logger.info("Le joueur a éteint un feu.")
+                    sound_manager.play_extinguish()
+                    
             # +++ FIN ETEINDRE LE FEU +++
 
             # +++ PLANTER / RÉCOLTER (Touche R) +++
             if event.key == pygame.K_r:
                  # On passe collision_map_water pour vérifier l'eau
-                 points = plantes_manager.interagir(position_player_x, position_player_y, collision_map_water)
+                 points = plantes_manager.interagir(position_player_x, position_player_y, collision_map_water, sound_manager)
                  if points > 0:
                      ajouter_score(points)
             # +++ FIN PLANTER +++
@@ -695,6 +697,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     #dégâts suite au contact avec le feu
     if (player_gx, player_gy) in collision_map_fire and not jeu_est_en_pause:
         retirer_vie(0.3) 
+        sound_manager.play_fire_damage()
     
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
         # Appliquez le mouvement désiré au joueur sur X
