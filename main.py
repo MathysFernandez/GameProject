@@ -1,17 +1,16 @@
 import logging
-
 import pygame
 import math
 import json
 import os
 import sys
-from Files import config
-from Files import textures_manager
-from Files import Lecteur_map as lecteur
-from Files import generation_procedurale as generation
-from Files import gameplay
+from Files import settings
+from Files import texture_manager
+from Files import map_loader as lecteur
+from Files import procedural_generation as generation
+from Files import game_mechanics
 from Files.sound_manager import SoundManager
-from Files.plantes_manager import PlantesManager # <--- AJOUT IMPORT
+from Files.plant_manager import PlantesManager
 
 
 # Configuration simple du logger pour écrire dans le fichier game.log
@@ -20,7 +19,7 @@ logging.basicConfig(
     filename='game.log',
     filemode='a',  # 'a' pour ajouter les nouvelles lignes à la fin du fichier
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    encoding='utf-8' # Ajout de l'encodage pour les caractères accentués
+    encoding='utf-8' 
 )
 
 # Créer un logger pour ce module
@@ -33,39 +32,38 @@ logger.info("") : Pour les informations générales ("Le joueur est entré dans 
 
 logger.warning("") : Pour les avertissements ("La vie du joueur est basse !").
 
-logger.error("") : Pour les erreurs graves qui empêchent quelque chose de fonctionner correctement.
+logger.error("") : Pour les erreurs qui empêchent éventuellemrnt quelque chose de fonctionner correctement.
 
-logger.debug("") : Pour les détails de débogage que tu n'utilises que quand tu cherches un bug.
-Si tu as mis level=logging.INFO à l'étape 1, ces messages ne seront même pas écrits, ce qui est très pratique pour ne pas surcharger le fichier.
 """
-
 
 
 """
-# Au début de ton jeu
+## Exemples:
+
+#Au début de ton jeu
 logger.info("Le jeu a démarré !")
 
-# Quand un monstre est créé
+#Quand un monstre est créé
 logger.info("Un monstre a été créé à la position (150, 200).")
 
-# Quand le joueur gagne
+#Quand le joueur gagne
 logger.info("Félicitations ! Le joueur a gagné !")
 
-# Quand il y a un problème (par exemple, un fichier manquant)
+#Quand il y a un problème (par exemple, un fichier manquant)
 logger.error("Erreur ! Le fichier 'textures/sword.png' est introuvable.")
 """
+
+
+
 logger.info("Lancement")
 
-
-
-
 pygame.init()
-angle_voulu = 0
-angle = 0
+
 
 # ---instancier variable par défaut---
-Titre = config.Titre
-
+Titre = settings.Titre
+angle_voulu = 0
+angle = 0
 
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 # récupérer grille avec les valeur en int
@@ -77,24 +75,25 @@ except:
 
 #horloge Interne
 horloge = pygame.time.Clock()
-FPS = config.FPS
+FPS = settings.FPS
 
 # Fenêtre
-largeur_fenetre, hauteur_fenetre = config.get_dimensions()
+largeur_fenetre, hauteur_fenetre = settings.get_dimensions()
 
 pygame.display.set_caption("Menu de jeux")
 
 #système pygame permettant d'ajuster la taille de la fenetre a volonté
 flags = pygame.RESIZABLE
+
 # Créer la fenêtre
 fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre), flags)
+
 # Définit le titre de la fenêtre
 pygame.display.set_caption(Titre)
 
 #compteur pour changer de spritesheet
-compteur_animation = 0
-interv = config.duree_animation_joueur
-
+compteur_anim_joueur = 0
+interv = settings.duree_animation_joueur
 
 # Couleurs
 WHITE = (255, 255, 255)
@@ -103,20 +102,15 @@ DARK_BLUE = (0, 51, 102)
 BLACK = (0, 0, 0)
 
 #taille bouton
-BT_width = config.taille_BT_w
-BT_height = config.taille_BT_h
+BT_width = settings.taille_BT_w
+BT_height = settings.taille_BT_h
 
 # Dimensions de la grille
-taille_cellule = config.taille_cellule
+taille_cellule = settings.taille_cellule
 
-
-
-# Calculer les coordonnées mondiales du centre de la grille
-# C'est la position "idéale" du joueur dans le monde
+#Calculer les coordonnées mondiales du centre de la grille
 centre_grille_x_monde = (largeur_grille // 2) * taille_cellule
 centre_grille_y_monde = (hauteur_grille // 2) * taille_cellule
-
-
 
 # Position initiale de la caméra
 camera_x = 0
@@ -125,8 +119,7 @@ camera_y = 0
 
 # --- Ajout du joueur ---
 # Dimensions et couleur du joueur
-taille_joueur = config.taille_joueur
-#couleur_joueur = (255, 255, 0) # Bleu
+taille_joueur = settings.taille_joueur
 
 # Position initiale du joueur au centre de l'écran (ne bouge pas par rapport à la fenêtre)
 joueur_x_fixe = (largeur_fenetre - taille_joueur) // 2
@@ -135,13 +128,14 @@ joueur_y_fixe = (hauteur_fenetre - taille_joueur) // 2
 
 
 # Texture Joueur 2
-texture_eau2 = textures_manager.texture_num_2_water(taille_cellule, config.taille_frame)
+texture_eau2 = texture_manager.texture_num_2_water(taille_cellule, settings.taille_frame)
 
 
 
 #dimension monde
 monde_largeur_px = largeur_grille * taille_cellule
 monde_hauteur_px = hauteur_grille * taille_cellule
+
 position_valide = False
 
 pos_save = lecteur.dernierePosition()
@@ -166,11 +160,11 @@ rayon_joueur = taille_joueur / 2
 
 
 # +++ DÉBUT AJOUT BARRE DE VIE ---
-
 # Variables pour l'état et la vie du joueur
-joueur_vie_max = config.joueur_vie_max
-joueur_vie_actuelle = config.joueur_vie_actuelle# On peut choisir le pourcentage de vie de départ ici
-joueur_etat = config.joueur_etat # Peut être "vivant" ou "mort"
+joueur_vie_max = settings.joueur_vie_max
+joueur_vie_actuelle = settings.joueur_vie_actuelle# On peut choisir le pourcentage de vie de départ ici
+joueur_etat = settings.joueur_etat # Peut être "vivant" ou "mort"
+# +++ FIN AJOUT BARRE DE VIE ---
 
 
 # +++ AJOUT SCORE +++
@@ -183,15 +177,16 @@ jeu_est_en_pause = False
 
 barre_largeur = 70  
 barre_hauteur = 15
+
 # Définir les couleurs Vie et game over
 COULEUR_FOND_BARRE = (100, 100, 100) # Gris foncé
 COULEUR_VIE = (0, 255, 0)         # Vert
 COULEUR_CONTOUR = (255, 255, 255) # Blanc
-compt_anim_eau = 0
+compt_anim = 0
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = textures_manager.charger_texture(taille_cellule, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = texture_manager.charger_texture(taille_cellule, settings.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
@@ -232,7 +227,7 @@ def ajouter_vie(quantite):
 # +++ FIN AJOUT BARRE DE VIE +++
 
 # +++ AJOUT SCORE ET VICTOIRE +++
-SCORE_OBJECTIF = config.SCORE_OBJECTIF  # Le score à atteindre pour gagner
+SCORE_OBJECTIF = settings.SCORE_OBJECTIF  # Le score à atteindre pour gagner
 
 # +++ AJOUT SCORE +++
 def ajouter_score(quantite):
@@ -271,7 +266,6 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
         
         # On calcule le vecteur de déplacement pour sortir de la collision
         # Si la distance est zéro, cela signifie que le centre est dans le coin.
-        # On donne une petite valeur pour éviter la division par zéro.
         if distance == 0:
             push_x = overlap
             push_y = overlap
@@ -284,9 +278,6 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
     return False, (0, 0)
 
 
-# -- FIN joueur en cercle nouveauté ---
-
-
 
 
 
@@ -297,7 +288,7 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
 
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = texture_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
 
 
 # Police
@@ -323,13 +314,14 @@ def draw_button(text, x, y, w, h, color, hover_color, action_name):
     return None
 
 # Menu principal
-# La fonction menu_scene doit aussi prendre les événements en paramètre
-def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str: # <-- Ajout de 'events'
+def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str: 
     fenetre.fill(BLACK)
+    
     #nombre de bouton
     nb_BT = 4
     compteur_BT = 0
     
+    #FORMAT:
     #result = draw_button(text, x, y, w, h, color, hover_color, action_name)
     result = draw_button("Game", (largeur_fenetre - BT_width) // 2 ,(hauteur_fenetre  - BT_height ) // 2 -100 -25 *nb_BT + compteur_BT * 100,  BT_width ,  BT_height, BLUE, DARK_BLUE, "jeu")
     compteur_BT += 1
@@ -349,13 +341,16 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str: # <-- Ajout de 
     if result:
         return result
     
-    # Gérer les événements spécifiques au menu ici si nécessaire (ex: touches clavier)
-    for event in events: # <-- Utilisation des événements passés en paramètre
+    # Gérer les événements spécifiques au menu 
+    for event in events: 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE: # Exemple : quitter le menu avec ESC
+            if event.key == pygame.K_ESCAPE: 
                 print("ESC pressée dans le menu")
+                logger.info("ESC pressée dans le menu")
+                
+                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                logger.info("Sauvegarde de la Carte depuis le main")
                 return "quit"
-
     return "menu"
 
 
@@ -398,7 +393,6 @@ def menu_scene_chargement(events, largeur_fenetre, hauteur_fenetre):
 def formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif):
     largeur, hauteur = fenetre.get_size()
     font = pygame.font.SysFont(None, 32)
-    #font.render(text, True, WHITE)
     
     rect_nom = pygame.Rect(largeur // 2 - 100, hauteur // 2 - 80, 200, 40)
     rect_taille = pygame.Rect(largeur // 2 - 100, hauteur // 2 + 20, 200, 40)
@@ -464,14 +458,14 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
     nom_actuel, taille_actuelle, champ_actif, action_a_retourner = formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif)
     if action_a_retourner == "valider":
         global grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, nom_fichier_a_ouvrir, largeur_grille, hauteur_grille
-        generation.generation(nom_actuel, config.nombre_texture, int(taille_actuelle))
+        generation.generation(nom_actuel, settings.nombre_texture, int(taille_actuelle))
         lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
         lecteur.SetDerniereSauvegarde(nom_actuel+".json")
         x, y = lecteur.dernierePositionDe(nom_actuel)
         lecteur.SetDernierePosition(x,y)
         nom_fichier_a_ouvrir = nom_actuel
         largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = texture_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
         return nom_actuel, champ_actif, taille_actuelle, "jeu"
     
     if action_a_retourner == "retour":
@@ -481,7 +475,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
 
 
 
-# +++ DÉBUT AJOUT MENU PAUSE +++
+#----- DÉBUT AJOUT MENU PAUSE -----
 def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
     
     overlay = pygame.Surface((largeur_fenetre, hauteur_fenetre), pygame.SRCALPHA)
@@ -507,7 +501,7 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
         return action_menu
     
     return None
-# +++ FIN AJOUT MENU PAUSE +++
+#----- FIN AJOUT MENU PAUSE-----
 
 
 
@@ -526,25 +520,16 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
 
 
 # Jeu
-def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_manager
+def jeu_scene(events, camera_x, camera_y, plantes_manager):
     #Gère la logique et le rendu de la scène de jeu principale
 
-    #Args:
-        #events (list): Liste des événements Pygame collectés depuis la boucle principale.
-        #camera_x (int): Position X  actuelle de la caméra.
-        #camera_y (int): Position Y actuelle de la caméra.
-
-    #Returns:
-        #str: Le nom de la scène suivante ("jeu" pour rester, "menu" pour retourner au menu)
-    
-    
     #variables à réinitialiser à chaque boucle:
     #deplacement vitesse
-    vitesse = config.vitesse
+    vitesse = settings.vitesse
     
-    global angle_voulu, angle, position_player_x, position_player_y, joueur_vie_actuelle, joueur_etat, joueur_score, jeu_est_en_pause, compt_anim_eau, champ_actif, nom_actuel, taille_actuelle, compteur_animation, interv, grille
+    #variable globale
+    global angle_voulu, angle, position_player_x, position_player_y, joueur_vie_actuelle, joueur_etat, joueur_score, jeu_est_en_pause, compt_anim, champ_actif, nom_actuel, taille_actuelle, compteur_anim_joueur, interv, grille
     
-    # Stocke la position du joueur et de la caméra AVANT tout calcul de mouvement
     # Utile pour la détection de collision afin de pouvoir "revenir en arrière" (en focntion des axes)
     ancienne_position_x = position_player_x
     ancienne_position_y = position_player_y
@@ -554,87 +539,67 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     largeur_fenetre, hauteur_fenetre = fenetre.get_size()
     
     
-    # --- Gestion des événements spécifiques à la scène de jeu ---
-    # Parcourt les événements collectés une seule fois par la boucle principale du jeu.
-    for event in events: # <-- Utilisation des événements passés en paramètre, PLUS DE pygame.event.get() ici
-        # Détecte n'importe quelle touche pressée
+    # Parcourt les événements collectés 
+    for event in events: 
         if event.type == pygame.KEYDOWN:
-            
-            # --- Gestion PAUSE (P) et QUITTER (ESC) ---
-            
-            # Ajout d'une détection pour ESC pour revenir au menu, comme indiqué dans le texte d'aide
-           # if event.key == pygame.K_SPACE:
-            #    return
             if event.key == pygame.K_ESCAPE:
                 if jeu_est_en_pause:
                     jeu_est_en_pause = False # Si en pause, ESC quitte la pause
                 else:
                     # Sinon, ESC quitte le jeu pour le menu (comportement original)
-                    joueur_vie_actuelle = 100# On peut choisir le pourcentage de vie de départ ici
-                    joueur_etat = "vivant" # Peut être "vivant" ou "mort"
-                    joueur_score = 0 #score commençant à 0
-                    jeu_est_en_pause = False # S'assurer de réinitialiser
-                    return "menu" # <-- Changement ici pour revenir au menu
+                    joueur_vie_actuelle = 100 # On peut choisir le pourcentage de vie de départ ici
+                    joueur_etat = "vivant" 
+                    joueur_score = 0 
+                    jeu_est_en_pause = False 
+                    return "menu" 
             
             if event.key == pygame.K_p:
                 jeu_est_en_pause = not jeu_est_en_pause # Inverse l'état de pause
                 logger.info(f"Jeu mis en pause: {jeu_est_en_pause}")
 
-            # --- FIN GESTION PAUSE ---
+            
             
             # Si le jeu est en pause, on ignore les autres touches de test (H, J, K)
             if jeu_est_en_pause:
-                continue # Passe à l'événement suivant
+                continue 
             
-            # --- Touches de test (ne s'activent pas durant une pause)
-            if config.test_vie:
-            # +++ TEST PERDRE DE LA VIE (Appuyez sur H) +++
+            # --- Touches de test 
+            if settings.test_vie:
                 if event.key == pygame.K_h:
-                    # Press H pour perdre 10 PV (pour tester)
                     retirer_vie(10)
-            # +++ FIN TEST +++
-                
-            # +++ TEST AJOUTER VIE (Appuyez sur J) +++
                 if event.key == pygame.K_j:
-                    # Press H pour perdre 10 PV (pour tester)
                     ajouter_vie(10)
-            # +++ FIN TEST +++
             
-            # +++ TEST AJOUTER SCORE (Appuyez sur K) +++
-            if event.key == pygame.K_k and config.mod_test_score:
-                # Press K pour gagner 10 points (pour tester)
+            if event.key == pygame.K_k and settings.mod_test_score:
                 ajouter_score(10)
-            # +++ FIN TEST +++
             
-            # +++ ETEINDRE LE FEU (Touche F) +++
             if event.key == pygame.K_f:
-                # 1. On récupère la position du joueur sur la grille
                 gx_joueur = int(position_player_x // taille_cellule)
                 gy_joueur = int(position_player_y // taille_cellule)
                 
-                feu_eteint = False # Pour savoir si on doit jouer un son ou logger
+                feu_eteint = False 
                     
-                    # 2. On vérifie les cases autour du joueur (3x3 cases)
+                #On vérifie les cases autour du joueur (3x3 cases)
                 # Cela permet d'éteindre le feu sur lequel on est, ou celui juste à côté
                 for dy in [-1, 0, 1]:
                     for dx in [-1, 0, 1]:
                         cible_x = gx_joueur + dx
                         cible_y = gy_joueur + dy
                         
-                        # Vérifier qu'on ne sort pas de la carte
+                        # Vérifié qu'on ne sort pas de la carte
                         if 0 <= cible_x < largeur_grille and 0 <= cible_y < hauteur_grille:
                             
                             # Si la case est du feu (valeur 4)
                             if grille[cible_y][cible_x] == 4:
                                 
-                                # A. Remplacer le feu par le sol (Texture)
+                                # Remplacer le feu par le sol (Texture)
                                 grille[cible_y][cible_x] = 0
                                 
-                                # B. Supprimer la collision de feu (Dégâts)
+                                #Supprimer la collision de feu (Dégâts)
                                 if (cible_x, cible_y) in collision_map_fire:
                                     del collision_map_fire[(cible_x, cible_y)]
                                 
-                                # C. Augmenter le score
+                                # Augmenter le score
                                 ajouter_score(30) 
                                 feu_eteint = True
                 
@@ -642,34 +607,30 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
                     logger.info("Le joueur a éteint un feu.")
                     sound_manager.play_extinguish()
                     
-            # +++ FIN ETEINDRE LE FEU +++
 
-            # +++ PLANTER / RÉCOLTER (Touche R) +++
             if event.key == pygame.K_r:
                  # On passe collision_map_water pour vérifier l'eau
                  points = plantes_manager.interagir(position_player_x, position_player_y, collision_map_water, sound_manager)
                  if points > 0:
                      ajouter_score(points)
-            # +++ FIN PLANTER +++
     
     
-    # +++ TOUTE LA LOGIQUE DU JEU NE S'EXÉCUTE QUE SI ON N'EST PAS EN PAUSE +++
 
-    # --- Gestion du déplacement du joueur par les touches ---
-    # Obtient l'état actuel de toutes les touches du clavier (quelles touches sont pressées).
     keys_pressed = pygame.key.get_pressed()
     # Modifie la vitesse du joueur si la touche 'Maj Gauche' (LSHIFT) est pressée.
     vitesse += vitesse * (keys_pressed[pygame.K_LSHIFT] *0.5)
+    
+    #déplacement en fonction des touches
     deplacement_x = (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) - (keys_pressed[pygame.K_q] or keys_pressed[pygame.K_LEFT])
     deplacement_y = (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]) - (keys_pressed[pygame.K_z] or keys_pressed[pygame.K_UP])
     
-    # --- Ajout du dash ---
     temps_actuel = pygame.time.get_ticks()
+    
     # On utilise 'events' pour détecter la touche Espace
-    deplacement_x, deplacement_y, vitesse = gameplay.gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse)
-    # --- Déplacer dans un nouveau fichier en tant que fonction --
+    deplacement_x, deplacement_y, vitesse = game_mechanics.gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse)
+    
     if deplacement_x != 0 and deplacement_y != 0:
-        vitesse /= config.multiplicateur_vitesse_diagonale
+        vitesse /= settings.multiplicateur_vitesse_diagonale
     
     deplacement_x *= vitesse
     deplacement_y *= vitesse
@@ -703,18 +664,14 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
         # Appliquez le mouvement désiré au joueur sur X
         position_player_x += deplacement_x
 
-        # +++ MISE A JOUR PLANTES +++
+        #MISE A JOUR PLANTES
         plantes_manager.update()
         
     
-    # --- Détection de collision sur l'axe X (Optimisé par grille) ---
-    # Optimisation de la détection de collision : Seules les cellules à proximité du joueur sont vérifiées
-    # Calcule la plage des indices de grille (min_gx à max_gx) que le joueur pourrait toucher
-    # après son déplacement sur l'axe X. Une marge de +/- 1 cellule est ajoutée (-1 pour min, +1 pour max)
-    # pour s'assurer de ne rater aucune collision, même avec des mouvements rapides ou aux bords des cellules.
+    # --- Détection de collision sur l'axe X ---
     min_gx = int((position_player_x - rayon_joueur) // taille_cellule) -1
     max_gx = int((position_player_x + rayon_joueur) // taille_cellule) +1
-    min_gy = int((position_player_y - rayon_joueur) // taille_cellule) -1 # Inclure Y pour avoir la zone de vérification
+    min_gy = int((position_player_y - rayon_joueur) // taille_cellule) -1 
     max_gy = int((position_player_y + rayon_joueur) // taille_cellule) +1
     
     
@@ -726,15 +683,15 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     max_gy = min(hauteur_grille - 1, max_gy)
     
     
-    # Parcourt uniquement les cellules de la grille potentiellement en collision avec le joueur.
+    # Parcourt uniquement les cellules de la grille potentiellement en collision avec le joueur
     for y_grid in range(min_gy, max_gy + 1):
         for x_grid in range(min_gx, max_gx + 1):
-            # Vérifie si la cellule actuelle (x_grid, y_grid) est un bloc de collision.
+            #Vérifie si la cellule actuelle (x_grid, y_grid) est un bloc de collision
             if (x_grid, y_grid) in collision_map_solid:
-                # Récupère l'objet Rect représentant le bloc de collision.
+                # Récupère l'objet Rect représentant le bloc de collision
                 bloc_rect = collision_map_solid[(x_grid, y_grid)] 
                 
-                # Utiliser la nouvelle fonction de collision qui retourne un vecteur
+                # Utiliser la fonction de collision qui retourne un vecteur
                 collision, (push_x, push_y) = collision_cercle_rect((position_player_x, position_player_y), rayon_joueur, bloc_rect)
                 
                 # Utilise notre nouvelle fonction de collision
@@ -746,17 +703,15 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
         
     
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
+        
         # --- Application du mouvement et détection de collision (axe Y) ---
         # Applique le déplacement calculé à la position Y du joueur.
         position_player_y += deplacement_y
     
-    # Optimisation de la détection de collision : Seules les cellules à proximité du joueur sont vérifiées
-    # Calcule la plage des indices de grille (min_gx à max_gx) que le joueur pourrait toucher
-    # après son déplacement sur l'axe X. Une marge de +/- 1 cellule est ajoutée (-1 pour min, +1 pour max)
-    # pour s'assurer de ne rater aucune collision, même avec des mouvements rapides ou aux bords des cellules
+    # Optimisation de la détection de collision
     min_gx = int((position_player_x - rayon_joueur) // taille_cellule) -1
     max_gx = int((position_player_x + rayon_joueur) // taille_cellule) +1
-    min_gy = int((position_player_y - rayon_joueur) // taille_cellule) -1 # Inclure Y pour avoir la zone de vérification
+    min_gy = int((position_player_y - rayon_joueur) // taille_cellule) -1
     max_gy = int((position_player_y + rayon_joueur) // taille_cellule) +1
     
     # S'assure que les indices calculés restent dans les limites valides de la grille.
@@ -779,22 +734,12 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
                     # On annule le déplacement sur l'axe Y pour cette frame
                     deplacement_y = 0
     
-    # --- FIN Déplacer dans un nouveau fichier en tant que fonction --
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 
     # --- Mise à jour de la caméra ---
     # La caméra est ajustée de manière à ce que le joueur reste "fixe" au centre de l'écran
-    camera_x = joueur_x_fixe - position_player_x # joueur_x_fixe est le centre X de l'écran pour le joueur
-    camera_y = joueur_y_fixe - position_player_y # joueur_y_fixe est le centre Y de l'écran pour le joueur
+    camera_x = joueur_x_fixe - position_player_x
+    camera_y = joueur_y_fixe - position_player_y
     
     
     
@@ -807,10 +752,6 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     fenetre.fill((0, 0, 0))
 
 
-
-
-    # --- Calculer la zone visible de la grille ---
-
     # Coordonnées monde du coin supérieur gauche de l'écran
     world_x_start_screen = -camera_x
     world_y_start_screen = -camera_y
@@ -820,28 +761,29 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     world_y_end_screen = world_y_start_screen + hauteur_fenetre
 
     # Convertir ces coordonnées monde en indices de grille
-    start_grid_x = int(world_x_start_screen // taille_cellule) -1 #+6
+    start_grid_x = int(world_x_start_screen // taille_cellule) -1 #+6 mdr c'est drole
     end_grid_x = int(world_x_end_screen // taille_cellule) +1 #-5 # +1 
 
     start_grid_y = int(world_y_start_screen // taille_cellule) -1 #+2
     end_grid_y = int(world_y_end_screen // taille_cellule) +1 #-1 # +1 
+    
     # S'assurer que les indices restent dans les limites de la grille réelle
     start_grid_x = max(0, start_grid_x)
-    end_grid_x = min(largeur_grille, end_grid_x) # Ne pas dépasser largeur_grille - 1, mais range va jusqu'à end-1
+    end_grid_x = min(largeur_grille, end_grid_x) 
     start_grid_y = max(0, start_grid_y)
-    end_grid_y = min(hauteur_grille, end_grid_y) # Ne pas dépasser hauteur_grille - 1
+    end_grid_y = min(hauteur_grille, end_grid_y)
 
     
     #test anim 1 ou 2 pour l'eau
     anim = 1
-    if compt_anim_eau <= 50:
+    if compt_anim <= 50:
         anim = 1
-    elif 50 < compt_anim_eau < 100:
+    elif 50 < compt_anim < 100:
         anim = 2
     else :
         anim = 1
-        compt_anim_eau = 0
-    compt_anim_eau += 1
+        compt_anim = 0
+    compt_anim += 1
     
     """
     print("nom: "+nom_fichier_a_ouvrir)
@@ -871,10 +813,9 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
                     
                 fenetre.blit(img, (screen_x, screen_y))
 
-    # --- FIN Dessiner uniquement les cellules visibles ---
-    
-    # +++ DESSINER LES PLANTES +++
+    # DESSINER LES PLANTES
     plantes_manager.draw(fenetre, camera_x, camera_y, largeur_fenetre, hauteur_fenetre)
+    
     
     #détermine l'angle de direction du joueur
     ##0 degrés = droite, 90 degrés = haut
@@ -905,33 +846,33 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
             if angle <0:
                 angle += 360
             if (angle_voulu - angle) % 360 <= 180:
-                angle += config.vitesse_rotation
+                angle += settings.vitesse_rotation
             else:
-                angle -= config.vitesse_rotation
+                angle -= settings.vitesse_rotation
     
     
     
     # le joueur_1 et joueur_2 correspondent à l'animation de marche, joueur_0 est l'affichage du joueur quand il est immobile
-    joueur_0 = textures_manager.texture_joueur(config.taille_joueur, angle, 0)
-    joueur_1 = textures_manager.texture_joueur(config.taille_joueur, angle, 1)
-    joueur_2 = textures_manager.texture_joueur(config.taille_joueur, angle, 2)
+    joueur_0 = texture_manager.texture_joueur(settings.taille_joueur, angle, 0)
+    joueur_1 = texture_manager.texture_joueur(settings.taille_joueur, angle, 1)
+    joueur_2 = texture_manager.texture_joueur(settings.taille_joueur, angle, 2)
     
     joueur = joueur_0
     
     
     if deplacement_x == 0 and deplacement_y == 0:
         joueur = joueur_0
-        compteur_animation = 0
+        compteur_anim_joueur = 0
     
-    elif 0 <= compteur_animation <= interv:
+    elif 0 <= compteur_anim_joueur <= interv:
         joueur = joueur_1
-        compteur_animation += 1
-    elif interv < compteur_animation <= interv*2:
+        compteur_anim_joueur += 1
+    elif interv < compteur_anim_joueur <= interv*2:
         joueur = joueur_2
-        compteur_animation += 1
-    elif compteur_animation > interv*2:
+        compteur_anim_joueur += 1
+    elif compteur_anim_joueur > interv*2:
         joueur = joueur_1
-        compteur_animation = 0
+        compteur_anim_joueur = 0
     
     
     
@@ -944,24 +885,22 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     # Créer un nouveau Rect à partir de la surface tournée, centré sur la position d'affichage
     # Nous utilisons 'screen_x' et 'screen_y' pour le positionnement.
     rect_rotate = joueur.get_rect(center=(screen_x, screen_y))
-    # ---FIN gère la hitbox pour la rotation du rect---
     
     
     
     
     # --- Dessiner le joueur ---
     fenetre.blit(joueur, rect_rotate)
-    # --- Fin Dessiner le joueur ---
+    #--- Fin Dessiner le joueur ---
     
     # --- Affichage des FPS en temps réel si test_fps est activé ---
-    if config.test_fps:
+    if settings.test_fps:
         fps_text = font.render(f"FPS: {horloge.get_fps():.2f}", True, WHITE)
         fenetre.blit(fps_text, (10, 10))
     # --- Fin Affichage des FPS ---
     
     
-    
-    # +++ DÉBUT AFFICHAGE SCORE (UI) +++
+    # SCORE
     score_prec = -1
     score_surf = None
 
@@ -969,22 +908,16 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
         score_surf = font.render(f"Score: {joueur_score}", True, WHITE)
         score_rect = score_surf.get_rect(topright=(largeur_fenetre - 10, 10))
     fenetre.blit(score_surf, score_rect)
-    # +++ FIN AFFICHAGE SCORE (UI) +++
     
     
-    
-    # +++ DÉBUT AJOUT AFFICHAGE BARRE DE VIE (UI) +++
     
     # Barre de vie au dessus du joueur
-
     barre_pos_x = largeur_fenetre // 2 - (barre_largeur) +7
-    barre_pos_y = hauteur_fenetre // 2 - barre_hauteur - config.taille_joueur *1.2
+    barre_pos_y = hauteur_fenetre // 2 - barre_hauteur - settings.taille_joueur *1.2
 
     # Calculer le pourcentage de vie pour la barre
     ratio_vie = joueur_vie_actuelle / joueur_vie_max
     largeur_vie_actuelle = barre_largeur * ratio_vie
-
-    
 
     # Dessiner le fond de la barre (la vie perdue)
     pygame.draw.rect(fenetre, COULEUR_FOND_BARRE, (barre_pos_x, barre_pos_y, barre_largeur, barre_hauteur))
@@ -994,19 +927,19 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
         pygame.draw.rect(fenetre, COULEUR_VIE, (barre_pos_x, barre_pos_y, largeur_vie_actuelle, barre_hauteur))
     
     # Dessiner un contour pour que ce soit plus joli
-    pygame.draw.rect(fenetre, COULEUR_CONTOUR, (barre_pos_x, barre_pos_y, barre_largeur, barre_hauteur), 2) # 2 = épaisseur
+    pygame.draw.rect(fenetre, COULEUR_CONTOUR, (barre_pos_x, barre_pos_y, barre_largeur, barre_hauteur), 2) 
     
     # Si le joueur est mort, on peut afficher un message "GAME OVER"
     if joueur_etat == "mort":
         # Nous utilisons la police globale déjà chargée (font)
-        mort_surf = font.render("GAME OVER", True, (255, 0, 0)) # Rouge
+        mort_surf = font.render("GAME OVER", True, (255, 0, 0)) #Rouge
+        
         # On utilise les variables globales largeur_fenetre et hauteur_fenetre pour centrer
         mort_rect = mort_surf.get_rect(center=(largeur_fenetre // 2, hauteur_fenetre // 2))
         fenetre.blit(mort_surf, mort_rect)
         
-    # +++ AJOUT AFFICHAGE VICTOIRE +++
     if joueur_etat == "gagne":
-        # On crée un texte "VICTOIRE !" en couleur Or (Gold)
+        # On crée un texte VICTOIRE
         victoire_surf = font.render("VICTOIRE !", True, (255, 215, 0)) 
         
         # On ajoute le score final en dessous
@@ -1019,9 +952,11 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
         # Affichage
         fenetre.blit(victoire_surf, victoire_rect)
         fenetre.blit(score_final_surf, score_final_rect)
-    # +++ FIN AFFICHAGE VICTOIRE +++
     
-    # +++ DÉBUT GESTION AFFICHAGE DU MENU PAUSE (LE BON CODE) +++
+    
+    
+    
+    #DÉBUT GESTION AFFICHAGE DU MENU PAUSE 
     if jeu_est_en_pause:
         # On récupère les dimensionss 
         largeur_fenetre, hauteur_fenetre = fenetre.get_size()
@@ -1037,13 +972,15 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
             joueur_etat = "vivant"
             joueur_score = 0
             jeu_est_en_pause = False 
-            return "menu" # <-- C'est ça qui retourne au menu
-    # +++ FIN GESTION AFFICHAGE DU MENU PAUSE +++
+            return "menu" 
     
     return "jeu"
 
+
+
+
 sound_manager = SoundManager()
-plantes_manager = PlantesManager(config.taille_cellule) # <--- INIT DU MANAGER
+plantes_manager = PlantesManager(settings.taille_cellule) 
 
 def run(largeur_fenetre, hauteur_fenetre):
     global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, position_player_x, position_player_y
@@ -1066,19 +1003,26 @@ def run(largeur_fenetre, hauteur_fenetre):
             if event.type == pygame.QUIT:
                 lecteur.SetDernierePosition(position_player_x, position_player_y)
                 print("Sauvegarde de la dernière position dans le LastSave.json")
+                logger.info("Sauvegarde de la dernière position dans le LastSave.json")
                 
                 x, y = lecteur.dernierePosition()
                 lecteur.SetDernierePositionDansCarte(x,y)
                 print("Sauvegarde de la dernière position dans la carte")
+                logger.info("Sauvegarde de la dernière position dans la carte")
+                
+                lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                logger.info("Sauvegarde de la Carte depuis le main")
+                
                 pygame.quit()
                 sys.exit()
+                
             elif event.type == pygame.VIDEORESIZE:
                 largeur_fenetre = event.w
                 hauteur_fenetre = event.h
                 fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre), pygame.RESIZABLE)
             
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1: # Clic gauche
+                if event.button == 1: 
                     sound_manager.play_click()
 
         sound_manager.update_music(current_scene)
@@ -1091,13 +1035,13 @@ def run(largeur_fenetre, hauteur_fenetre):
             prev_x, prev_y = position_player_x, position_player_y
             
             # On lance la frame de jeu
-            current_scene = jeu_scene(events, camera_x, camera_y, plantes_manager) # <--- PASSAGE DE L'ARGUMENT
+            current_scene = jeu_scene(events, camera_x, camera_y, plantes_manager) 
             
-            # On compare avec la position APRÈS pour le son de pas
+            #On compare avec la position APRÈS pour le son de pas.
             if (position_player_x != prev_x or position_player_y != prev_y) and joueur_etat == "vivant" and not jeu_est_en_pause:
                 sound_manager.play_footstep()
             
-            # Gestion de l'ambiance (Oiseaux / Vent)
+            # Gestion de l'ambiance (Oiseaux/ Vent)
             if not jeu_est_en_pause and joueur_etat == "vivant":
                 sound_manager.update_ambiance()
         
@@ -1113,7 +1057,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
                 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
                 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = texture_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
                 position_player_x, position_player_y = lecteur.dernierePosition()
         
         elif current_scene == "nouvelle partie":
@@ -1121,19 +1065,25 @@ def run(largeur_fenetre, hauteur_fenetre):
             position_player_x, position_player_y = lecteur.dernierePosition()
             
         if current_scene == "quit":
+            lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+            logger.info("Sauvegarde de la Carte depuis le main")
+            
             lecteur.SetDernierePosition(position_player_x, position_player_y)
             print("Sauvegarde de la dernière position dans le LastSave.json")
+            logger.info("Sauvegarde de la dernière position dans le LastSave.json")
             
             x, y = lecteur.dernierePosition()
             lecteur.SetDernierePositionDansCarte(x,y)
             print("Sauvegarde de la dernière position dans la carte")
+            logger.info("Sauvegarde de la dernière position dans la carte")
+            
             
             logger.info("Fermeture du jeu")
             pygame.quit()
             sys.exit()
 
         # Afficher FPS si test activé
-        if config.test_fps:
+        if settings.test_fps:
             tick = horloge.get_fps()
             if tick > 0: fps.append(tick)
 
