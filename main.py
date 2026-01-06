@@ -5,7 +5,7 @@ import json
 import os
 import sys
 from Files import settings
-from Files import textures_manager
+from Files import texture_manager
 from Files import map_loader as lecteur
 from Files import procedural_generation as generation
 from Files import gameplay
@@ -134,7 +134,7 @@ joueur_y_fixe = (hauteur_fenetre - taille_joueur) // 2
 
 
 # Texture Joueur 2
-texture_eau2 = textures_manager.texture_num_2_water(taille_cellule, settings.taille_frame)
+texture_eau2 = texture_manager.texture_num_2_water(taille_cellule, settings.taille_frame)
 
 
 
@@ -190,7 +190,7 @@ compt_anim_eau = 0
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = textures_manager.charger_texture(taille_cellule, settings.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = texture_manager.charger_texture(taille_cellule, settings.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
@@ -296,7 +296,7 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
 
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
+grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = texture_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
 
 
 # Police
@@ -470,7 +470,7 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
         lecteur.SetDernierePosition(x,y)
         nom_fichier_a_ouvrir = nom_actuel
         largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
+        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = texture_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
         return nom_actuel, champ_actif, taille_actuelle, "jeu"
     
     if action_a_retourner == "retour":
@@ -911,9 +911,9 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     
     
     # le joueur_1 et joueur_2 correspondent à l'animation de marche, joueur_0 est l'affichage du joueur quand il est immobile
-    joueur_0 = textures_manager.texture_joueur(settings.taille_joueur, angle, 0)
-    joueur_1 = textures_manager.texture_joueur(settings.taille_joueur, angle, 1)
-    joueur_2 = textures_manager.texture_joueur(settings.taille_joueur, angle, 2)
+    joueur_0 = texture_manager.texture_joueur(settings.taille_joueur, angle, 0)
+    joueur_1 = texture_manager.texture_joueur(settings.taille_joueur, angle, 1)
+    joueur_2 = texture_manager.texture_joueur(settings.taille_joueur, angle, 2)
     
     joueur = joueur_0
     
@@ -1112,7 +1112,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
                 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
                 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
+                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = texture_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
                 position_player_x, position_player_y = lecteur.dernierePosition()
         
         elif current_scene == "nouvelle partie":

@@ -5,7 +5,7 @@ import sys
 import json
 import os
 from Files import settings 
-from Files import textures_manager
+from Files import texture_manager
 from Files import map_loader as lecteur
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ taille_cellule = settings.taille_cellule
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2  = textures_manager.charger_texture(1, settings.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2  = texture_manager.charger_texture(1, settings.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
