@@ -1,7 +1,7 @@
 import pygame
 import logging
 import os
-from Files import config
+from Files import settings
 
 logger = logging.getLogger(__name__)
 

@@ -4,23 +4,23 @@ import pygame
 import sys
 import json
 import os
-from Files import config 
+from Files import settings 
 from Files import textures_manager
 from Files import Lecteur_map as lecteur
 
 logger = logging.getLogger(__name__)
 
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
-nombre_texture = config.nombre_texture
+nombre_texture = settings.nombre_texture
 
 pygame.init()
 
 #horloge Interne
 horloge = pygame.time.Clock()
-FPS = config.FPS
+FPS = settings.FPS
 
 # Dimension ecran
-largeur_fenetre, hauteur_fenetre = config.get_dimensions()
+largeur_fenetre, hauteur_fenetre = settings.get_dimensions()
 
 # Créer la fenêtre
 fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
@@ -28,11 +28,11 @@ fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
 # récupérer grille
 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
 
-taille_cellule = config.taille_cellule
+taille_cellule = settings.taille_cellule
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2  = textures_manager.charger_texture(1, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2  = textures_manager.charger_texture(1, settings.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
@@ -144,7 +144,7 @@ while running:
     
         
     #deplacement vitesse
-    vitesse = config.vitesse *5
+    vitesse = settings.vitesse *5
     # FIN ---variables à réinitialiser---
     
     #touche pressé
@@ -268,7 +268,7 @@ while running:
     
     #vitesse deplacement en diagonale réduit 
     if deplacement_x != 0 and deplacement_y != 0:
-        vitesse *= config.multiplicateur_vitesse_diagonale
+        vitesse *= settings.multiplicateur_vitesse_diagonale
     
     #application du deplacement
     if not mode_vue_globale:

@@ -7,10 +7,10 @@ except ImportError:
 
 try:
     # Pour l'importation relative (lorsque le script est appelé par main.py)
-    from . import config
+    from . import settings
 except ImportError:
     # Pour l'importation directe (lorsque le script est exécuté seul)
-    import config
+    import settings
 
 
 import random
@@ -24,14 +24,14 @@ logger = logging.getLogger(__name__)
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 
 
-nombre_texture = config.nombre_texture
-multiplicateur_sol = config.multiplicateur_sol
-nombre_répétition = config.nombre_répétition
-nombre_répétition_water = config.nombre_répétition_water
-multiplicateur_point_apparition_water = config.multiplicateur_point_apparition_water
+nombre_texture = settings.nombre_texture
+multiplicateur_sol = settings.multiplicateur_sol
+nombre_répétition = settings.nombre_répétition
+nombre_répétition_water = settings.nombre_répétition_water
+multiplicateur_point_apparition_water = settings.multiplicateur_point_apparition_water
 
 #taille de la nouvelle génération
-taille = config.taille_nouvelle_generation
+taille = settings.taille_nouvelle_generation
 
 
 
@@ -231,7 +231,7 @@ def generation_limite(largeur_grille : int, hauteur_grille : int, grille : list)
     return grille
 
 def generation_dechet(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
-    for _ in range (config.nombre_de_dechets):
+    for _ in range (settings.nombre_de_dechets):
         dechet_placer = False
         while not dechet_placer:
             x = random.randint(1, largeur_grille -1)

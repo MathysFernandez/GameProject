@@ -5,7 +5,7 @@ import math
 import json
 import os
 import sys
-from Files import config
+from Files import settings 
 from Files import textures_manager
 from Files import Lecteur_map as lecteur
 from Files import generation_procedurale as generation
@@ -64,7 +64,7 @@ angle_voulu = 0
 angle = 0
 
 # ---instancier variable par défaut---
-Titre = config.Titre
+Titre = settings.Titre
 
 
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
@@ -77,10 +77,10 @@ except:
 
 #horloge Interne
 horloge = pygame.time.Clock()
-FPS = config.FPS
+FPS = settings.FPS
 
 # Fenêtre
-largeur_fenetre, hauteur_fenetre = config.get_dimensions()
+largeur_fenetre, hauteur_fenetre = settings.get_dimensions()
 
 pygame.display.set_caption("Menu de jeux")
 
@@ -93,7 +93,7 @@ pygame.display.set_caption(Titre)
 
 #compteur pour changer de spritesheet
 compteur_animation = 0
-interv = config.duree_animation_joueur
+interv = settings.duree_animation_joueur
 
 
 # Couleurs
@@ -103,11 +103,11 @@ DARK_BLUE = (0, 51, 102)
 BLACK = (0, 0, 0)
 
 #taille bouton
-BT_width = config.taille_BT_w
-BT_height = config.taille_BT_h
+BT_width = settings.taille_BT_w
+BT_height = settings.taille_BT_h
 
 # Dimensions de la grille
-taille_cellule = config.taille_cellule
+taille_cellule = settings.taille_cellule
 
 
 
@@ -125,7 +125,7 @@ camera_y = 0
 
 # --- Ajout du joueur ---
 # Dimensions et couleur du joueur
-taille_joueur = config.taille_joueur
+taille_joueur = settings.taille_joueur
 #couleur_joueur = (255, 255, 0) # Bleu
 
 # Position initiale du joueur au centre de l'écran (ne bouge pas par rapport à la fenêtre)
@@ -135,7 +135,7 @@ joueur_y_fixe = (hauteur_fenetre - taille_joueur) // 2
 
 
 # Texture Joueur 2
-texture_eau2 = textures_manager.texture_num_2_water(taille_cellule, config.taille_frame)
+texture_eau2 = textures_manager.texture_num_2_water(taille_cellule, settings.taille_frame)
 
 
 
@@ -168,9 +168,9 @@ rayon_joueur = taille_joueur / 2
 # +++ DÉBUT AJOUT BARRE DE VIE ---
 
 # Variables pour l'état et la vie du joueur
-joueur_vie_max = config.joueur_vie_max
-joueur_vie_actuelle = config.joueur_vie_actuelle# On peut choisir le pourcentage de vie de départ ici
-joueur_etat = config.joueur_etat # Peut être "vivant" ou "mort"
+joueur_vie_max = settings.joueur_vie_max
+joueur_vie_actuelle = settings.joueur_vie_actuelle# On peut choisir le pourcentage de vie de départ ici
+joueur_etat = settings.joueur_etat # Peut être "vivant" ou "mort"
 
 
 # +++ AJOUT SCORE +++
@@ -191,7 +191,7 @@ compt_anim_eau = 0
 
 
 
-floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = textures_manager.charger_texture(taille_cellule, config.taille_frame)
+floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = textures_manager.charger_texture(taille_cellule, settings.taille_frame)
 
 TEXTURES_BASE = {
     -1: water_final,
@@ -232,7 +232,7 @@ def ajouter_vie(quantite):
 # +++ FIN AJOUT BARRE DE VIE +++
 
 # +++ AJOUT SCORE ET VICTOIRE +++
-SCORE_OBJECTIF = config.SCORE_OBJECTIF  # Le score à atteindre pour gagner
+SCORE_OBJECTIF = settings.SCORE_OBJECTIF  # Le score à atteindre pour gagner
 
 # +++ AJOUT SCORE +++
 def ajouter_score(quantite):
@@ -297,7 +297,7 @@ def collision_cercle_rect(centre_cercle : (int, int), rayon_cercle : int, rect):
 
 
 #récupère la grille avec les emplacements de texture
-grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
 
 
 # Police
@@ -464,14 +464,14 @@ def menu_scene_nouvelle_carte(events, largeur_fenetre, hauteur_fenetre, nom_actu
     nom_actuel, taille_actuelle, champ_actif, action_a_retourner = formulaire(fenetre, events, nom_actuel, taille_actuelle, champ_actif)
     if action_a_retourner == "valider":
         global grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, nom_fichier_a_ouvrir, largeur_grille, hauteur_grille
-        generation.generation(nom_actuel, config.nombre_texture, int(taille_actuelle))
+        generation.generation(nom_actuel, settings.nombre_texture, int(taille_actuelle))
         lecteur.SetDernierePositionDansCarte(position_player_x, position_player_y)
         lecteur.SetDerniereSauvegarde(nom_actuel+".json")
         x, y = lecteur.dernierePositionDe(nom_actuel)
         lecteur.SetDernierePosition(x,y)
         nom_fichier_a_ouvrir = nom_actuel
         largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+        grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
         return nom_actuel, champ_actif, taille_actuelle, "jeu"
     
     if action_a_retourner == "retour":
@@ -540,7 +540,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     
     #variables à réinitialiser à chaque boucle:
     #deplacement vitesse
-    vitesse = config.vitesse
+    vitesse = settings.vitesse
     
     global angle_voulu, angle, position_player_x, position_player_y, joueur_vie_actuelle, joueur_etat, joueur_score, jeu_est_en_pause, compt_anim_eau, champ_actif, nom_actuel, taille_actuelle, compteur_animation, interv, grille
     
@@ -587,7 +587,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
                 continue # Passe à l'événement suivant
             
             # --- Touches de test (ne s'activent pas durant une pause)
-            if config.test_vie:
+            if settings.test_vie:
             # +++ TEST PERDRE DE LA VIE (Appuyez sur H) +++
                 if event.key == pygame.K_h:
                     # Press H pour perdre 10 PV (pour tester)
@@ -601,7 +601,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
             # +++ FIN TEST +++
             
             # +++ TEST AJOUTER SCORE (Appuyez sur K) +++
-            if event.key == pygame.K_k and config.mod_test_score:
+            if event.key == pygame.K_k and settings.mod_test_score:
                 # Press K pour gagner 10 points (pour tester)
                 ajouter_score(10)
             # +++ FIN TEST +++
@@ -669,7 +669,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     deplacement_x, deplacement_y, vitesse = gameplay.gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse)
     # --- Déplacer dans un nouveau fichier en tant que fonction --
     if deplacement_x != 0 and deplacement_y != 0:
-        vitesse /= config.multiplicateur_vitesse_diagonale
+        vitesse /= settings.multiplicateur_vitesse_diagonale
     
     deplacement_x *= vitesse
     deplacement_y *= vitesse
@@ -905,16 +905,16 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
             if angle <0:
                 angle += 360
             if (angle_voulu - angle) % 360 <= 180:
-                angle += config.vitesse_rotation
+                angle += settings.vitesse_rotation
             else:
-                angle -= config.vitesse_rotation
+                angle -= settings.vitesse_rotation
     
     
     
     # le joueur_1 et joueur_2 correspondent à l'animation de marche, joueur_0 est l'affichage du joueur quand il est immobile
-    joueur_0 = textures_manager.texture_joueur(config.taille_joueur, angle, 0)
-    joueur_1 = textures_manager.texture_joueur(config.taille_joueur, angle, 1)
-    joueur_2 = textures_manager.texture_joueur(config.taille_joueur, angle, 2)
+    joueur_0 = textures_manager.texture_joueur(settings.taille_joueur, angle, 0)
+    joueur_1 = textures_manager.texture_joueur(settings.taille_joueur, angle, 1)
+    joueur_2 = textures_manager.texture_joueur(settings.taille_joueur, angle, 2)
     
     joueur = joueur_0
     
@@ -954,7 +954,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     # --- Fin Dessiner le joueur ---
     
     # --- Affichage des FPS en temps réel si test_fps est activé ---
-    if config.test_fps:
+    if settings.test_fps:
         fps_text = font.render(f"FPS: {horloge.get_fps():.2f}", True, WHITE)
         fenetre.blit(fps_text, (10, 10))
     # --- Fin Affichage des FPS ---
@@ -978,7 +978,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     # Barre de vie au dessus du joueur
 
     barre_pos_x = largeur_fenetre // 2 - (barre_largeur) +7
-    barre_pos_y = hauteur_fenetre // 2 - barre_hauteur - config.taille_joueur *1.2
+    barre_pos_y = hauteur_fenetre // 2 - barre_hauteur - settings.taille_joueur *1.2
 
     # Calculer le pourcentage de vie pour la barre
     ratio_vie = joueur_vie_actuelle / joueur_vie_max
@@ -1043,7 +1043,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager): # <-- AJOUT plantes_
     return "jeu"
 
 sound_manager = SoundManager()
-plantes_manager = PlantesManager(config.taille_cellule) # <--- INIT DU MANAGER
+plantes_manager = PlantesManager(settings.taille_cellule) # <--- INIT DU MANAGER
 
 def run(largeur_fenetre, hauteur_fenetre):
     global nom_fichier_a_ouvrir, largeur_grille, hauteur_grille, grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire, position_player_x, position_player_y
@@ -1113,7 +1113,7 @@ def run(largeur_fenetre, hauteur_fenetre):
                 
                 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
                 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
-                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, config.taille_frame)
+                grille, collision_map_solid, collision_map_water, collision_map_dechet, collision_map_fire  = textures_manager.placer_texture(taille_cellule, largeur_grille, hauteur_grille, grille, False, settings.taille_frame)
                 position_player_x, position_player_y = lecteur.dernierePosition()
         
         elif current_scene == "nouvelle partie":
@@ -1133,7 +1133,7 @@ def run(largeur_fenetre, hauteur_fenetre):
             sys.exit()
 
         # Afficher FPS si test activé
-        if config.test_fps:
+        if settings.test_fps:
             tick = horloge.get_fps()
             if tick > 0: fps.append(tick)
 
