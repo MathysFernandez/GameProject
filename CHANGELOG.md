@@ -34,7 +34,7 @@ Le format est basé sur les recommandations de `Keep a Changelog`
 
 ---
 
-## [0.2] - 2025-XX-XX 
+## [0.2] - 2026-05-01
 
 ### 🚀 added
 - Intégration d'une barre de vie
@@ -42,21 +42,32 @@ Le format est basé sur les recommandations de `Keep a Changelog`
 - Animation eau
 - Animation déplacement joueur
 - Ajout musique de fonds et effets sonore de base
+- Récupération des déchets intégré.
+- Intégration de la gestion des points de score.
+- Ajout de la génération des limites de la carte.
+- Création d'un fichier `requirement.txt` pour le telechargement rapide des importations externes
+- Système de sauvegarde et de chargement ajouté (positions et cartes)
+- Ajout du feu (avec animation, prise de dégats et ajout de points au score après extinction)
+- Ajout de système de plantation 
+- Ajout d'une fin de partie (Game over / win)
+
 
 ### ♻️ changed
 - Contrôles et Interaction du Joueur
 - Modification génération procédurale
+- Optimisation du main pour l'affichage.
+- Optimisation du concepteur pour l'affichage.
 
 ### 🐛 fixed
-- 
-- 
+- Le fichier `game.log` avait disparu 
+- Le bouton echap sur le concepteur fonctionne enfin
 
 
 
 
 ---
 
-## [0.3] - 2025-XX-XX 
+## [0.3] - 2026-XX-XX 
 
 
 ### 🚀 added
