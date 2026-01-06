@@ -4,9 +4,9 @@ import math
 import json
 import os
 import sys
-from Files import settings 
+from Files import settings
 from Files import textures_manager
-from Files import Lecteur_map as lecteur
+from Files import map_loader as lecteur
 from Files import procedural_generation as generation
 from Files import gameplay
 from Files.sound_manager import SoundManager

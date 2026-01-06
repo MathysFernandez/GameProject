@@ -1,9 +1,9 @@
 try:
     # Pour l'importation relative (lorsque le script est appelé par main.py)
-    from . import Lecteur_map as lecteur
+    from . import map_loader as lecteur
 except ImportError:
     # Pour l'importation directe (lorsque le script est exécuté seul)
-    import Lecteur_map as lecteur
+    import map_loader as lecteur
 
 try:
     # Pour l'importation relative (lorsque le script est appelé par main.py)

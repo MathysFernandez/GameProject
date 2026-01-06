@@ -6,7 +6,7 @@ import json
 import os
 from Files import settings 
 from Files import textures_manager
-from Files import Lecteur_map as lecteur
+from Files import map_loader as lecteur
 
 logger = logging.getLogger(__name__)
 
