@@ -62,27 +62,36 @@ class PlantesManager:
         gy = int(player_y // self.taille_cellule)
         coord = (gx, gy)
         
-        # --- MODIF: Vérifier si c'est de l'eau ---
         if coord in collision_map_water:
             return 0
-        # -----------------------------------------
 
         current_time = pygame.time.get_ticks()
 
         # PLANTER
         if coord not in self.plantes:
             self.plantes[coord] = {"etat": 0, "timer": current_time}
-            # logger.info(f"Plante ajoutée en {coord}")
+            
+            # --- JOUER SON PLANTER ---
+            if sound_manager: 
+                sound_manager.play_plant()
+            # -------------------------
             return 0
 
         # RÉCOLTER
         else:
             if self.plantes[coord]["etat"] == self.STADE_MAX:
                 del self.plantes[coord]
-                # logger.info(f"Plante récoltée ! +{self.POINTS_RECOLTE} pts")
+                
+                # --- JOUER SON RÉCOLTE ---
+                if sound_manager: 
+                    sound_manager.play_harvest()
+                # -------------------------
+                
                 return self.POINTS_RECOLTE
             else:
                 return 0
+
+
 
     def draw(self, fenetre, camera_x, camera_y, largeur_fen, hauteur_fen):
         """Affiche les plantes (Images ou Carrés)."""

@@ -127,3 +127,36 @@ class SoundManager:
             
             # Prochain son dans 5 à 15 secondes
             self.next_ambiance_time = now + random.randint(5000, 15000)
+
+            # --- NOUVELLES MÉTHODES ---
+
+    def play_plant(self):
+        """Son quand on plante"""
+        if self.sounds["plant"]:
+            snd = random.choice(self.sounds["plant"])
+            snd.set_volume(0.3)
+            snd.play()
+
+    def play_harvest(self):
+        """Son quand on récolte"""
+        if self.sounds["harvest"]:
+            snd = random.choice(self.sounds["harvest"])
+            snd.set_volume(0.4)
+            snd.play()
+
+    def play_extinguish(self):
+        """Son quand on éteint le feu (pshhht)"""
+        if self.sounds["extinguish"]:
+            snd = random.choice(self.sounds["extinguish"])
+            snd.set_volume(0.4)
+            snd.play()
+
+    def play_fire_damage(self):
+        """Son quand on brûle (avec délai)"""
+        now = pygame.time.get_ticks()
+        if now - self.last_damage_time > self.damage_delay:
+            if self.sounds["fire_damage"]:
+                snd = random.choice(self.sounds["fire_damage"])
+                snd.set_volume(0.6)
+                snd.play()
+                self.last_damage_time = now
