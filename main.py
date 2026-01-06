@@ -10,7 +10,7 @@ from Files import map_loader as lecteur
 from Files import procedural_generation as generation
 from Files import gameplay
 from Files.sound_manager import SoundManager
-from Files.plantes_manager import PlantesManager # <--- AJOUT IMPORT
+from Files.plant_manager import PlantesManager
 
 
 # Configuration simple du logger pour écrire dans le fichier game.log
