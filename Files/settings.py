@@ -4,13 +4,12 @@ import math
 
 #----- Jeu -----
 Titre = "GameProject"
-#2 c'est bien
+#vitesse du joueur
 vitesse = 4
 vitesse_rotation = 5
 FPS = 60
-#entre 0 et 1
 multiplicateur_vitesse_diagonale = math.sqrt(2)
-SCORE_OBJECTIF = 2000
+SCORE_OBJECTIF = 2000 #c'est ici qu'on mets le score final (à atteindre pour gagner)
 #----- Fin Jeu -----
 
 

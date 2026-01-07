@@ -38,7 +38,7 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
 
 
 #modifie une case spécifique de la grille <tiles> a l'emplacement <ligne> , <colonne> par <nouvelle_valeur_tile> dans le fichier <nom>
-#spécifique au concepeteur de carte
+#spécifique au concepteur de carte
 # !!! trop lent pour la génération procédurale
 def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_valeur_tile : int):
     fichier_charge_succes = False
@@ -500,17 +500,3 @@ def recupNomSauvegarde()-> list[str]:
             logger.error(f"Erreur lors de la lecture des sauvegardes : {e}")
             return []
     
-
-
-#creation_fichier_X("test", 100)
-
-#print(derniereSauvegarde())
-#SetDerniereSauvegarde("test.json")
-#print(derniereSauvegarde())
-#print(dernierePositionDe("test"))
-#SetDernierePosition(None, None)
-#print(dernierePosition())
-
-#x, y = dernierePosition()
-#SetDernierePositionDansCarte (x, y)
-#print(recupNomSauvegarde())

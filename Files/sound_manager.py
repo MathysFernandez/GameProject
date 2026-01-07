@@ -30,7 +30,7 @@ class SoundManager:
             "grass": self._load_folder(self.sfx_path / "grass SFX"),
             "dash": self._load_folder(self.sfx_path / "dash SFX"),
             
-            # Fichiers Uniques (Sons précis selon ton arborescence)
+            # Fichiers Uniques (Sons précis selon l'arborescence)
             "plant": self._load_file(self.sfx_path / "plant SFX" / "seeding.mp3", volume=0.8),
             "harvest": self._load_file(self.sfx_path / "plant SFX" / "harvest.mp3"),
             "fire_damage": self._load_file(self.sfx_path / "fire SFX" / "burning.mp3"),
@@ -81,9 +81,11 @@ class SoundManager:
 
     # --- Méthodes de jeu ---
 
+    #son quand on clique avec la souris
     def play_click(self):
         if self.sounds["clicks"]: random.choice(self.sounds["clicks"]).play()
 
+    #son quand on se déplace
     def play_footstep(self):
         now = pygame.time.get_ticks()
         if now - self.last_step_time > self.step_delay:

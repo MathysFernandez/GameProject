@@ -1,15 +1,15 @@
 try:
-    # Pour l'importation relative (lorsque le script est appelé par main.py)
+    # importation relative (lorsque le script est appelé par main.py)
     from . import map_loader as lecteur
 except ImportError:
-    # Pour l'importation directe (lorsque le script est exécuté seul)
+    # importation directe (lorsque le script est exécuté seul)
     import map_loader as lecteur
 
 try:
-    # Pour l'importation relative (lorsque le script est appelé par main.py)
+    # importation relative (lorsque le script est appelé par main.py)
     from . import settings
 except ImportError:
-    # Pour l'importation directe (lorsque le script est exécuté seul)
+    # importation directe (lorsque le script est exécuté seul)
     import settings
 
 
@@ -35,7 +35,7 @@ taille = settings.taille_nouvelle_generation
 
 
 
-#retourne 2 listes : la population, et le poid de chacun
+#retourne 2 listes : la population, et le poids de chacune
 #cela permet ensuite de faire random.choices
 def listes(nombre_texture : int) -> list:
     if nombre_texture < 1:
@@ -49,8 +49,7 @@ def listes(nombre_texture : int) -> list:
         
         if i == 0:
             poids.append(poid_sol) # Poids spécial pour la texture 0
-        
-        #...
+
         
         else:
             poids.append(1)
