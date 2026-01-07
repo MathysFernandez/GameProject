@@ -53,6 +53,7 @@ class PlantesManager:
         if coord not in self.plantes:
             self.plantes[coord] = {"etat": 0, "timer": current_time}
             if sound_manager: sound_manager.play_plant() # Son Plantation
+            logger.info(f"Le joueur à planté en {coord} ")
             return 0
 
         # RÉCOLTER
@@ -60,6 +61,7 @@ class PlantesManager:
             if self.plantes[coord]["etat"] == self.STADE_MAX:
                 del self.plantes[coord]
                 if sound_manager: sound_manager.play_harvest() # Son Récolte
+                logger.info(f"Le joueur à récolté en {coord} ")
                 return self.POINTS_RECOLTE
             else:
                 return 0

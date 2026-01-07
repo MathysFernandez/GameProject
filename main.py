@@ -179,9 +179,9 @@ barre_largeur = 70
 barre_hauteur = 15
 
 # Définir les couleurs Vie et game over
-COULEUR_FOND_BARRE = (100, 100, 100) # Gris foncé
-COULEUR_VIE = (0, 255, 0)         # Vert
-COULEUR_CONTOUR = (255, 255, 255) # Blanc
+COULEUR_FOND_BARRE = (100, 100, 100) 
+COULEUR_VIE = (0, 255, 0)
+COULEUR_CONTOUR = (255, 255, 255) 
 compt_anim = 0
 
 
@@ -231,7 +231,6 @@ SCORE_OBJECTIF = settings.SCORE_OBJECTIF  # Le score à atteindre pour gagner
 
 # +++ AJOUT SCORE +++
 def ajouter_score(quantite):
-    """Ajoute un montant au score du joueur."""
     global joueur_score, joueur_etat
     
     if joueur_etat == "vivant":
@@ -347,6 +346,7 @@ def menu_scene(events, largeur_fenetre, hauteur_fenetre) -> str:
             if event.key == pygame.K_ESCAPE: 
                 print("ESC pressée dans le menu")
                 logger.info("ESC pressée dans le menu")
+                logger.info("Fermeture Jeu")
                 
                 lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
                 logger.info("Sauvegarde de la Carte depuis le main")
@@ -1013,6 +1013,8 @@ def run(largeur_fenetre, hauteur_fenetre):
                 lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
                 logger.info("Sauvegarde de la Carte depuis le main")
                 
+                
+                logger.info("Fermeture Jeu")
                 pygame.quit()
                 sys.exit()
                 

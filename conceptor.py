@@ -8,7 +8,19 @@ from Files import settings
 from Files import texture_manager
 from Files import map_loader as lecteur
 
-logger = logging.getLogger(__name__)
+
+if __name__ == "__main__":
+    # Configuration simple du logger pour écrire dans le fichier game.log
+    logging.basicConfig(
+        level=logging.DEBUG,
+        filename='game.log',
+        filemode='a',  # 'a' pour ajouter les nouvelles lignes à la fin du fichier
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        encoding='utf-8' 
+    )
+
+
+    logger = logging.getLogger(__name__)
 
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 nombre_texture = settings.nombre_texture
@@ -137,6 +149,7 @@ mode_vue_globale = True
 
 
 running = True
+logger.info("Lancement conceptor")
 while running:
     # ---variables à réinitialiser---
     taille_cellule_change = False
@@ -158,6 +171,7 @@ while running:
                 lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
                 logger.info("Sauvegarde de la Carte depuis le Concepteur")
             running = False
+            logger.info("Fermeture conceptor")
             
         
         # Si un bouton de la souris est pressé
@@ -186,7 +200,12 @@ while running:
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                print("ESC pressée dans le menu")
+                if grille_modifier:
+                    lecteur.modifier_grille(nom_fichier_a_ouvrir, grille)
+                    logger.info("Sauvegarde de la Carte depuis le Concepteur")
+                
+                logger.info("Fermeture conceptor")
+                print("ESC pressée")
                 pygame.quit()
                 sys.exit()
                 
