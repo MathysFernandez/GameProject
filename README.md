@@ -6,6 +6,7 @@
 
 
 
+
 # :rocket: GameProject   
 
 > [!note] Bienvenue
@@ -13,7 +14,7 @@
 
 ![image présentation](image_pou_gitlab/exemple_generation.jpg)
 
-![video gitlab](image_pou_gitlab/video.mp4)
+![](image_pou_gitlab/video.mp4)
 
 
 ---
@@ -22,8 +23,8 @@
 > Bienvenue sur la page **_README_** de notre projet !   
 
 **_GameProject_** est un jeu Pygame où vous explorez un vaste monde depuis une vue aérienne.    
-Notre objectif est de livrer une expérience immersive et engageante où chaque interaction et chaque défi vous rapprochent de la sortie de ce monde.   
-Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur de carte** dédié (`Concepteur.py`).   
+Notre objectif est de livrer une expérience immersive et engageante où chaque interaction et chaque défi vous rapprochent de la victoire.   
+Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur de carte** dédié (`conceptor.py`).   
 
 
 
@@ -35,11 +36,14 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 >>> [!tip] Structure
 GameProject/   
 ├── Assets/             
-├── Files/              
-├── Saves/              
-├── Concepteur.py       
-├── requirement.txt    
+├── Files/    
+├── image_pou_gitlab/      
+├── Saves/                    
+├── .gitignore     
 ├── CHANGELOG     
+├── conceptor.py       
+├── game.log     
+├── requirement.txt         
 ├── LICENSE    
 ├── main.py      
 └── README.md
@@ -52,7 +56,7 @@ GameProject/
 * [main.py]()
 : Le fichier principal du jeu, contient la boucle de jeu avec les scènes menu, jeu, etc...  
 
-* [Concepteur.py]()
+* [conceptor.py]()
 : Programme pour les développeur permettant de modifier la carte du jeu.   
 
 * [LICENSE]()
@@ -67,20 +71,20 @@ GameProject/
 * [Files/]()
 : Répertoire contenant l'ensemble des fichiers python.
 
-* [Files/config.py]()
+* [Files/settings.py]()
 : Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
 
-* [Files/generation_procedurale.py]()
+* [Files/procedural_generation.py]()
 : Fichier permettant comme son nom l'indique de généré une carte (**principalement _Automate Cellular_**)   
 
-* [Files/textures_manager.py]()
+* [Files/texture_manager.py]()
 :  Gère le chargement et la mise à l'échelle des textures, ainsi que la préparation de la grille et des données de collision.   
 
-* [Files/Lecteur_map.py]()
+* [Files/map_loader.py]()
 : Permet de lire et modifier le fichier JSON.     
 
 * [Assets/]()
-: Contient toutes les ressources du jeu (images, sons, etc.)   
+: Contient toutes les ressources du jeu (images, sons, piskel, etc.)   
 
 * [Saves/]()
 : Contient L'ensemble des cartes du jeu (fichiers JSON).  
