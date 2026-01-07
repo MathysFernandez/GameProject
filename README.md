@@ -6,6 +6,7 @@
 
 
 
+
 # :rocket: GameProject   
 
 > [!note] Bienvenue
@@ -13,7 +14,7 @@
 
 ![image présentation](image_pou_gitlab/exemple_generation.jpg)
 
-![video gitlab](image_pou_gitlab/video.mp4)
+![](image_pou_gitlab/video.mp4)
 
 
 ---
@@ -22,8 +23,8 @@
 > Bienvenue sur la page **_README_** de notre projet !   
 
 **_GameProject_** est un jeu Pygame où vous explorez un vaste monde depuis une vue aérienne.    
-Notre objectif est de livrer une expérience immersive et engageante où chaque interaction et chaque défi vous rapprochent de la sortie de ce monde.   
-Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur de carte** dédié (`Concepteur.py`).   
+Notre objectif est de livrer une expérience immersive et engageante où chaque interaction et chaque défi vous rapprochent de la victoire.   
+Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur de carte** dédié (`conceptor.py`).   
 
 
 
@@ -35,11 +36,14 @@ Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur
 >>> [!tip] Structure
 GameProject/   
 ├── Assets/             
-├── Files/              
-├── Saves/              
-├── Concepteur.py       
-├── requirement.txt    
+├── Files/    
+├── image_pou_gitlab/      
+├── Saves/                    
+├── .gitignore     
 ├── CHANGELOG     
+├── conceptor.py       
+├── game.log     
+├── requirement.txt         
 ├── LICENSE    
 ├── main.py      
 └── README.md
@@ -52,7 +56,7 @@ GameProject/
 * [main.py]()
 : Le fichier principal du jeu, contient la boucle de jeu avec les scènes menu, jeu, etc...  
 
-* [Concepteur.py]()
+* [conceptor.py]()
 : Programme pour les développeur permettant de modifier la carte du jeu.   
 
 * [LICENSE]()
@@ -67,27 +71,41 @@ GameProject/
 * [Files/]()
 : Répertoire contenant l'ensemble des fichiers python.
 
-* [Files/config.py]()
+* [Files/game_mechanics.py]()
+: S'occupe de tout ce qui est `gameplay` (dash, etc...).   
+
+* [Files/map_loader.py]()
+: Permet de lire et modifier le fichier JSON.    
+
+* [Files/plant_manager.py]()
+: Gestion des plantes (plantation et récolte). 
+
+* [Files/settings.py]()
 : Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
 
-* [Files/generation_procedurale.py]()
+* [Files/procedural_generation.py]()
 : Fichier permettant comme son nom l'indique de généré une carte (**principalement _Automate Cellular_**)   
 
-* [Files/textures_manager.py]()
+* [Files/sound_manager.py]()
+: Permet les effets sonnore et musique. 
+
+* [Files/texture_manager.py]()
 :  Gère le chargement et la mise à l'échelle des textures, ainsi que la préparation de la grille et des données de collision.   
 
-* [Files/Lecteur_map.py]()
-: Permet de lire et modifier le fichier JSON.     
-
 * [Assets/]()
-: Contient toutes les ressources du jeu (images, sons, etc.)   
+: Contient toutes les ressources du jeu (images, sons, piskel, etc.)   
 
 * [Saves/]()
 : Contient L'ensemble des cartes du jeu (fichiers JSON).  
 
+* [Saves/LastSave]()
+: Gère la dernière carte chargé et les dernières positions   
+
 * [.gitignore]()
 : Spécifie les fichiers et répertoires que Git doit ignorer et ne pas suivre, afin d'éviter qu'ils ne soient accidentellement ajoutés aux commits. (Ex: les .log)  
 
+* [game.log]()
+: Journalise l'activité sur le jeu, conceptor et fonctions importante du jeu pour aider au débug.
 >>>
 
 
@@ -95,8 +113,13 @@ GameProject/
 ## :joystick: Les commandes du jeu:
 * <kbd>Z</kbd>,<kbd>Q</kbd>,<kbd>S</kbd>,<kbd>D</kbd> et les <kbd>flèches directionnelles</kbd> : pour ce déplacer   
 * <kbd>SHIFT</kbd> + <kbd>Z</kbd>/<kbd>Q</kbd>/<kbd>S</kbd>/<kbd>D</kbd>/<kbd>flèches directionnelles</kbd> : pour ce déplacer + vite    
-...
-
+* <kbd>R</kbd> : Pour planter ou récolter.
+* <kbd>F</kbd> : Pour éteindre feu.
+* <kbd>P</kbd> : Pour mettre en pause le jeu.
+* <kbd>H</kbd> : Retirer 10 points de vie (mode `test_vie`).
+* <kbd>J</kbd> : Ajouter 10 points de vie (mode `test_vie`).
+* <kbd>K</kbd> : Ajouter 10 points de socre (mode `mod_test_score`).
+* <kbd>Echap</kbd> : Retour au menu ou quitter.
 
 
 ---
@@ -120,7 +143,7 @@ Lancez le jeu avec:
 ```main.py```
 
 Lancez le mode éditeur avec:   
-```Concepteur.py```
+```conceptor.py```
 
 
 
@@ -134,10 +157,10 @@ Ce projet est distribué sous la [licence MIT](LICENSE)
 | <a href="https://gitlab.univ-lr.fr/mferna08"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2469/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/rlamou01"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3019/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Lamoureux Robin_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/rlamou01) |
+| <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2486/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2486/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
+| <a href="https://gitlab.univ-lr.fr/rlamou01"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3019/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Lamoureux Robin_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/rlamou01) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 | <a href="https://gitlab.univ-lr.fr/tpinet"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3021/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Pinet Theo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tpinet) |
