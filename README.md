@@ -111,8 +111,13 @@ GameProject/
 ## :joystick: Les commandes du jeu:
 * <kbd>Z</kbd>,<kbd>Q</kbd>,<kbd>S</kbd>,<kbd>D</kbd> et les <kbd>flèches directionnelles</kbd> : pour ce déplacer   
 * <kbd>SHIFT</kbd> + <kbd>Z</kbd>/<kbd>Q</kbd>/<kbd>S</kbd>/<kbd>D</kbd>/<kbd>flèches directionnelles</kbd> : pour ce déplacer + vite    
-...
-
+* <kbd>R</kbd> : Pour planter ou récolter.
+* <kbd>F</kbd> : Pour éteindre feu.
+* <kbd>P</kbd> : Pour mettre en pause le jeu.
+* <kbd>H</kbd> : Retirer 10 points de vie (mode `test_vie`).
+* <kbd>J</kbd> : Ajouter 10 points de vie (mode `test_vie`).
+* <kbd>K</kbd> : Ajouter 10 points de socre (mode `mod_test_score`).
+* <kbd>Echap</kbd> : Retour au menu ou quitter.
 
 
 ---
