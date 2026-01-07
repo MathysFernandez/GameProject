@@ -71,23 +71,35 @@ GameProject/
 * [Files/]()
 : Répertoire contenant l'ensemble des fichiers python.
 
+* [Files/game_mechanics.py]()
+: S'occupe de tout ce qui est `gameplay` (dash, etc...).   
+
+* [Files/map_loader.py]()
+: Permet de lire et modifier le fichier JSON.    
+
+* [Files/plant_manager.py]()
+: Gestion des plantes (plantation et récolte). 
+
 * [Files/settings.py]()
 : Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
 
 * [Files/procedural_generation.py]()
 : Fichier permettant comme son nom l'indique de généré une carte (**principalement _Automate Cellular_**)   
 
+* [Files/sound_manager.py]()
+: Permet les effets sonnore et musique. 
+
 * [Files/texture_manager.py]()
 :  Gère le chargement et la mise à l'échelle des textures, ainsi que la préparation de la grille et des données de collision.   
-
-* [Files/map_loader.py]()
-: Permet de lire et modifier le fichier JSON.     
 
 * [Assets/]()
 : Contient toutes les ressources du jeu (images, sons, piskel, etc.)   
 
 * [Saves/]()
 : Contient L'ensemble des cartes du jeu (fichiers JSON).  
+
+* [Saves/LastSave]()
+: Gère la dernière carte chargé et les dernières positions   
 
 * [.gitignore]()
 : Spécifie les fichiers et répertoires que Git doit ignorer et ne pas suivre, afin d'éviter qu'ils ne soient accidentellement ajoutés aux commits. (Ex: les .log)  
