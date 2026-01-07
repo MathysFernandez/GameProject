@@ -170,7 +170,7 @@ def placer_texture(taille_cellule,largeur_grille,hauteur_grille, grille, avecBas
     
     floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2 = charger_texture(taille_cellule, taille_frame)
     
-    # map de collision à tester la collisions (sans filtre)
+    # map de collision à tester la collisions
     collision_map_solid = {}
     collision_map_water = {}
     collision_map_dechet = {}

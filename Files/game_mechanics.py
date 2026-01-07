@@ -5,14 +5,8 @@ except ImportError:
     import settings
 
 def gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse):
-    """
-    Gère l'activation et l'effet du dash.
-    Met à jour les variables globales de settings pour l'état du dash.
-    Retourne les nouvelles valeurs de deplacement et vitesse.
-    """
-    
-    # 1. Vérifier si on veut et peut lancer un dash
-    # Condition : pas déjà actif, cooldown terminé, et le joueur est en train de bouger
+    # Vérifier si on peut lancer le dash
+    # Que si le joueur est entrain de bouger ou que le cooldown du dash n'est pas fini
     if not settings.dash_actif and temps_actuel >= settings.dash_cooldown_fin:
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -23,7 +17,6 @@ def gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse):
                     settings.dash_cooldown_fin = temps_actuel + settings.dash_cooldown
                     
                     # On verrouille la direction du dash
-                    # On normalise juste le sens (-1, 0, ou 1)
                     dir_x = 0
                     if deplacement_x > 0: dir_x = 1
                     elif deplacement_x < 0: dir_x = -1
@@ -35,12 +28,11 @@ def gerer_dash(events, temps_actuel, deplacement_x, deplacement_y, vitesse):
                     settings.dash_dir = (dir_x, dir_y)
                 break # Une seule action par frame
 
-    # 2. Appliquer l'effet du dash si actif
+    # Appliquer l'effet du dash si actif
     if settings.dash_actif:
         if temps_actuel >= settings.dash_fin_temps:
             settings.dash_actif = False # Fin du dash
         else:
-            # On écrase le mouvement du joueur par la direction verrouillée du dash
             deplacement_x = settings.dash_dir[0]
             deplacement_y = settings.dash_dir[1]
             
