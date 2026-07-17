@@ -1,7 +1,6 @@
 
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-![Coffee](https://img.shields.io/badge/Caffeine-100%25-brown?logo=coffeescript)
 
 
 
