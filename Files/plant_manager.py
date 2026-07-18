@@ -5,6 +5,7 @@ from Files import settings
 
 logger = logging.getLogger(__name__)
 
+# Classe des plantes avec ses caractéristique et ses fonctions
 class PlantesManager:
     def __init__(self, taille_cellule):
         self.plantes = {} 
@@ -31,6 +32,7 @@ class PlantesManager:
 
         self.COULEURS = {0: (139, 69, 19), 1: (144, 238, 144), 2: (34, 139, 34)}
 
+    # Augmenter l'etat 
     def update(self):
         current_time = pygame.time.get_ticks()
         for coord, data in self.plantes.items():
@@ -39,6 +41,7 @@ class PlantesManager:
                     data["etat"] += 1
                     data["timer"] = current_time
 
+    # Interaction avec collision 
     def interagir(self, player_x, player_y, collision_map_water, sound_manager=None):
         gx = int(player_x // self.taille_cellule)
         gy = int(player_y // self.taille_cellule)
@@ -49,23 +52,26 @@ class PlantesManager:
 
         current_time = pygame.time.get_ticks()
 
-        # PLANTER
+        # Planter
         if coord not in self.plantes:
             self.plantes[coord] = {"etat": 0, "timer": current_time}
-            if sound_manager: sound_manager.play_plant() # Son Plantation
+            # Son Plantation
+            if sound_manager: sound_manager.play_plant() 
             logger.info(f"Le joueur à planté en {coord} ")
             return 0
 
-        # RÉCOLTER
+        # Récolter
         else:
             if self.plantes[coord]["etat"] == self.STADE_MAX:
                 del self.plantes[coord]
-                if sound_manager: sound_manager.play_harvest() # Son Récolte
+                # Son Récolte
+                if sound_manager: sound_manager.play_harvest()
                 logger.info(f"Le joueur à récolté en {coord} ")
                 return self.POINTS_RECOLTE
             else:
                 return 0
 
+    # Dessiner les plantes en fonctions de l'état 
     def draw(self, fenetre, camera_x, camera_y, largeur_fen, hauteur_fen):
         for (gx, gy), data in self.plantes.items():
             screen_x = gx * self.taille_cellule + camera_x

@@ -14,16 +14,23 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.DEBUG,
         filename='game.log',
-        filemode='a',  # 'a' pour ajouter les nouvelles lignes à la fin du fichier
+        # 'a' pour ajouter les nouvelles lignes à la fin du fichier
+        filemode='a',
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        encoding='utf-8' 
+        encoding='utf-8'
     )
 
 
     logger = logging.getLogger(__name__)
 
+# Récupération nom de la dernière sauvegarde utilisé
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
+
+# Récupération du nombre de textures choisis en paramètre dans settings
 nombre_texture = settings.nombre_texture
+
+
+
 
 pygame.init()
 
@@ -37,13 +44,14 @@ largeur_fenetre, hauteur_fenetre = settings.get_dimensions()
 # Créer la fenêtre
 fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
 
-# récupérer grille
+# Récupération grille
 largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
 
+# Récupération de la taille cellule dans settings
 taille_cellule = settings.taille_cellule
 
 
-
+# Récupération des textures
 floor, mur, mur2, water_final, water_final2, dechet1, dechet2, feu_final, feu_final2  = texture_manager.charger_texture(1, settings.taille_frame)
 
 TEXTURES_BASE = {
@@ -54,6 +62,7 @@ TEXTURES_BASE = {
     3: dechet1,
     4: feu_final
 }
+
 
 minimap_surface = pygame.Surface((largeur_grille, hauteur_grille))
 
@@ -75,14 +84,17 @@ camera_y = 0
 couleur_grille = (100, 100, 100)
 couleur_cellule = (200, 200, 200)
 
+
 # ---Police---
 BLANC = (255, 255, 255)
+
 
 chosen_letter = 0
 
 
 # Variable pour suivre l'état du bouton gauche
 mouse_left_button_held = False
+
 
 # Fonction pour rendre et positionner le texte
 def creer_surface_texte(texte):
@@ -92,17 +104,23 @@ def creer_surface_texte(texte):
     rect.topleft = (10, 0) 
     return surface, rect
 
+
+# Fonction de mise à l'échelle des textures pour le zoom
 def mettre_a_jour_textures_zoom(nouvelle_taille):
     TEXTURES_ACTUELLES.clear()
     for id_texture, image_originale in TEXTURES_BASE.items():
         TEXTURES_ACTUELLES[id_texture] = pygame.transform.scale(image_originale, (nouvelle_taille, nouvelle_taille))
-        
+
+
+# Fonction de mise à l'échelle de la MINIMAP pour le zoom
 def mettre_a_jour_pixel_minimap(gx, gy, texture_id):
     if 0 <= gx < largeur_grille and 0 <= gy < hauteur_grille:
         if texture_id in TEXTURES_MINIMAP:
             micro_image = TEXTURES_MINIMAP[texture_id]
             minimap_surface.blit(micro_image, (gx, gy))
 
+
+# Récupérer les données du fichier sauvegarder
 def recharger_donnees_carte():
     global largeur_grille, hauteur_grille, grille, minimap_surface
     largeur_grille, hauteur_grille, grille = lecteur.chargerfichier(nom_fichier_a_ouvrir)
@@ -115,20 +133,24 @@ def recharger_donnees_carte():
             if id_actuel in TEXTURES_MINIMAP:
                  minimap_surface.blit(TEXTURES_MINIMAP[id_actuel], (x, y))
 
+
 # Création initiale de la surface et du rectangle du texte
 lettre_surface, lettre_rect = creer_surface_texte(str(chosen_letter))
 
+
 TEXTURES_MINIMAP = {}
 for id_tex, image_base in TEXTURES_BASE.items():
-    #On reduit chaque image a 1 pixel
+    # On reduit chaque image a 1 pixel
+    # Simplification visuelle pour optimisation 
     TEXTURES_MINIMAP[id_tex] = pygame.transform.scale(image_base, (1, 1))
-    
+
+
 for y in range(hauteur_grille):
     for x in range(largeur_grille):
         id_actuel = grille[y][x]
-        # On utilise TEXTURES_MINIMAP ici !
         if id_actuel in TEXTURES_MINIMAP:
              minimap_surface.blit(TEXTURES_MINIMAP[id_actuel], (x, y))
+
 
 TEXTURES_ACTUELLES = {}
 mettre_a_jour_textures_zoom(taille_cellule)
@@ -147,19 +169,20 @@ grille_modifier = False
 # On détecte si on veut voir TOUTE la carte 
 mode_vue_globale = True
 
-
+# Lancement du Conceptor
 running = True
 logger.info("Lancement conceptor")
 while running:
-    # ---variables à réinitialiser---
+
+    # ---Début Variables à réinitialiser---
     taille_cellule_change = False
     
-    
-        
     #deplacement vitesse
     vitesse = settings.vitesse *5
-    # FIN ---variables à réinitialiser---
+    # ---Fin Variables à réinitialiser---
     
+
+    # ---Début Gestion des touches préssés---
     #touche pressé
     keys_pressed = pygame.key.get_pressed()
     
@@ -257,18 +280,20 @@ while running:
                 
                 taille_cellule_change = True
                 mettre_a_jour_textures_zoom(taille_cellule)
+
+    # ---Fin Gestion des touches préssés--- 
     
     
-    #si le bouton gauche de la souris est maintenu enfoncé
+    # Si le bouton gauche de la souris est maintenu enfoncé
     if mouse_left_button_held and taille_cellule > taille_changement_de_mode_affichage:
         x, y = event.pos
         
-        # position en nombre de cellules 
+        # Position en nombre de cellules 
         cellular_x = int((x - camera_x )/ taille_cellule)
         cellular_y = int((y - camera_y )/ taille_cellule)
         if 0 <= cellular_y < hauteur_grille and 0 <= cellular_x < largeur_grille:
             
-        # positionner les nouvelles tuiles (en focntion des textures choisis)
+        # Positionner les nouvelles tuiles (en focntion des textures choisis)
             grille[cellular_y][cellular_x] = chosen_letter
             mettre_a_jour_pixel_minimap(cellular_x, cellular_y, chosen_letter)
             grille_modifier = True
@@ -285,11 +310,11 @@ while running:
     deplacement_x = (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) - (keys_pressed[pygame.K_q] or keys_pressed[pygame.K_LEFT])
     deplacement_y = (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]) - (keys_pressed[pygame.K_z] or keys_pressed[pygame.K_UP])
     
-    #vitesse deplacement en diagonale réduit 
+    # Vitesse deplacement en diagonale réduit 
     if deplacement_x != 0 and deplacement_y != 0:
         vitesse *= settings.multiplicateur_vitesse_diagonale
     
-    #application du deplacement
+    # Application du deplacement
     if not mode_vue_globale:
         deplacement_x *= vitesse
         deplacement_y *= vitesse
@@ -319,9 +344,11 @@ while running:
     world_x_end_screen = world_x_start_screen + largeur_fenetre
     world_y_end_screen = world_y_start_screen + hauteur_fenetre
     
+
+    # Fonctionnement dépendement du mode de vue
     if mode_vue_globale:
         
-        #On calcule le ratio
+        # On calcule le ratio
         ratio_w = largeur_fenetre / largeur_grille
         ratio_h = hauteur_fenetre / hauteur_grille
         ratio = min(ratio_w, ratio_h) 
@@ -329,10 +356,10 @@ while running:
         new_w = int(largeur_grille * ratio)
         new_h = int(hauteur_grille * ratio)
         
-        # redimensionnement
+        # Redimensionnement
         map_ecrasée = pygame.transform.scale(minimap_surface, (new_w, new_h))
         
-        #On centre l'image à l'écran 
+        # On centre l'image à l'écran 
         pos_x = (largeur_fenetre - new_w) // 2
         pos_y = (hauteur_fenetre - new_h) // 2
         
@@ -341,20 +368,20 @@ while running:
     elif taille_cellule < taille_changement_de_mode_affichage:
         
         if taille_cellule_change :
-            #Calculer la taille qu'aura la carte entière à l'écran
+            #C alculer la taille qu'aura la carte entière à l'écran
             largeur_map_ecran = largeur_grille * taille_cellule
             hauteur_map_ecran = hauteur_grille * taille_cellule
             minimap_scale = pygame.transform.scale(minimap_surface, (largeur_map_ecran, hauteur_map_ecran))
         
-        #L'afficher à la position de la caméra
+        # L'afficher à la position de la caméra
         fenetre.blit(minimap_scale, (camera_x, camera_y))
     else:
         # Convertir ces coordonnées monde en indices de grille
         start_grid_x = int(world_x_start_screen // taille_cellule) -1 #+6 mdr c'est drole
-        end_grid_x = int(world_x_end_screen // taille_cellule) +1 #-5 # +1 
+        end_grid_x = int(world_x_end_screen // taille_cellule) +1 # +1 
 
         start_grid_y = int(world_y_start_screen // taille_cellule) -1 # +2
-        end_grid_y = int(world_y_end_screen // taille_cellule) +1 #-1 # +1 
+        end_grid_y = int(world_y_end_screen // taille_cellule) +1 # +1 
         
         # S'assurer que les indices restent dans les limites de la grille réelle
         start_grid_x = max(0, start_grid_x)
@@ -369,7 +396,7 @@ while running:
             for x in range(start_grid_x, end_grid_x):
                 texture_id = grille[y][x]
                 
-                # SECURITÉ : On vérifie que l'ID existe bien dans nos textures chargées
+                # SECURITÉ: On vérifie que l'ID existe bien dans nos textures chargées
                 # et qu'il n'est pas None aussi xd
                 if texture_id is not None and texture_id in TEXTURES_ACTUELLES:
                         
