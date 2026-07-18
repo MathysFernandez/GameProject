@@ -27,7 +27,8 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
             logger.error(f"Erreur tentative 02: Le fichier de carte '{nom_fichier}' n'a pas été trouvé.")
 
     if fichier_charge_succes:
-        #Variables utile
+        
+        # Variables utile
         width = map_data['width']
         height = map_data['height']
         grille = map_data['tiles']
@@ -37,8 +38,8 @@ def chargerfichier(nom : str) -> tuple[int, int, list]:
 
 
 
-#modifie une case spécifique de la grille <tiles> a l'emplacement <ligne> , <colonne> par <nouvelle_valeur_tile> dans le fichier <nom>
-#spécifique au concepteur de carte
+# modifie une case spécifique de la grille <tiles> a l'emplacement <ligne> , <colonne> par <nouvelle_valeur_tile> dans le fichier <nom>
+# spécifique au concepteur de carte
 # !!! trop lent pour la génération procédurale
 def modifier_tile_dans_json(nom : str, ligne : int, colonne : int, nouvelle_valeur_tile : int):
     fichier_charge_succes = False
@@ -114,7 +115,8 @@ def ajouter(nom :str, valeur_defaut :int):
     else:
         largeur_carte = 2
         logger.warning("Avertissement: La carte 'tiles' était vide. Création d'une nouvelle ligne par défaut.")
-        tiles = [[valeur_defaut]] # Initialise avec une seule tuile
+        # Initialise avec une seule tuile
+        tiles = [[valeur_defaut]]
         largeur_carte = 1
 
 
@@ -135,7 +137,7 @@ def ajouter(nom :str, valeur_defaut :int):
 
 
 
-#retire une colonne de chaque coté et une ligne de chaque coté
+# retire une colonne de chaque coté et une ligne de chaque coté
 def retirer(nom):
     if nom [-5:] != ".json":
         nom += ".json"
@@ -235,7 +237,7 @@ def creation_fichier_X(name : str, taille : int):
     
 
 
-#modifie l'ensemble de la grille du fichier 
+# Modifie l'ensemble de la grille du fichier 
 def modifier_grille(nom : str, grille : list):
     if nom [-5:] != ".json":
         nom += ".json"
@@ -268,7 +270,7 @@ def modifier_grille(nom : str, grille : list):
 
 
 
-
+# return le nom de la dernière sauvegarde 
 def derniereSauvegarde() -> str or None:
     nom = "lastSave.json"
     fichier_charge_succes = False
@@ -296,7 +298,7 @@ def derniereSauvegarde() -> str or None:
     return None
 
 
-
+# return la dernière position enregistré
 def dernierePosition() -> (int,int) or None:
     nom = "lastSave.json"
     fichier_charge_succes = False
@@ -325,6 +327,8 @@ def dernierePosition() -> (int,int) or None:
             return position_x, position_y
     return None
 
+
+# return la dernière position enregistré d'une sauvegarde en particulier
 def dernierePositionDe(nom : str) -> (int,int) or None:
     if nom [-5:] != ".json":
         nom += ".json"
@@ -356,6 +360,8 @@ def dernierePositionDe(nom : str) -> (int,int) or None:
     return 0,0
 
 
+
+# sauvegarde un nom de partie en tant que dernier nom de sauvegarde (dans lastSave.json)
 def SetDerniereSauvegarde(nouvelle_sauvegarde):
     nom = "lastSave.json"
     fichier_charge_succes = False
@@ -388,6 +394,9 @@ def SetDerniereSauvegarde(nouvelle_sauvegarde):
         except IOError as e:
             logger.error(f"Erreur critique écriture config : {e}")
 
+
+
+# sauvegarder une position en tant que dernier position utilisé (dans lastSave.json)
 def SetDernierePosition(nouvelle_position_x : int, nouvelle_position_y : int):
     nom = "lastSave.json"
     fichier_charge_succes = False
@@ -423,7 +432,7 @@ def SetDernierePosition(nouvelle_position_x : int, nouvelle_position_y : int):
             logger.error(f"Erreur critique écriture config : {e}")
             
     
-
+# Sauvegarder une position dans la dernière sauvegarde utilisé
 def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y : int):
     nom = derniereSauvegarde()
     fichier_charge_succes = False
@@ -462,7 +471,7 @@ def SetDernierePositionDansCarte (nouvelle_position_x : int, nouvelle_position_y
 
 
 
-
+# Récupérer le nom de la dernière sauvegarde (dans lastSave.json)
 def recupNomSauvegarde()-> list[str]:
     fichier_charge_succes = False
     liste_sauvegardes = []
