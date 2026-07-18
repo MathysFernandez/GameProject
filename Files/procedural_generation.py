@@ -1,28 +1,30 @@
 try:
-    # importation relative (lorsque le script est appelé par main.py)
+    # Importation relative (lorsque le script est appelé par main.py)
     from . import map_loader as lecteur
 except ImportError:
-    # importation directe (lorsque le script est exécuté seul)
+    # Importation directe (lorsque le script est exécuté seul)
     import map_loader as lecteur
 
 try:
-    # importation relative (lorsque le script est appelé par main.py)
+    # Importation relative (lorsque le script est appelé par main.py)
     from . import settings
 except ImportError:
-    # importation directe (lorsque le script est exécuté seul)
+    # Importation directe (lorsque le script est exécuté seul)
     import settings
 
 
 import random
 import time
-
 import logging
 
 logger = logging.getLogger(__name__)
 
-
+# Récupation de la dernière sauvegarde 
 nom_fichier_a_ouvrir = lecteur.derniereSauvegarde()
 
+
+
+# --- Début Récupération des paramètres (de settings) ---
 
 nombre_texture = settings.nombre_texture
 multiplicateur_sol = settings.multiplicateur_sol
@@ -33,10 +35,12 @@ multiplicateur_point_apparition_water = settings.multiplicateur_point_apparition
 #taille de la nouvelle génération
 taille = settings.taille_nouvelle_generation
 
+# --- FIN Récupération des paramètres (de settings) ---
 
 
-#retourne 2 listes : la population, et le poids de chacune
-#cela permet ensuite de faire random.choices
+
+# Retourne 2 listes : la population, et le poids de chacune
+# Cela permet ensuite de faire random.choices
 def listes(nombre_texture : int) -> list:
     if nombre_texture < 1:
         logger.error("Le nombre_texture de texture doit etre au moins 1")
@@ -57,7 +61,6 @@ def listes(nombre_texture : int) -> list:
     return population, poids
 
 
-
 #génère de l'eau sur la carte
 def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition_water : int =1,multiplicateur_point_apparition_water : int =1) -> list:
     for nb in range (nombre_répétition_water):
@@ -66,27 +69,32 @@ def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, 
             for y in range (1, hauteur_grille -1):
                 valeur_actu = grille[x][y]
                 
-                #si première boucle:
+                # Si première boucle:
                 if nb == 0:
                     #Parcourir les voisins
                     if valeur_actu == 0:
                         if random.randint(0,1000) < (1 * multiplicateur_point_apparition_water):
-                            for dx in [-1, 0, 1]:  #Décalages pour l'axe X
-                                for dy in [-1, 0, 1]:  #décalages pour l'axe Y
-                                    #calculer les coordonnées du voisin
+                            #Décalages pour l'axe X
+                            for dx in [-1, 0, 1]: 
+                                 # Décalages pour l'axe Y
+                                for dy in [-1, 0, 1]:
+                                    # Calculer les coordonnées du voisin
                                     x_voisin = x + dx
                                     y_voisin = y + dy
                                     voisin = grille[x_voisin][y_voisin]
                                     if voisin == 0 and random.randint(0,100) < 15:
                                         grille_suivante[x_voisin][y_voisin] = -1
                 
-                #si pas première boucle:
+                # Si pas première boucle:
                 elif nb != 0:    
-                    #Parcourir les voisins
+
+                    # Parcourir les voisins
                     if valeur_actu == -1:
-                        for dx in [-1, 0, 1]:  #Décalages pour l'axe X
-                            for dy in [-1, 0, 1]:  #décalages pour l'axe Y
-                                #calculer les coordonnées du voisin
+                        # Décalages pour l'axe X
+                        for dx in [-1, 0, 1]:
+                            #Décalages pour l'axe Y
+                            for dy in [-1, 0, 1]:  
+                                #Calculer les coordonnées du voisin
                                 x_voisin = x + dx
                                 y_voisin = y + dy
                                 voisin = grille[x_voisin][y_voisin]
@@ -98,7 +106,7 @@ def generation_water(largeur_grille : int, hauteur_grille : int, grille : list, 
     logger.info("generation_water() effectué")
     return grille
 
-#genère de nouveaux type de mur à la place du mur de base
+# Genère de nouveaux type de mur à la place du mur de base
 def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition : int) -> list:
     for nb in range (nombre_répétition):
         grille_suivante = [row[:] for row in grille]
@@ -109,13 +117,15 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
                 if x >= 1 and y >= 1 and x < largeur_grille -1  and y < hauteur_grille -1 :
                     valeur_actu = grille[x][y]
                     
-                    #Parcourir les voisins
-                    #permets de rapprocher des éléments
-                    for dx in [-1, 0, 1]:  #Décalages pour l'axe X
-                        for dy in [-1, 0, 1]:  #décalages pour l'axe Y
+                    # Parcourir les voisins
+                    # permets de rapprocher des éléments
+                    # Décalages pour l'axe X
+                    for dx in [-1, 0, 1]:
+                        #décalages pour l'axe Y
+                        for dy in [-1, 0, 1]:
                             # Si pas la valeur actuelle
                             if not (dx == 0 and dy == 0):
-                                #calculer les coordonnées du voisin
+                                # Calculer les coordonnées du voisin
                                 x_voisin = x + dx
                                 y_voisin = y + dy
                                 voisin = grille[x_voisin][y_voisin]
@@ -124,12 +134,12 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
                                     voisin_mur_type_1 += 1
                                 
                                     
-                    #si une cellule est un mur :
+                    # Si une cellule est un mur:
                     if valeur_actu == 1 and voisin_mur_type_1 > 5 and nombre_texture > 2 and nb < (nombre_répétition -2) :
                         if random.random() > 0.98:
                             grille_suivante[x][y] = 2
                     
-                    #si le mur est un mur 2 alors mettre un mur 2 sur l'une ou plusieures des cases alentour
+                    # Si le mur est un mur 2 alors mettre un mur 2 sur l'une ou plusieures des cases alentour
                     if valeur_actu == 2:
                         for i in range(3):
                             x_alea = x + random.randint(-1,1)
@@ -142,7 +152,7 @@ def generation_type_mur(largeur_grille : int, hauteur_grille : int, grille : lis
     logger.info("generation_type_mur() effectué")
     return grille
 
-#supprime les mur solitaire
+# Supprime les mur solitaire
 def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
     
     grille_suivante = [row[:] for row in grille]
@@ -152,9 +162,9 @@ def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : l
             if x >= 1 and y >= 1 and x < largeur_grille -1  and y < hauteur_grille -1 :
                 valeur_actu = grille[x][y]
                 if valeur_actu != 0:
-                    #Parcourir les voisins
-                    for dx in [-1, 0, 1]:  #Décalages pour l'axe X
-                        for dy in [-1, 0, 1]:  #décalages pour l'axe Y
+                    # Parcourir les voisins
+                    for dx in [-1, 0, 1]:  # Décalages pour l'axe X
+                        for dy in [-1, 0, 1]:  # Décalages pour l'axe Y
                             # Si pas la valeur actuelle
                             if ((dx == 0 and dy != 0) or (dx != 0 and dy == 0)) :
                                 x_voisin = x + dx
@@ -172,8 +182,8 @@ def generation_voisin_mur(largeur_grille : int, hauteur_grille : int, grille : l
 
 
 
-#automate cellular sur sol et mur
-#seulement 0 et 1
+# Automate cellular sur sol et mur
+# Seulement 0 et 1
 # mur = 1
 # sol = 0
 def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, nombre_répétition : int) -> list:
@@ -186,13 +196,15 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
                 if x >= 1 and y >= 1 and x < largeur_grille -1  and y < hauteur_grille -1 :
                     valeur_actu = grille[x][y]
                     
-                    #Parcourir les voisins
-                    #permets de rapprocher des éléments
-                    for dx in [-1, 0, 1]:  #Décalages pour l'axe X
-                        for dy in [-1, 0, 1]:  #décalages pour l'axe Y
+                    # Parcourir les voisins
+                    # Permets de rapprocher des éléments
+                    # Décalages pour l'axe X
+                    for dx in [-1, 0, 1]:
+                        # Décalages pour l'axe Y
+                        for dy in [-1, 0, 1]:
                             # Si pas la valeur actuelle
                             if not (dx == 0 and dy == 0):
-                                #calculer les coordonnées du voisin
+                                # Calculer les coordonnées du voisin
                                 x_voisin = x + dx
                                 y_voisin = y + dy
                                 voisin = grille[x_voisin][y_voisin]
@@ -200,23 +212,23 @@ def generation_mur(largeur_grille : int, hauteur_grille : int, grille : list, no
                                 if voisin != 0:
                                     voisin_mur += 1
                                     
-                    #si une cellule est un mur :
-                    #si elle a moins de X voisins murs, elle devient sol (0)
+                    # Si une cellule est un mur:
+                    # Si elle a moins de X voisins murs, elle devient sol (0)
                     if valeur_actu != 0 and voisin_mur < 3: #3 c'est très bien
                         grille_suivante[x][y] = 0
                     
-                    #si une cellule est un sol (0) :
-                    # si elle a plus de X voisins murs, elle devient mur (X)
+                    # Si une cellule est un sol (0):
+                    # Si elle a plus de X voisins murs, elle devient mur (1)
                     elif valeur_actu == 0 and voisin_mur > 3: #3 c'est très bien
                         grille_suivante[x][y] = 1
 
-        grille = grille_suivante                
+        grille = grille_suivante
                     
     print("génération mur terminé")
     logger.info("generation_mur() effectué")
     return grille
 
-#génération bordure de carte
+# Génération bordure de carte
 def generation_limite(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
     for x in range (largeur_grille):
         grille[x][0] = 1
@@ -229,6 +241,7 @@ def generation_limite(largeur_grille : int, hauteur_grille : int, grille : list)
     logger.info("generation_limite() effectué")
     return grille
 
+# Génération des dechets
 def generation_dechet(largeur_grille : int, hauteur_grille : int, grille : list) -> list:
     for _ in range (settings.nombre_de_dechets):
         dechet_placer = False
@@ -241,6 +254,7 @@ def generation_dechet(largeur_grille : int, hauteur_grille : int, grille : list)
     logger.info("génération des déchets éffectués")
     return grille
 
+# Génération du feu 
 def generation_feu(largeur_grille, hauteur_grille, grille, chance_apparition=0.02):
     for x in range(1, largeur_grille - 1):
         for y in range(1, hauteur_grille - 1):
@@ -256,6 +270,20 @@ def generation_feu(largeur_grille, hauteur_grille, grille, chance_apparition=0.0
             
             
             
+# Fonction principale pour la génération procédurale
+# Appels les fonctions secondaires:
+    # lecteur.creation_fichier_X(nom, taille)
+    # lecteur.chargerfichier(nom)
+    # listes(2)
+    # generation_mur(largeur_grille, hauteur_grille, grille, 9)
+    # generation_voisin_mur(largeur_grille, hauteur_grille, grille)
+    # generation_type_mur(largeur_grille, hauteur_grille, grille, nombre_répétition)
+    # generation_water(largeur_grille, hauteur_grille, grille, nombre_répétition_water, multiplicateur_point_apparition_water)
+    # generation_feu(largeur_grille, hauteur_grille, grille)
+    # generation_limite(largeur_grille, hauteur_grille, grille)
+    # generation_dechet(largeur_grille, hauteur_grille, grille)
+    # lecteur.modifier_grille(nom, grille)
+    # 
 
 def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     #gestion du nom en fonction de la présence ou non de l'extension
@@ -311,6 +339,8 @@ def generation(nom : str, nombre_texture : int = 2, taille : int = 100):
     lecteur.modifier_grille(nom, grille)
     
     logger.info("generation effectué")
-    
+
+# Test de la generation depuis le fichier actuel (procedural_generation.py)
+# Pour paramètre une taille de 100
 if __name__ == "__main__":
-    generation("testX", nombre_texture, 100)
+    generation("testX", nombre_texture, taille = 100)
