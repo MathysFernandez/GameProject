@@ -5,21 +5,26 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+# Classe pour la gestion du son
 class SoundManager:
+    # Initialiser le son 
     def __init__(self):
         # Initialisation du mixer
         if not pygame.mixer.get_init():
             try:
+                # Parametre de son
                 pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
             except Exception as e:
                 logger.error(f"Erreur init mixer: {e}")
         
         pygame.mixer.set_num_channels(32)
         
-        # Chemins
+        # Chemins des dossiers 
         self.base_path = Path(__file__).parent.parent / "Assets"
         self.bgm_path = self.base_path / "BGM"
         self.sfx_path = self.base_path / "SFX"
+
+
 
         # --- Chargement des sons ---
         self.sounds = {
@@ -49,11 +54,15 @@ class SoundManager:
         self.last_step_time = 0
         self.step_delay = 350
         self.last_damage_time = 0
-        self.damage_delay = 1000 # 1 seconde entre chaque bruit de brûlure
+        # 1 seconde entre chaque bruit de brûlure (1000 milisecondes)
+        self.damage_delay = 1000
         self.next_ambiance_time = pygame.time.get_ticks() + random.randint(2000, 10000)
 
+
+
+
+    # Charger tout un dossier de sons.
     def _load_folder(self, folder_path: Path) -> list:
-        """Charge tout un dossier de sons."""
         loaded_sounds = []
         if folder_path.exists():
             files = list(folder_path.glob("*.mp3")) + list(folder_path.glob("*.wav"))
@@ -66,8 +75,10 @@ class SoundManager:
                     logger.error(f"Erreur son {file}: {e}")
         return loaded_sounds
 
+
+
+    # Charger un fichier son unique.
     def _load_file(self, file_path: Path, volume: float = 0.5):
-        """Charge un fichier son unique."""
         if file_path.exists():
             try:
                 s = pygame.mixer.Sound(str(file_path))
@@ -79,13 +90,16 @@ class SoundManager:
             logger.warning(f"Fichier introuvable : {file_path}")
         return None
 
-    # --- Méthodes de jeu ---
 
-    #son quand on clique avec la souris
+
+
+    # --- Début Méthodes de jeu ---
+
+    # Son quand on clique avec la souris
     def play_click(self):
         if self.sounds["clicks"]: random.choice(self.sounds["clicks"]).play()
 
-    #son quand on se déplace
+    # Son quand on se déplace
     def play_footstep(self):
         now = pygame.time.get_ticks()
         if now - self.last_step_time > self.step_delay:
@@ -93,6 +107,9 @@ class SoundManager:
                 random.choice(self.sounds["grass"]).play()
                 self.last_step_time = now
 
+
+
+    # --- Début Jouer X son ---
     def play_plant(self):
         if self.sounds["plant"]: self.sounds["plant"].play()
 
@@ -108,7 +125,10 @@ class SoundManager:
             if self.sounds["fire_damage"]:
                 self.sounds["fire_damage"].play()
                 self.last_damage_time = now
+    # --- Fin Jouer X son ---
 
+
+    # Varier la musique
     def update_music(self, scene_name):
         target = "menu" if scene_name == "menu" else "game"
         if self.current_playlist_name == target: return
@@ -122,6 +142,7 @@ class SoundManager:
                 pygame.mixer.music.play(-1, fade_ms=500)
             except: pass
 
+    # Varier l'ambiance
     def update_ambiance(self):
         now = pygame.time.get_ticks()
         if now > self.next_ambiance_time:
@@ -131,3 +152,5 @@ class SoundManager:
                 s.set_volume(0.05 if cat == "birds" else 0.1)
                 s.play()
             self.next_ambiance_time = now + random.randint(5000, 15000)
+    
+    # --- Fin Méthodes de jeu ---
