@@ -148,7 +148,7 @@ if pos_save:
         position_valide = True
         logger.info(f"Position chargée (Valide) : {int(position_player_x)}, {int(position_player_y)}")
     else:
-        logger.error(f"ATTENTION : Position sauvegardée hors limites ({x}, {y}). Réinitialisation.")
+        logger.error(f"ATTENTION : Position sauvegardée hors limites ({x}, {y}).")
 
 if not position_valide:
     position_player_x = centre_grille_x_monde + 100
@@ -159,23 +159,28 @@ rayon_joueur = taille_joueur / 2
 
 
 
-# +++ DÉBUT AJOUT BARRE DE VIE ---
+# --- DÉBUT AJOUT BARRE DE VIE ---
 # Variables pour l'état et la vie du joueur
 joueur_vie_max = settings.joueur_vie_max
-joueur_vie_actuelle = settings.joueur_vie_actuelle# On peut choisir le pourcentage de vie de départ ici
-joueur_etat = settings.joueur_etat # Peut être "vivant" ou "mort"
-# +++ FIN AJOUT BARRE DE VIE ---
+
+# On peut choisir le pourcentage de vie de départ ici
+joueur_vie_actuelle = settings.joueur_vie_actuelle
+
+#Peut être "vivant" ou "mort"
+joueur_etat = settings.joueur_etat 
+# --- FIN AJOUT BARRE DE VIE ---
 
 
 # +++ AJOUT SCORE +++
 joueur_score = 0
 # +++ FIN AJOUT SCORE +++
 
+
 # +++ AJOUT ETAT DE PAUSE +++
 jeu_est_en_pause = False
 # +++ FIN AJOUT ETAT DE PAUSE +++
 
-barre_largeur = 70  
+barre_largeur = 70 
 barre_hauteur = 15
 
 # Définir les couleurs Vie et game over
@@ -214,6 +219,8 @@ def retirer_vie(quantite):
         else:
             logger.info(f"Le joueur a perdu {quantite} PV. Vie restante : {joueur_vie_actuelle}")
 
+
+
 def ajouter_vie(quantite):
 
     global joueur_vie_actuelle
@@ -226,8 +233,11 @@ def ajouter_vie(quantite):
 
 # +++ FIN AJOUT BARRE DE VIE +++
 
+
+
 # +++ AJOUT SCORE ET VICTOIRE +++
-SCORE_OBJECTIF = settings.SCORE_OBJECTIF  # Le score à atteindre pour gagner
+# Le score à atteindre pour gagner
+SCORE_OBJECTIF = settings.SCORE_OBJECTIF 
 
 # +++ AJOUT SCORE +++
 def ajouter_score(quantite):
@@ -521,13 +531,13 @@ def dessiner_menu_pause(largeur_fenetre, hauteur_fenetre):
 
 # Jeu
 def jeu_scene(events, camera_x, camera_y, plantes_manager):
-    #Gère la logique et le rendu de la scène de jeu principale
+    # Gère la logique et le rendu de la scène de jeu principale
 
-    #variables à réinitialiser à chaque boucle:
-    #deplacement vitesse
+    # Variables à réinitialiser à chaque boucle:
+    # Deplacement vitesse
     vitesse = settings.vitesse
     
-    #variable globale
+    # variable globale
     global angle_voulu, angle, position_player_x, position_player_y, joueur_vie_actuelle, joueur_etat, joueur_score, jeu_est_en_pause, compt_anim, champ_actif, nom_actuel, taille_actuelle, compteur_anim_joueur, interv, grille
     
     # Utile pour la détection de collision afin de pouvoir "revenir en arrière" (en focntion des axes)
@@ -544,17 +554,20 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 if jeu_est_en_pause:
-                    jeu_est_en_pause = False # Si en pause, ESC quitte la pause
+                    # Si en pause, ESC quitte la pause
+                    jeu_est_en_pause = False
                 else:
                     # Sinon, ESC quitte le jeu pour le menu (comportement original)
-                    joueur_vie_actuelle = 100 # On peut choisir le pourcentage de vie de départ ici
-                    joueur_etat = "vivant" 
-                    joueur_score = 0 
+                    # On peut choisir le pourcentage de vie de départ ici
+                    joueur_vie_actuelle = 100
+                    joueur_etat = "vivant"
+                    joueur_score = 0
                     jeu_est_en_pause = False 
                     return "menu" 
             
             if event.key == pygame.K_p:
-                jeu_est_en_pause = not jeu_est_en_pause # Inverse l'état de pause
+                # Inverse l'état de pause
+                jeu_est_en_pause = not jeu_est_en_pause 
                 logger.info(f"Jeu mis en pause: {jeu_est_en_pause}")
 
             
@@ -563,7 +576,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
             if jeu_est_en_pause:
                 continue 
             
-            # --- Touches de test 
+            # --- Touches de test ---
             if settings.test_vie:
                 if event.key == pygame.K_h:
                     retirer_vie(10)
@@ -617,6 +630,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
     
 
     keys_pressed = pygame.key.get_pressed()
+
     # Modifie la vitesse du joueur si la touche 'Maj Gauche' (LSHIFT) est pressée.
     vitesse += vitesse * (keys_pressed[pygame.K_LSHIFT] *0.5)
     
@@ -686,8 +700,10 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
     # Parcourt uniquement les cellules de la grille potentiellement en collision avec le joueur
     for y_grid in range(min_gy, max_gy + 1):
         for x_grid in range(min_gx, max_gx + 1):
+
             #Vérifie si la cellule actuelle (x_grid, y_grid) est un bloc de collision
             if (x_grid, y_grid) in collision_map_solid:
+
                 # Récupère l'objet Rect représentant le bloc de collision
                 bloc_rect = collision_map_solid[(x_grid, y_grid)] 
                 
@@ -696,8 +712,10 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
                 
                 # Utilise notre nouvelle fonction de collision
                 if collision:
+
                     # Correction sur l'axe X : on applique le déplacement push_x
                     position_player_x += push_x
+
                     # On annule le déplacement sur l'axe X pour cette frame
                     deplacement_x = 0
         
@@ -729,8 +747,10 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
                 collision, (push_x, push_y) = collision_cercle_rect((position_player_x, position_player_y), rayon_joueur, bloc_rect)
 
                 if collision:
+
                     # Correction sur l'axe Y : on applique le déplacement push_y
                     position_player_y += push_y
+
                     # On annule le déplacement sur l'axe Y pour cette frame
                     deplacement_y = 0
     
@@ -813,13 +833,12 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
                     
                 fenetre.blit(img, (screen_x, screen_y))
 
-    # DESSINER LES PLANTES
+    # Dessiner les plantes
     plantes_manager.draw(fenetre, camera_x, camera_y, largeur_fenetre, hauteur_fenetre)
     
     
-    #détermine l'angle de direction du joueur
-    ##0 degrés = droite, 90 degrés = haut
-    
+    # détermine l'angle de direction du joueur
+    # 0 degrés = droite, 90 degrés = haut
     if deplacement_x != 0:
         if deplacement_x < 0 and deplacement_y < 0:
             angle_voulu = 135
@@ -839,6 +858,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
         elif deplacement_y < 0:
             angle_voulu = 90
     if joueur_etat == "vivant" and jeu_est_en_pause == False:
+
         #permet de tourner le joueur dans la direction voulu seulement lors des déplacements du joueurs 
         if (deplacement_x !=0 or deplacement_y !=0) and angle != angle_voulu:
             if angle >= 360:
@@ -877,8 +897,8 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
     
     
     
-    # Correction : Calculer la position d'affichage du joueur sur l'écran
-    #en utilisant ses coordonnées monde (position_player_x, position_player_y)
+    # Correction: Calculer la position d'affichage du joueur sur l'écran
+    # en utilisant ses coordonnées monde (position_player_x, position_player_y)
     screen_x = position_player_x + camera_x
     screen_y = position_player_y + camera_y
 
@@ -892,6 +912,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
     # --- Dessiner le joueur ---
     fenetre.blit(joueur, rect_rotate)
     #--- Fin Dessiner le joueur ---
+
     
     # --- Affichage des FPS en temps réel si test_fps est activé ---
     if settings.test_fps:
@@ -900,7 +921,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
     # --- Fin Affichage des FPS ---
     
     
-    # SCORE
+    # Score
     score_prec = -1
     score_surf = None
 
@@ -955,8 +976,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
     
     
     
-    
-    #DÉBUT GESTION AFFICHAGE DU MENU PAUSE 
+    # --- Début gestion affichage du menu pause ---
     if jeu_est_en_pause:
         # On récupère les dimensionss 
         largeur_fenetre, hauteur_fenetre = fenetre.get_size()
@@ -975,7 +995,7 @@ def jeu_scene(events, camera_x, camera_y, plantes_manager):
             return "menu" 
     
     return "jeu"
-
+    # --- Fin gestion affichage du menu pause ---
 
 
 
