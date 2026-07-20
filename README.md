@@ -145,7 +145,7 @@ Launch the editor mode with::\
 ---
 ## Authors
 
-| <a href="https://github.com/MathysFernandez"> <img src="https://avatars.githubusercontent.com/u/90396790?s=96&v=4?width=800" width="64" height="64"> </a> | **Name :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://github.com/MathysFernandez) |
+| <a href="https://github.com/MathysFernandez"> <img src="https://avatars.githubusercontent.com/u/90396790?s=96&v=4?width=800" width="64" height="64"> </a> | **Name :** _Fernandez Mathys_ <br> **GitHub :** [mon profil](https://github.com/MathysFernandez) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 | <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2486/avatar.png?width=800" width="64" height="64"> </a> | **Name :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
