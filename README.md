@@ -1,38 +1,20 @@
-
+# GameProject
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
+![exemple_generation](https://github.com/user-attachments/assets/5fb52f79-63a1-4b11-be58-4c1a9555c37d)
 
 
+## Project Overview 
 
-
-
-# :rocket: GameProject   
-
-> [!note] Bienvenue
-> Cette page sert de point d'entrée central pour toutes les informations essentielles concernant le projet **_GameProject_**.   
-
-![image présentation](image_pou_gitlab/exemple_generation.jpg)
-
-![](image_pou_gitlab/video.mp4)
-
+**_GameProject_** is a Pygame game where you explore a vast world from a top-down view.    
+Our goal is to deliver an immersive and engaging experience where every interaction and challenge brings you closer to victory.
+Game development is simplified thanks to the integration of a dedicated map editor (`conceptor.py`).   
 
 ---
-## :mag: Aperçu du Projet 
-> [!note] 
-> Bienvenue sur la page **_README_** de notre projet !   
+## Project Architecture     
+> Information on project files and directory structure
 
-**_GameProject_** est un jeu Pygame où vous explorez un vaste monde depuis une vue aérienne.    
-Notre objectif est de livrer une expérience immersive et engageante où chaque interaction et chaque défi vous rapprochent de la victoire.   
-Le développement du jeu est simplifié grâce à l'intégration d'un **éditeur de carte** dédié (`conceptor.py`).   
-
-
-
----
-## :chart_with_upwards_trend: Architecture du Projet     
-> [!note]  
-> Information sur les fichiers et l'arborescence du projet    
-
->>> [!tip] Structure
+### Structure
 GameProject/   
 ├── Assets/             
 ├── Files/    
@@ -46,114 +28,124 @@ GameProject/
 ├── LICENSE    
 ├── main.py      
 └── README.md
->>>
+   
 
->>> [!important] Contenue
+###  Content
 
 
 
 * [main.py]()
-: Le fichier principal du jeu, contient la boucle de jeu avec les scènes menu, jeu, etc...  
+: The main game file, contains the game loop with the menu, game, etc. scenes.   
 
 * [conceptor.py]()
-: Programme pour les développeur permettant de modifier la carte du jeu.   
+: Developer tool to modify the game map.   
 
 * [LICENSE]()
-: Document légal définissant ce que les autres peuvent faire avec le code.    
+: Legal document defining what others can do with the code.     
 
 * [CHANGELOG]()
-: Document qui liste chronologiquement les changements majeurs.
+: Document that lists major changes chronologically.   
 
 * [requirement.txt]()
-: Fichier texte essentiel qui liste toutes les dépendances logicielles externes.
+: Essential text file that lists all external software dependencies.
 
 * [Files/]()
-: Répertoire contenant l'ensemble des fichiers python.
+: Directory containing all python files.
 
 * [Files/game_mechanics.py]()
-: S'occupe de tout ce qui est `gameplay` (dash, etc...).   
+: Handles everything related to `gameplay` (dash, etc...).   
 
 * [Files/map_loader.py]()
-: Permet de lire et modifier le fichier JSON.    
+: Reads and modifies the JSON file. 
 
 * [Files/plant_manager.py]()
-: Gestion des plantes (plantation et récolte). 
+: Plant management (planting and harvesting). 
 
 * [Files/settings.py]()
-: Fichier de configuration pour les dimensions de l'écran, le titre, etc.   
+: Configuration file for screen dimensions, title, etc.    
 
 * [Files/procedural_generation.py]()
-: Fichier permettant comme son nom l'indique de généré une carte (**principalement _Automate Cellular_**)   
+: File allowing, as its name suggests, to generate a map (mainly Cellular Automata).    
 
 * [Files/sound_manager.py]()
-: Permet les effets sonnore et musique. 
+: Handles sound effects and music.
 
 * [Files/texture_manager.py]()
-:  Gère le chargement et la mise à l'échelle des textures, ainsi que la préparation de la grille et des données de collision.   
+:  Manages loading and scaling of textures, as well as preparing the grid and collision data.  
 
 * [Assets/]()
-: Contient toutes les ressources du jeu (images, sons, piskel, etc.)   
+: Contains all game assets (images, sounds, piskel, etc.)   
 
 * [Saves/]()
-: Contient L'ensemble des cartes du jeu (fichiers JSON).  
+: Contains all game maps (JSON files).  
 
 * [Saves/LastSave]()
-: Gère la dernière carte chargé et les dernières positions   
+: Manages the last loaded map and the last positions   
 
 * [.gitignore]()
-: Spécifie les fichiers et répertoires que Git doit ignorer et ne pas suivre, afin d'éviter qu'ils ne soient accidentellement ajoutés aux commits. (Ex: les .log)  
+: Specifies the files and directories that Git should ignore and not track, to prevent them from being accidentally added to commits. (Ex: .log files)
 
 * [game.log]()
-: Journalise l'activité sur le jeu, conceptor et fonctions importante du jeu pour aider au débug.
->>>
+: Logs activity in the game, conceptor, and important game functions to help with debugging.
 
 
----
-## :joystick: Les commandes du jeu:
-* <kbd>Z</kbd>,<kbd>Q</kbd>,<kbd>S</kbd>,<kbd>D</kbd> et les <kbd>flèches directionnelles</kbd> : pour ce déplacer   
-* <kbd>SHIFT</kbd> + <kbd>Z</kbd>/<kbd>Q</kbd>/<kbd>S</kbd>/<kbd>D</kbd>/<kbd>flèches directionnelles</kbd> : pour ce déplacer + vite    
-* <kbd>R</kbd> : Pour planter ou récolter.
-* <kbd>F</kbd> : Pour éteindre feu.
-* <kbd>P</kbd> : Pour mettre en pause le jeu.
-* <kbd>H</kbd> : Retirer 10 points de vie (mode `test_vie`).
-* <kbd>J</kbd> : Ajouter 10 points de vie (mode `test_vie`).
-* <kbd>K</kbd> : Ajouter 10 points de socre (mode `mod_test_score`).
-* <kbd>Echap</kbd> : Retour au menu ou quitter.
+
 
 
 ---
-## :play_button: Démarrage Rapide    
-> [!note]
-> Pour cloner le projet, installer les dépendances et lancer le jeu en local :   
 
-Cloner ce dépôt en bash:   
+
+
+## World Creation
+
+**Goal**:
+>  To ensure rapid and efficient development
+
+The GameProject includes a custom-built map editor, named conceptor. This internal tool was designed specifically to facilitate world layout.   
+Rather than manually coding every map element or having a completely procedural map, ̀conceptor.py` offers an interface to quickly visualize, place, and organize the various components of the game world.
+
+### Editor Controls:
+
+* <kbd>Z</kbd>,<kbd>Q</kbd>,<kbd>S</kbd>,<kbd>D</kbd>: to move the map
+* <kbd>clic Gauche</kbd>: to place textures (can be held down)
+* <kbd>M</kbd>: wall texture mode
+* <kbd>C</kbd>: floor texture mode
+* <kbd>L-Ctrl</kbd>: change texture mode
+* <kbd>F3</kbd>/<kbd>+</kbd>: add columns/rows
+* <kbd>F4</kbd>/<kbd>-</kbd>: remove columns/rows
+* <kbd>molette</kbd>: zoom
+
+---
+
+
+
+
+## Quick Start
+
+> To clone the project, install dependencies, and run the game locally:
+
+Clone this repository in bash:
+
 ```bash
-git clone https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject.git
-``` 
+git clone https://github.com/MathysFernandez/GameProject.git
+```
 
-installer les dépendances:   
-* [Python (la version la plus récente)](https://www.python.org/downloads/)
-* Les  autres dépendances : 
-    ```bash
-    pip install -r requirements.txt
-    ```
+install dependencies:
 
-Lancez le jeu avec:    
-```main.py```
+* [Python (the latest version)](https://www.python.org/downloads/)
+* Pygame width the command `pip install pygame`
 
-Lancez le mode éditeur avec:   
-```conceptor.py```
+Launch the game with:\
+`main.py`
 
+Launch the editor mode with::\
+`concepetor.py`
 
 
 ---
-## :scroll: Licence
-Ce projet est distribué sous la [licence MIT](LICENSE)
+## Authors
 
-
----
-## :bust_in_silhouette: Auteurs
-| <a href="https://gitlab.univ-lr.fr/mferna08"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2469/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/mferna08) |
+| <a href="https://github.com/MathysFernandez"> <img src="https://avatars.githubusercontent.com/u/90396790?s=96&v=4?width=800" width="64" height="64"> </a> | **Name :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://github.com/MathysFernandez) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 | <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2486/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
@@ -168,5 +160,5 @@ Ce projet est distribué sous la [licence MIT](LICENSE)
 
 
 ---
-## :information: Pour plus d'information
-Aller sur la page [Home](https://gitlab.univ-lr.fr/projets-l2-2025/eco.io/gameproject/-/wikis/home) de notre projet
+## Pour plus d'information
+Aller sur la page [Home](https://github.com/MathysFernandez/GameProject/wiki) de notre projet
