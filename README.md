@@ -34,55 +34,55 @@ GameProject/
 
 
 
-* [main.py]()
+* [main.py](https://github.com/MathysFernandez/GameProject/blob/dev/main.py)
 : The main game file, contains the game loop with the menu, game, etc. scenes.   
 
-* [conceptor.py]()
+* [conceptor.py](https://github.com/MathysFernandez/GameProject/blob/dev/conceptor.py)
 : Developer tool to modify the game map.   
 
-* [LICENSE]()
+* [LICENSE](https://github.com/MathysFernandez/GameProject/blob/dev/LICENSE)
 : Legal document defining what others can do with the code.     
 
-* [CHANGELOG]()
+* [CHANGELOG](https://github.com/MathysFernandez/GameProject/blob/dev/CHANGELOG.md)
 : Document that lists major changes chronologically.   
 
-* [requirement.txt]()
+* [requirement.txt](https://github.com/MathysFernandez/GameProject/blob/dev/requirements.txt)
 : Essential text file that lists all external software dependencies.
 
-* [Files/]()
+* [Files/](https://github.com/MathysFernandez/GameProject/tree/dev/Files)
 : Directory containing all python files.
 
-* [Files/game_mechanics.py]()
+* [Files/game_mechanics.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/game_mechanics.py)
 : Handles everything related to `gameplay` (dash, etc...).   
 
-* [Files/map_loader.py]()
+* [Files/map_loader.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/map_loader.py)
 : Reads and modifies the JSON file. 
 
-* [Files/plant_manager.py]()
+* [Files/plant_manager.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/plant_manager.py)
 : Plant management (planting and harvesting). 
 
-* [Files/settings.py]()
+* [Files/settings.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/settings.py)
 : Configuration file for screen dimensions, title, etc.    
 
-* [Files/procedural_generation.py]()
+* [Files/procedural_generation.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/procedural_generation.py)
 : File allowing, as its name suggests, to generate a map (mainly Cellular Automata).    
 
-* [Files/sound_manager.py]()
+* [Files/sound_manager.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/sound_manager.py)
 : Handles sound effects and music.
 
-* [Files/texture_manager.py]()
+* [Files/texture_manager.py](https://github.com/MathysFernandez/GameProject/blob/dev/Files/texture_manager.py)
 :  Manages loading and scaling of textures, as well as preparing the grid and collision data.  
 
-* [Assets/]()
+* [Assets/](https://github.com/MathysFernandez/GameProject/tree/dev/Assets)
 : Contains all game assets (images, sounds, piskel, etc.)   
 
-* [Saves/]()
+* [Saves/](https://github.com/MathysFernandez/GameProject/tree/dev/Saves)
 : Contains all game maps (JSON files).  
 
-* [Saves/LastSave]()
+* [Saves/LastSave](https://github.com/MathysFernandez/GameProject/blob/dev/Saves/lastSave.json)
 : Manages the last loaded map and the last positions   
 
-* [.gitignore]()
+* [.gitignore](https://github.com/MathysFernandez/GameProject/blob/dev/.gitignore)
 : Specifies the files and directories that Git should ignore and not track, to prevent them from being accidentally added to commits. (Ex: .log files)
 
 * [game.log]()
