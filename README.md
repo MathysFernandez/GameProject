@@ -148,13 +148,13 @@ Launch the editor mode with::\
 | <a href="https://github.com/MathysFernandez"> <img src="https://avatars.githubusercontent.com/u/90396790?s=96&v=4?width=800" width="64" height="64"> </a> | **Name :** _Fernandez Mathys_ <br> **GitLab :** [mon profil](https://github.com/MathysFernandez) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2486/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
+| <a href="https://gitlab.univ-lr.fr/tsoilihi"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/2486/avatar.png?width=800" width="64" height="64"> </a> | **Name :** _Soilihi Timeo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tsoilihi) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/rlamou01"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3019/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Lamoureux Robin_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/rlamou01) |
+| <a href="https://gitlab.univ-lr.fr/rlamou01"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3019/avatar.png?width=800" width="64" height="64"> </a> | **Name :** _Lamoureux Robin_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/rlamou01) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
-| <a href="https://gitlab.univ-lr.fr/tpinet"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3021/avatar.png?width=800" width="64" height="64"> </a> | **Nom :** _Pinet Theo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tpinet) |
+| <a href="https://gitlab.univ-lr.fr/tpinet"> <img src="https://gitlab.univ-lr.fr/uploads/-/system/user/avatar/3021/avatar.png?width=800" width="64" height="64"> </a> | **Name :** _Pinet Theo_ <br> **GitLab :** [mon profil](https://gitlab.univ-lr.fr/tpinet) |
 |:----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|
 
 
